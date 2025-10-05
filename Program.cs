@@ -3,7 +3,7 @@ namespace DiscordDetective
     internal static class Program
     {
         [STAThread]
-        static async Task Main()
+        static void Main()
         {
             DataManager.CheckDirectories();
             ApplicationConfiguration.Initialize();
