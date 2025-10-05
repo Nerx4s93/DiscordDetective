@@ -26,7 +26,7 @@ public class DiscordClient
     {
         var filePath = GetUserFilePath();
 
-        if (File.Exists(filePath))
+        if (File.Exists(filePath))  
         {
             try
             {
@@ -78,18 +78,6 @@ public class DiscordClient
         }
     }
 
-    private async Task<T> MakeRequestAsync<T>(string endpoint)
-    {
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/{endpoint}");
-        request.Headers.Add("Authorization", $"{_token}");
-
-        var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadAsStringAsync();
-        return JsonConvert.DeserializeObject<T>(json);
-    }
-
     public async Task<List<Guild>> GetUserGuildsAsync()
     {
         return await MakeRequestAsync<List<Guild>>("users/@me/guilds") ?? [];
@@ -116,10 +104,41 @@ public class DiscordClient
 
     #endregion
 
+    private async Task<T> MakeRequestAsync<T>(string endpoint)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/{endpoint}");
+        request.Headers.Add("Authorization", $"{_token}");
+
+        var response = await _httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<T>(json);
+    }
+
     private string GetUserFilePath()
     {
-        var user = _token.Remove('.').Remove('-').Remove('_');
-        return Path.Combine(StoragePath, $"{user}.json");
+        var safeFileName = _token
+            .Replace(".", "")
+            .Replace("-", "")
+            .Replace("_", "")
+            .Replace(" ", "")
+            .Replace("\\", "")
+            .Replace("/", "")
+            .Replace(":", "")
+            .Replace("*", "")
+            .Replace("?", "")
+            .Replace("\"", "")
+            .Replace("<", "")
+            .Replace(">", "")
+            .Replace("|", "");
+
+        if (safeFileName.Length > 100)
+        {
+            safeFileName = safeFileName.Substring(0, 100);
+        }
+
+        return Path.Combine(StoragePath, $"{safeFileName}.json");
     }
 
     public void Dispose()
