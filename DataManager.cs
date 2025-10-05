@@ -6,6 +6,7 @@ internal static class DataManager
     {
         CheckDirrectory("data");
         CheckDirrectory(@"data\users");
+        CheckDirrectory(@"guilds\users");
     }
 
     private static void CheckDirrectory(string path)
