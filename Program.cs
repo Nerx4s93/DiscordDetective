@@ -1,6 +1,8 @@
 using System;
 using System.Windows.Forms;
 
+using DiscordDetective.GUI;
+
 namespace DiscordDetective
 {
     internal static class Program
@@ -10,7 +12,7 @@ namespace DiscordDetective
         {
             DataManager.CheckDirectories();
             ApplicationConfiguration.Initialize();
-            Application.Run(new FormMain());
+            Application.Run(new FormUsers());
         }
     }
 }
