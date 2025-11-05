@@ -1,4 +1,6 @@
-﻿using DiscordDetective.API.Models;
+﻿using System.Collections.Generic;
+
+using DiscordDetective.API.Models;
 
 namespace DiscordDetective.API;
 
