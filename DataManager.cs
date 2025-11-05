@@ -1,4 +1,6 @@
-﻿namespace DiscordDetective;
+﻿using System.IO;
+
+namespace DiscordDetective;
 
 internal static class DataManager
 {
