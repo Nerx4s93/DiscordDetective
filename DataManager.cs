@@ -4,10 +4,14 @@ namespace DiscordDetective;
 
 internal static class DataManager
 {
+    public const string Users = @"guilds\users";
+    public const string UsersAvatar = @"guilds\users\avatar";
+
     public static void CheckDirectories()
     {
         CheckDirrectory("data");
-        CheckDirrectory(@"data\users");
+        CheckDirrectory(Users);
+        CheckDirrectory(UsersAvatar);
         CheckDirrectory(@"guilds\users");
     }
 
