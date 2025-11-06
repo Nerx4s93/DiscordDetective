@@ -1,4 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+using Newtonsoft.Json;
 
 namespace DiscordDetective.API.Models;
 
@@ -54,4 +60,46 @@ public class User
         AccentColor.HasValue
             ? $"#{AccentColor.Value:X6}"
             : null;
+
+    public async Task<Image?> GetAvatar()
+    {
+        if (string.IsNullOrEmpty(Avatar) || string.IsNullOrEmpty(Id))
+        {
+            return null;
+        }
+
+        try
+        {
+            var avatarFileName = $"{Avatar}.png";
+            var fullPath = Path.Combine(DataManager.UsersAvatar, avatarFileName);
+
+            byte[] imageData;
+            if (File.Exists(fullPath))
+            {
+                imageData = await File.ReadAllBytesAsync(fullPath);
+            }
+            else
+            {
+                using var httpClient = new HttpClient();
+
+                var avatarUrl = AvatarUrl;
+                if (string.IsNullOrEmpty(avatarUrl))
+                {
+                    return null;
+                }
+
+                imageData = await httpClient.GetByteArrayAsync(avatarUrl);
+
+                await File.WriteAllBytesAsync(fullPath, imageData);
+            }
+
+            using var memoryStream = new MemoryStream(imageData);
+            return Image.FromStream(memoryStream);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при получении аватара для пользователя {Id}: {ex.Message}");
+            return null;
+        }
+    }
 }
