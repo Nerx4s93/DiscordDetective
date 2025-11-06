@@ -61,45 +61,50 @@ public class User
             ? $"#{AccentColor.Value:X6}"
             : null;
 
-    public async Task<Image?> GetAvatar()
+    public async Task<Image?> GetAvatar(bool download = true)
     {
         if (string.IsNullOrEmpty(Avatar) || string.IsNullOrEmpty(Id))
         {
             return null;
         }
 
-        try
+        if (download)
         {
-            var avatarFileName = $"{Avatar}.png";
-            var fullPath = Path.Combine(DataManager.UsersAvatar, avatarFileName);
-
-            byte[] imageData;
-            if (File.Exists(fullPath))
+            try
             {
-                imageData = await File.ReadAllBytesAsync(fullPath);
-            }
-            else
-            {
-                using var httpClient = new HttpClient();
+                var avatarFileName = $"{Avatar}.png";
+                var fullPath = Path.Combine(DataManager.UsersAvatar, avatarFileName);
 
-                var avatarUrl = AvatarUrl;
-                if (string.IsNullOrEmpty(avatarUrl))
+                byte[] imageData;
+                if (File.Exists(fullPath))
                 {
-                    return null;
+                    imageData = await File.ReadAllBytesAsync(fullPath);
+                }
+                else
+                {
+                    using var httpClient = new HttpClient();
+
+                    var avatarUrl = AvatarUrl;
+                    if (string.IsNullOrEmpty(avatarUrl))
+                    {
+                        return null;
+                    }
+
+                    imageData = await httpClient.GetByteArrayAsync(avatarUrl);
+
+                    await File.WriteAllBytesAsync(fullPath, imageData);
                 }
 
-                imageData = await httpClient.GetByteArrayAsync(avatarUrl);
-
-                await File.WriteAllBytesAsync(fullPath, imageData);
+                using var memoryStream = new MemoryStream(imageData);
+                return Image.FromStream(memoryStream);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении аватара для пользователя {Id}: {ex.Message}");
+            }
+        }
 
-            using var memoryStream = new MemoryStream(imageData);
-            return Image.FromStream(memoryStream);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка при получении аватара для пользователя {Id}: {ex.Message}");
-            return null;
-        }
+        Console.WriteLine($"Аватара пользователя {Id} не загружен");
+        return null;
     }
 }
