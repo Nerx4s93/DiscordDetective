@@ -11,6 +11,8 @@ namespace DiscordDetective
         static void Main()
         {
             DataManager.CheckDirectories();
+            DataManager.LoadBots();
+
             ApplicationConfiguration.Initialize();
             Application.Run(new FormUsers());
         }
