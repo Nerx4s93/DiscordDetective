@@ -28,7 +28,8 @@ internal static class DataManager
         foreach (var file in files)
         {
             var token = file;
-            var user = JsonConvert.DeserializeObject<User>(file);
+            var json = File.ReadAllText(file);
+            var user = JsonConvert.DeserializeObject<User>(json);
             Bots.Add((token, user!));
         }
     }

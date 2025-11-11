@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 namespace DiscordDetective.API.Models;
 
@@ -68,43 +68,46 @@ public class User
             return null;
         }
 
-        if (download)
+        var avatarFileName = $"{Avatar}.png";
+        var fullPath = Path.Combine(DataManager.UsersAvatar, avatarFileName);
+
+        if (File.Exists(fullPath))
         {
-            try
+            return Image.FromFile(fullPath);
+        }
+        else if (download)
+        {
+            var proxy = new WebProxy
             {
-                var avatarFileName = $"{Avatar}.png";
-                var fullPath = Path.Combine(DataManager.UsersAvatar, avatarFileName);
+                Address = new Uri("http://168.0.212.187:9772"),
+                BypassProxyOnLocal = false,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(
+                userName: "khvpRd",
+                password: "KTNp1s")
+            };
 
-                byte[] imageData;
-                if (File.Exists(fullPath))
-                {
-                    imageData = await File.ReadAllBytesAsync(fullPath);
-                }
-                else
-                {
-                    using var httpClient = new HttpClient();
-
-                    var avatarUrl = AvatarUrl;
-                    if (string.IsNullOrEmpty(avatarUrl))
-                    {
-                        return null;
-                    }
-
-                    imageData = await httpClient.GetByteArrayAsync(avatarUrl);
-
-                    await File.WriteAllBytesAsync(fullPath, imageData);
-                }
-
-                using var memoryStream = new MemoryStream(imageData);
-                return Image.FromStream(memoryStream);
-            }
-            catch (Exception ex)
+            var httpClientHandler = new HttpClientHandler
             {
-                Console.WriteLine($"Ошибка при получении аватара для пользователя {Id}: {ex.Message}");
+                Proxy = proxy,
+                UseProxy = true
+            };
+
+            using var httpClient = new HttpClient(httpClientHandler);
+
+            var avatarUrl = AvatarUrl;
+            if (string.IsNullOrEmpty(avatarUrl))
+            {
+                return null;
             }
+
+            var imageData = await httpClient.GetByteArrayAsync(avatarUrl);
+            using var memoryStream = new MemoryStream(imageData);
+
+            await File.WriteAllBytesAsync(fullPath, imageData);
+            return Image.FromStream(memoryStream);
         }
 
-        Console.WriteLine($"Аватара пользователя {Id} не загружен");
-        return null;
+        throw new Exception($"Аватара пользователя {Id} не загружен");
     }
 }

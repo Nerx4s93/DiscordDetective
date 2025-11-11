@@ -33,14 +33,13 @@
             // 
             // listView1
             // 
-            listView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            listView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            listView1.Alignment = System.Windows.Forms.ListViewAlignment.Left;
+            listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             listView1.FullRowSelect = true;
-            listView1.GridLines = true;
-            listView1.Location = new System.Drawing.Point(12, 12);
+            listView1.LabelWrap = false;
+            listView1.Location = new System.Drawing.Point(0, 0);
             listView1.Name = "listView1";
-            listView1.OwnerDraw = true;
-            listView1.Size = new System.Drawing.Size(776, 676);
+            listView1.Size = new System.Drawing.Size(800, 700);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             // 
