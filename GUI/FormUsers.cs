@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DiscordDetective.GUI;
@@ -14,11 +15,10 @@ public partial class FormUsers : Form
     {
         InitializeComponent();
         _largeImageList.ImageSize = new Size(64, 64);
-        listView1.LargeImageList = _largeImageList;
         UpdateListView();
     }
 
-    private void UpdateListView()
+    private async void UpdateListView()
     {
         listView1.Items.Clear();
         _largeImageList.Images.Clear();
@@ -29,22 +29,27 @@ public partial class FormUsers : Form
         {
             var userData = user.user;
             var name = string.IsNullOrEmpty(userData.Username) ? user.token : userData.Username;
-            var avatar = userData.GetAvatar(true);
-            
-            if (avatar.Result == null)
+            var avatar = await userData.GetAvatar(true);
+
+            if (avatar == null)
             {
                 _largeImageList.Images.Add(SystemIcons.Question);
             }
             else
             {
-                _largeImageList.Images.Add(avatar.Result!);
-            } 
+                _largeImageList.Images.Add(avatar);
+            }
 
-            var item = new ListViewItem(name);
+            var item = new ListViewItem(name)
+            {
+                ImageIndex = index
+            };
             listView1.Items.Add(item);
-            listView1.Invalidate();
 
             index++;
         }
+
+        listView1.LargeImageList = _largeImageList;
+        listView1.Invalidate();
     }
 }
