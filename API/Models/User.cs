@@ -77,23 +77,7 @@ public class User
         }
         else if (download)
         {
-            var proxy = new WebProxy
-            {
-                Address = new Uri("http://168.0.212.187:9772"),
-                BypassProxyOnLocal = false,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(
-                userName: "khvpRd",
-                password: "KTNp1s")
-            };
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                Proxy = proxy,
-                UseProxy = true
-            };
-
-            using var httpClient = new HttpClient(httpClientHandler);
+            using var httpClient = new HttpClient();
 
             var avatarUrl = AvatarUrl;
             if (string.IsNullOrEmpty(avatarUrl))
