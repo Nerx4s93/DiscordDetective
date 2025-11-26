@@ -17,11 +17,20 @@ internal static class LocalAiEngine
 
     static LocalAiEngine()
     {
+        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         Task.Run(async () =>
         {
             await StartOllamaServer();
             await EnsureModelLoaded();
         });
+    }
+
+    private static void OnProcessExit(object? sender, EventArgs e)
+    {
+        foreach (var process in Process.GetProcessesByName("ollama"))
+        {
+            try { process.Kill(); } catch { }
+        }
     }
 
     public static async Task<string> SendMessageAsync(string message)
