@@ -59,15 +59,5 @@ namespace DiscordDetective.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
-        /// </summary>
-        internal static byte[] serve_ollama {
-            get {
-                object obj = ResourceManager.GetObject("serve-ollama", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

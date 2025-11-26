@@ -1,7 +1,6 @@
+using DiscordDetective.GUI;
 using System;
 using System.Windows.Forms;
-
-using DiscordDetective.GUI;
 
 namespace DiscordDetective
 {
