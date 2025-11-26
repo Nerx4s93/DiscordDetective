@@ -1,19 +1,16 @@
-using DiscordDetective.GUI;
 using System;
 using System.Windows.Forms;
 
-namespace DiscordDetective
-{
-    internal static class Program
-    {
-        [STAThread]
-        static void Main()
-        {
-            DataManager.CheckDirectories();
-            DataManager.LoadBots();
+using DiscordDetective.GUI;
 
-            ApplicationConfiguration.Initialize();
-            Application.Run(new FormUsers());
-        }
+namespace DiscordDetective;
+
+internal static class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        ApplicationConfiguration.Initialize();
+        Application.Run(new FormMain());
     }
 }
