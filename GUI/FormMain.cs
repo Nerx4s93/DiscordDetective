@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Microsoft.VisualBasic;
 
 using DiscordDetective.Database.Models;
+using DiscordDetective.DiscordAPI;
 
 namespace DiscordDetective.GUI;
 
@@ -86,6 +87,33 @@ public partial class FormMain : Form
         catch (Exception ex)
         {
             MessageBox.Show($"Ошибка при добавлении бота: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void UpdateBotToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            foreach (ListViewItem selectedItem in listViewBots.SelectedItems)
+            {
+                var selectedToken = selectedItem.Tag as string;
+
+                var discordClient = new DiscordClient(selectedToken!);
+                var botData = await discordClient.GetMe();
+
+                var userDb = botData.ToDbDTO();
+                _databaseContext.Users.Add(userDb);
+                _databaseContext.Bots.First(b => b.Token == selectedToken).UserId = userDb.Id;
+            }
+
+            MessageBox.Show($"Обновлены данные у {listViewBots.SelectedItems.Count} ботов", "Обновление данных",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            await _databaseContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Ошибка при обновлении данных ботов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

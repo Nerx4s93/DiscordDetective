@@ -34,8 +34,8 @@ partial class FormMain
         listViewBots = new System.Windows.Forms.ListView();
         ContextMenuStripBots = new System.Windows.Forms.ContextMenuStrip(components);
         AddBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         UpdateBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabControl1.SuspendLayout();
         TabPageBots.SuspendLayout();
         ContextMenuStripBots.SuspendLayout();
@@ -78,7 +78,7 @@ partial class FormMain
         ContextMenuStripBots.ImageScalingSize = new System.Drawing.Size(24, 24);
         ContextMenuStripBots.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { AddBotToolStripMenuItem, UpdateBotToolStripMenuItem, DeleteBotToolStripMenuItem });
         ContextMenuStripBots.Name = "ContextMenuStripBots";
-        ContextMenuStripBots.Size = new System.Drawing.Size(166, 100);
+        ContextMenuStripBots.Size = new System.Drawing.Size(241, 133);
         // 
         // AddBotToolStripMenuItem
         // 
@@ -87,6 +87,14 @@ partial class FormMain
         AddBotToolStripMenuItem.Text = "Добавить";
         AddBotToolStripMenuItem.Click += AddBotToolStripMenuItem_Click;
         // 
+        // UpdateBotToolStripMenuItem
+        // 
+        UpdateBotToolStripMenuItem.Enabled = false;
+        UpdateBotToolStripMenuItem.Name = "UpdateBotToolStripMenuItem";
+        UpdateBotToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
+        UpdateBotToolStripMenuItem.Text = "Обновить";
+        UpdateBotToolStripMenuItem.Click += UpdateBotToolStripMenuItem_Click;
+        // 
         // DeleteBotToolStripMenuItem
         // 
         DeleteBotToolStripMenuItem.Enabled = false;
@@ -94,13 +102,6 @@ partial class FormMain
         DeleteBotToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
         DeleteBotToolStripMenuItem.Text = "Удалить";
         DeleteBotToolStripMenuItem.Click += DeleteBotToolStripMenuItem_Click;
-        // 
-        // UpdateBotToolStripMenuItem
-        // 
-        UpdateBotToolStripMenuItem.Enabled = false;
-        UpdateBotToolStripMenuItem.Name = "UpdateBotToolStripMenuItem";
-        UpdateBotToolStripMenuItem.Size = new System.Drawing.Size(165, 32);
-        UpdateBotToolStripMenuItem.Text = "Обновить";
         // 
         // FormMain
         // 

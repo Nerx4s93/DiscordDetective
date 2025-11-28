@@ -1,7 +1,10 @@
-﻿namespace DiscordDetective.Database.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DiscordDetective.Database.Models;
 
 public class UserDbDTO
 {
+    [Key]
     public string Id { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
     public string? GlobalName { get; set; }
