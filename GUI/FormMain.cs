@@ -44,8 +44,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при загрузке ботов: {ex.Message}", "Ошибка",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log("Error", $"Ошибка при загрузке ботов: {ex.Message}")
         }
     }
 
