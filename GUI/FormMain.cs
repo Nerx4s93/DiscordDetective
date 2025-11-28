@@ -74,9 +74,8 @@ public partial class FormMain : Form
         {
             var bot = new BotDTO() { Token = result };
 
-            using var context = new DatabaseContext();
-            context.Bots.Add(bot);
-            await context.SaveChangesAsync();
+            _databaseContext.Bots.Add(bot);
+            await _databaseContext.SaveChangesAsync();
 
             var item = new ListViewItem
             {
