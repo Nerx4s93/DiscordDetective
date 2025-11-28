@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -35,9 +36,23 @@ public class DiscordClient : IDisposable
         return _userApiDTO;
     }
 
+    public async Task<Image?> GetAvatar()
+    {
+        var user = _userApiDTO ?? await GetMe();
+
+        if (string.IsNullOrEmpty(user.Avatar))
+        {
+            return null;
+        }
+
+        var response = await MakeRequestAsync(user.AvatarUrl!);
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        return Image.FromStream(stream);
+    }
+
     private async Task<T> MakeRequestAsync<T>(string endpoint)
     {
-        var response = await MakeRequestAsync(endpoint);
+        var response = await MakeRequestAsync($"{BaseUrl}/{endpoint}");
 
         await using var stream = await response.Content.ReadAsStreamAsync();
         var result = await JsonSerializer.DeserializeAsync<T>(stream, _jsonOptions);
@@ -45,10 +60,10 @@ public class DiscordClient : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<HttpResponseMessage> MakeRequestAsync(string endpoint)
+    private async Task<HttpResponseMessage> MakeRequestAsync(string url)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/{endpoint}");
-        request.Headers.Add("Authorization", $"Bot {_token}");
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("Authorization", $"{_token}");
 
         var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
