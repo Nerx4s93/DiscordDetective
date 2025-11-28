@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DiscordDetective.Database.Models;
+﻿namespace DiscordDetective.Database.Models;
 
 public class BotDTO
 {
