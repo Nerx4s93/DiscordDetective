@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -99,7 +98,7 @@ internal static class LocalAiEngine
 
         while (!await IsOllamaRunning())
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(300);
         }
 
         Console.WriteLine("Сервер ollama запущен");
