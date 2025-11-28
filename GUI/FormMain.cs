@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-
-using DiscordDetective.Database.Models;
+﻿using DiscordDetective.Database.Models;
 
 using Microsoft.VisualBasic;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace DiscordDetective.GUI;
 
@@ -52,7 +53,9 @@ public partial class FormMain : Form
 
     private void listViewBots_SelectedIndexChanged(object sender, EventArgs e)
     {
-        DeleteBotToolStripMenuItem.Enabled = listViewBots.SelectedItems.Count == 1;
+        var isItemsSelected = listViewBots.SelectedItems.Count > 0;
+        DeleteBotToolStripMenuItem.Enabled = isItemsSelected;
+        UpdateBotToolStripMenuItem.Enabled = isItemsSelected;
     }
 
     private async void AddBotToolStripMenuItem_Click(object sender, EventArgs e)
@@ -90,20 +93,27 @@ public partial class FormMain : Form
     {
         try
         {
-            var selectedItem = listViewBots.SelectedItems[0];
-            var selectedToken = selectedItem.Tag as string;
+            var itemsToRemove = new List<ListViewItem>();
 
-            var bot = _databaseContext.Bots.FirstOrDefault(b => b.Token == selectedToken);
-
-            if (bot != null)
+            foreach (ListViewItem selectedItem in listViewBots.SelectedItems)
             {
-                _databaseContext.Bots.Remove(bot);
-                _databaseContext.SaveChanges();
+                var selectedToken = selectedItem.Tag as string;
+                var bot = _databaseContext.Bots.FirstOrDefault(b => b.Token == selectedToken);
 
-                listViewBots.Items.Remove(selectedItem);
-
-                MessageBox.Show("Бот удален успешно.", "Удаление бота", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (bot != null)
+                {
+                    _databaseContext.Bots.Remove(bot);
+                    itemsToRemove.Add(selectedItem);
+                }
             }
+
+            _databaseContext.SaveChanges();
+            foreach (var item in itemsToRemove)
+            {
+                listViewBots.Items.Remove(item);
+            }
+
+            MessageBox.Show($"Удалено ботов: {itemsToRemove.Count}", "Удаление бота", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
