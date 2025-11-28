@@ -1,4 +1,4 @@
-﻿namespace DiscordDetective.Data.Database;
+﻿namespace DiscordDetective.Database.Models;
 
 public class UserDbDTO
 {

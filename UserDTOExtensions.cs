@@ -1,7 +1,7 @@
-﻿using DiscordDetective.Data.API;
-using DiscordDetective.Data.Database;
+﻿using DiscordDetective.API.Data;
+using DiscordDetective.Database.Models;
 
-namespace DiscordDetective.Data;
+namespace DiscordDetective;
 
 public static class UserDTOExtensions
 {
