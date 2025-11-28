@@ -7,6 +7,7 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DiscordDetective.GUI;
@@ -19,32 +20,50 @@ public partial class FormMain : Form
     {
         InitializeComponent();
         _databaseContext = new();
-        LoadBots();
+        _ = LoadBotsAsync();
     }
 
     #region Загрузка
 
-    private void LoadBots()
+    private async Task LoadBotsAsync()
     {
         try
         {
-            var bots = _databaseContext.Bots.ToList();
+            var bots = await _databaseContext.Bots.ToListAsync();
 
-            listViewBots.Items.Clear();
-
-            foreach (var bot in bots)
+            if (InvokeRequired)
             {
-                var item = new ListViewItem
-                {
-                    Text = bot.UserId == null ? "Не загружено" : _databaseContext.Users.First(u => u.Id == bot.UserId).Username,
-                    Tag = bot.Token
-                };
-                listViewBots.Items.Add(item);
+                Invoke(() => UpdateBotsListView(bots));
+            }
+            else
+            {
+                UpdateBotsListView(bots);
             }
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при загрузке ботов: {ex.Message}")
+            Log("Error", $"Ошибка при загрузке ботов: {ex.Message}");
+        }
+    }
+
+    private void UpdateBotsListView(List<BotDTO> bots)
+    {
+        listViewBots.Items.Clear();
+
+        foreach (var bot in bots)
+        {
+            var username = bot.UserId == null
+                ? "Не загружено"
+                : _databaseContext.Users
+                    .AsNoTracking() // Не трекать для производительности
+                    .FirstOrDefault(u => u.Id == bot.UserId)?.Username ?? "Не найден";
+
+            var item = new ListViewItem
+            {
+                Text = username,
+                Tag = bot.Token
+            };
+            listViewBots.Items.Add(item);
         }
     }
 
