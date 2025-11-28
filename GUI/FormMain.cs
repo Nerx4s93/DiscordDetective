@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using DiscordDetective.Database.Models;
+using DiscordDetective.DiscordAPI;
 
 using Microsoft.VisualBasic;
 
-using DiscordDetective.Database.Models;
-using DiscordDetective.DiscordAPI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace DiscordDetective.GUI;
 
@@ -61,6 +61,8 @@ public partial class FormMain : Form
 
     private async void AddBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        ClearLog();
+
         var result = Interaction.InputBox("Введите токен бота:", "Добавление бота", "");
         if (string.IsNullOrEmpty(result))
         {
@@ -82,20 +84,23 @@ public partial class FormMain : Form
             };
             listViewBots.Items.Add(item);
 
-            MessageBox.Show("Бот добавлен успешно.", "Добавление бота", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Log("Ok", "Бот добавлен успешно");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при добавлении бота: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log("Error", $"Ошибка при добавлении бота: {ex.Message}");
         }
     }
 
     private async void UpdateBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        ClearLog();
+
         try
         {
-            foreach (ListViewItem selectedItem in listViewBots.SelectedItems)
+            for (var i = 0; i < listViewBots.SelectedItems.Count; i++)
             {
+                var selectedItem = listViewBots.SelectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
 
                 var discordClient = new DiscordClient(selectedToken!);
@@ -104,27 +109,31 @@ public partial class FormMain : Form
                 var userDb = botData.ToDbDTO();
                 _databaseContext.Users.Add(userDb);
                 _databaseContext.Bots.First(b => b.Token == selectedToken).UserId = userDb.Id;
+
+                Log("Progress", $"Обновлеие данных ботов {i + 1}/{listViewBots.SelectedItems.Count}");
             }
 
-            MessageBox.Show($"Обновлены данные у {listViewBots.SelectedItems.Count} ботов", "Обновление данных",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Log("Ok", $"Обновлены данные у {listViewBots.SelectedItems.Count} ботов");
 
             await _databaseContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при обновлении данных ботов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Log("Error", $"Ошибка при обновлении данных ботов: {ex.Message}");
         }
     }
 
     private async void DeleteBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        ClearLog();
+
         try
         {
             var itemsToRemove = new List<ListViewItem>();
 
-            foreach (ListViewItem selectedItem in listViewBots.SelectedItems)
+            for (var i = 0; i < listViewBots.SelectedItems.Count; i++)
             {
+                var selectedItem = listViewBots.SelectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
                 var bot = _databaseContext.Bots.FirstOrDefault(b => b.Token == selectedToken);
 
@@ -133,6 +142,8 @@ public partial class FormMain : Form
                     _databaseContext.Bots.Remove(bot);
                     itemsToRemove.Add(selectedItem);
                 }
+
+                Log("Progress", $"Удаление ботов: {i + 1}/{listViewBots.SelectedItems.Count}");
             }
 
             await _databaseContext.SaveChangesAsync();
@@ -141,12 +152,26 @@ public partial class FormMain : Form
                 listViewBots.Items.Remove(item);
             }
 
-            MessageBox.Show($"Удалено ботов: {itemsToRemove.Count}", "Удаление бота", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Log("Ok", $"Удалено ботов: {itemsToRemove.Count}");
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Ошибка при удалении бота: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+    }
+
+    #endregion
+
+    #region Log
+
+    private void Log(string status, string message)
+    {
+        richTextBoxLogs.Text += status + ": " + message + "\n";
+    }
+
+    private void ClearLog()
+    {
+        richTextBoxLogs.Clear(); 
     }
 
     #endregion

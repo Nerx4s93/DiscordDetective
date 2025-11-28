@@ -36,6 +36,7 @@ partial class FormMain
         AddBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         UpdateBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        richTextBoxLogs = new System.Windows.Forms.RichTextBox();
         tabControl1.SuspendLayout();
         TabPageBots.SuspendLayout();
         ContextMenuStripBots.SuspendLayout();
@@ -43,12 +44,12 @@ partial class FormMain
         // 
         // tabControl1
         // 
+        tabControl1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
         tabControl1.Controls.Add(TabPageBots);
-        tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-        tabControl1.Location = new System.Drawing.Point(0, 0);
+        tabControl1.Location = new System.Drawing.Point(387, 0);
         tabControl1.Name = "tabControl1";
         tabControl1.SelectedIndex = 0;
-        tabControl1.Size = new System.Drawing.Size(1218, 726);
+        tabControl1.Size = new System.Drawing.Size(831, 726);
         tabControl1.TabIndex = 0;
         // 
         // TabPageBots
@@ -57,7 +58,7 @@ partial class FormMain
         TabPageBots.Location = new System.Drawing.Point(4, 34);
         TabPageBots.Name = "TabPageBots";
         TabPageBots.Padding = new System.Windows.Forms.Padding(3);
-        TabPageBots.Size = new System.Drawing.Size(1210, 688);
+        TabPageBots.Size = new System.Drawing.Size(823, 688);
         TabPageBots.TabIndex = 0;
         TabPageBots.Text = "Боты";
         TabPageBots.UseVisualStyleBackColor = true;
@@ -68,7 +69,7 @@ partial class FormMain
         listViewBots.Dock = System.Windows.Forms.DockStyle.Fill;
         listViewBots.Location = new System.Drawing.Point(3, 3);
         listViewBots.Name = "listViewBots";
-        listViewBots.Size = new System.Drawing.Size(1204, 682);
+        listViewBots.Size = new System.Drawing.Size(817, 682);
         listViewBots.TabIndex = 0;
         listViewBots.UseCompatibleStateImageBehavior = false;
         listViewBots.SelectedIndexChanged += listViewBots_SelectedIndexChanged;
@@ -78,12 +79,12 @@ partial class FormMain
         ContextMenuStripBots.ImageScalingSize = new System.Drawing.Size(24, 24);
         ContextMenuStripBots.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { AddBotToolStripMenuItem, UpdateBotToolStripMenuItem, DeleteBotToolStripMenuItem });
         ContextMenuStripBots.Name = "ContextMenuStripBots";
-        ContextMenuStripBots.Size = new System.Drawing.Size(241, 133);
+        ContextMenuStripBots.Size = new System.Drawing.Size(166, 100);
         // 
         // AddBotToolStripMenuItem
         // 
         AddBotToolStripMenuItem.Name = "AddBotToolStripMenuItem";
-        AddBotToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
+        AddBotToolStripMenuItem.Size = new System.Drawing.Size(165, 32);
         AddBotToolStripMenuItem.Text = "Добавить";
         AddBotToolStripMenuItem.Click += AddBotToolStripMenuItem_Click;
         // 
@@ -91,7 +92,7 @@ partial class FormMain
         // 
         UpdateBotToolStripMenuItem.Enabled = false;
         UpdateBotToolStripMenuItem.Name = "UpdateBotToolStripMenuItem";
-        UpdateBotToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
+        UpdateBotToolStripMenuItem.Size = new System.Drawing.Size(165, 32);
         UpdateBotToolStripMenuItem.Text = "Обновить";
         UpdateBotToolStripMenuItem.Click += UpdateBotToolStripMenuItem_Click;
         // 
@@ -99,15 +100,26 @@ partial class FormMain
         // 
         DeleteBotToolStripMenuItem.Enabled = false;
         DeleteBotToolStripMenuItem.Name = "DeleteBotToolStripMenuItem";
-        DeleteBotToolStripMenuItem.Size = new System.Drawing.Size(240, 32);
+        DeleteBotToolStripMenuItem.Size = new System.Drawing.Size(165, 32);
         DeleteBotToolStripMenuItem.Text = "Удалить";
         DeleteBotToolStripMenuItem.Click += DeleteBotToolStripMenuItem_Click;
+        // 
+        // richTextBoxLogs
+        // 
+        richTextBoxLogs.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        richTextBoxLogs.Location = new System.Drawing.Point(0, 0);
+        richTextBoxLogs.Name = "richTextBoxLogs";
+        richTextBoxLogs.ReadOnly = true;
+        richTextBoxLogs.Size = new System.Drawing.Size(388, 726);
+        richTextBoxLogs.TabIndex = 1;
+        richTextBoxLogs.Text = "";
         // 
         // FormMain
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1218, 726);
+        Controls.Add(richTextBoxLogs);
         Controls.Add(tabControl1);
         Name = "FormMain";
         Text = "FormMain";
@@ -126,4 +138,5 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem AddBotToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem DeleteBotToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem UpdateBotToolStripMenuItem;
+    private System.Windows.Forms.RichTextBox richTextBoxLogs;
 }
