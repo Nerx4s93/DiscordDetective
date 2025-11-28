@@ -89,7 +89,7 @@ public partial class FormMain : Form
         }
     }
 
-    private void DeleteBotToolStripMenuItem_Click(object sender, EventArgs e)
+    private async void DeleteBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
         try
         {
@@ -107,7 +107,7 @@ public partial class FormMain : Form
                 }
             }
 
-            _databaseContext.SaveChanges();
+            await _databaseContext.SaveChangesAsync();
             foreach (var item in itemsToRemove)
             {
                 listViewBots.Items.Remove(item);
