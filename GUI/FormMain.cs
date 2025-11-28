@@ -144,6 +144,7 @@ public partial class FormMain : Form
             }
 
             await _databaseContext.SaveChangesAsync();
+            await LoadBotsAsync();
             Log("Ok", $"Обновлены данные у {listViewBots.SelectedItems.Count} ботов");
         }
         catch (Exception ex)
