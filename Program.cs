@@ -1,7 +1,9 @@
-using System;
-using System.Windows.Forms;
-
+using DiscordDetective.Database.Models;
 using DiscordDetective.GUI;
+
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace DiscordDetective;
 

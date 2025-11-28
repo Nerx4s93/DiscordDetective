@@ -1,15 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.IO;
 
 using DiscordDetective.Database.Models;
 
-namespace DiscordDetective.Database;
+using Microsoft.EntityFrameworkCore;
 
 public class DatabaseContext : DbContext
 {
     public DbSet<UserDbDTO> Users { get; set; }
 
-    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+    public DatabaseContext()
     {
+    }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var password = File.ReadAllText("dbpassword.txt");
+            var connectionString = $"Host=localhost;Port=5432;Database=DiscordDetective;Username=postgres;Password={password}";
+            optionsBuilder.UseNpgsql(connectionString);
+        }
     }
 }
