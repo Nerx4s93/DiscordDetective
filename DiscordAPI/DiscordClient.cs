@@ -37,16 +37,23 @@ public class DiscordClient : IDisposable
 
     private async Task<T> MakeRequestAsync<T>(string endpoint)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/{endpoint}");
-        request.Headers.Add("Authorization", _token);
-
-        var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
+        var response = await MakeRequestAsync(endpoint);
 
         await using var stream = await response.Content.ReadAsStreamAsync();
         var result = await JsonSerializer.DeserializeAsync<T>(stream, _jsonOptions);
 
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
+    }
+
+    private async Task<HttpResponseMessage> MakeRequestAsync(string endpoint)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/{endpoint}");
+        request.Headers.Add("Authorization", $"Bot {_token}");
+
+        var response = await _httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        return response;
     }
 
     public void Dispose()
