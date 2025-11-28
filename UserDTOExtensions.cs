@@ -1,5 +1,5 @@
-﻿using DiscordDetective.API.Data;
-using DiscordDetective.Database.Models;
+﻿using DiscordDetective.Database.Models;
+using DiscordDetective.DiscordAPI.Models;
 
 namespace DiscordDetective;
 

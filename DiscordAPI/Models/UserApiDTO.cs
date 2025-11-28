@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordDetective.API.Data;
+namespace DiscordDetective.DiscordAPI.Models;
 
 public class UserApiDTO
 {
