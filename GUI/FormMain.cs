@@ -1,6 +1,7 @@
 ﻿using DiscordDetective.Database.Models;
 using DiscordDetective.DiscordAPI;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
 using System;
@@ -107,15 +108,26 @@ public partial class FormMain : Form
                 var botData = await discordClient.GetMe();
 
                 var userDb = botData.ToDbDTO();
-                _databaseContext.Users.Add(userDb);
-                _databaseContext.Bots.First(b => b.Token == selectedToken).UserId = userDb.Id;
 
-                Log("Progress", $"Обновлеие данных ботов {i + 1}/{listViewBots.SelectedItems.Count}");
+                var existingUser = await _databaseContext.Users.FirstOrDefaultAsync(u => u.Id == userDb.Id);
+
+                if (existingUser != null)
+                {
+                    _databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
+                    Log("Progress", $"Обновлены данные бота {i + 1}/{listViewBots.SelectedItems.Count}");
+                }
+                else
+                {
+                    _databaseContext.Users.Add(userDb);
+                    Log("Progress", $"Добавлен новый бот {i + 1}/{listViewBots.SelectedItems.Count}");
+                }
+
+                var bot = _databaseContext.Bots.First(b => b.Token == selectedToken);
+                bot.UserId = userDb.Id;
             }
 
-            Log("Ok", $"Обновлены данные у {listViewBots.SelectedItems.Count} ботов");
-
             await _databaseContext.SaveChangesAsync();
+            Log("Ok", $"Обновлены данные у {listViewBots.SelectedItems.Count} ботов");
         }
         catch (Exception ex)
         {
