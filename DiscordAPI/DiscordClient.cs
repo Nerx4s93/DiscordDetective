@@ -15,6 +15,8 @@ public class DiscordClient : IDisposable
 
     private const string BaseUrl = "https://discord.com/api/v10";
 
+    private UserApiDTO? _userApiDTO;
+
     public DiscordClient(string token)
     {
         _token = token ?? throw new ArgumentNullException(nameof(token));
@@ -29,8 +31,8 @@ public class DiscordClient : IDisposable
 
     public async Task<UserApiDTO> GetMe()
     {
-        var user = await MakeRequestAsync<UserApiDTO>("users/@me");
-        return user;
+        _userApiDTO = await MakeRequestAsync<UserApiDTO>("users/@me");
+        return _userApiDTO;
     }
 
     private async Task<T> MakeRequestAsync<T>(string endpoint)
