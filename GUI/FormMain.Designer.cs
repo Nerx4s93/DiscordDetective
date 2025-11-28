@@ -31,10 +31,10 @@ partial class FormMain
         components = new System.ComponentModel.Container();
         tabControl1 = new System.Windows.Forms.TabControl();
         TabPageBots = new System.Windows.Forms.TabPage();
-        listView1 = new System.Windows.Forms.ListView();
+        listViewBots = new System.Windows.Forms.ListView();
         ContextMenuStripBots = new System.Windows.Forms.ContextMenuStrip(components);
-        добавитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        удалитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        AddBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabControl1.SuspendLayout();
         TabPageBots.SuspendLayout();
         ContextMenuStripBots.SuspendLayout();
@@ -52,7 +52,7 @@ partial class FormMain
         // 
         // TabPageBots
         // 
-        TabPageBots.Controls.Add(listView1);
+        TabPageBots.Controls.Add(listViewBots);
         TabPageBots.Location = new System.Drawing.Point(4, 34);
         TabPageBots.Name = "TabPageBots";
         TabPageBots.Padding = new System.Windows.Forms.Padding(3);
@@ -61,34 +61,38 @@ partial class FormMain
         TabPageBots.Text = "Боты";
         TabPageBots.UseVisualStyleBackColor = true;
         // 
-        // listView1
+        // listViewBots
         // 
-        listView1.ContextMenuStrip = ContextMenuStripBots;
-        listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-        listView1.Location = new System.Drawing.Point(3, 3);
-        listView1.Name = "listView1";
-        listView1.Size = new System.Drawing.Size(1204, 682);
-        listView1.TabIndex = 0;
-        listView1.UseCompatibleStateImageBehavior = false;
+        listViewBots.ContextMenuStrip = ContextMenuStripBots;
+        listViewBots.Dock = System.Windows.Forms.DockStyle.Fill;
+        listViewBots.Location = new System.Drawing.Point(3, 3);
+        listViewBots.Name = "listViewBots";
+        listViewBots.Size = new System.Drawing.Size(1204, 682);
+        listViewBots.TabIndex = 0;
+        listViewBots.UseCompatibleStateImageBehavior = false;
+        listViewBots.SelectedIndexChanged += listViewBots_SelectedIndexChanged;
         // 
         // ContextMenuStripBots
         // 
         ContextMenuStripBots.ImageScalingSize = new System.Drawing.Size(24, 24);
-        ContextMenuStripBots.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { добавитьToolStripMenuItem, удалитьToolStripMenuItem });
+        ContextMenuStripBots.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { AddBotToolStripMenuItem, DeleteBotToolStripMenuItem });
         ContextMenuStripBots.Name = "ContextMenuStripBots";
         ContextMenuStripBots.Size = new System.Drawing.Size(163, 68);
         // 
-        // добавитьToolStripMenuItem
+        // AddBotToolStripMenuItem
         // 
-        добавитьToolStripMenuItem.Name = "добавитьToolStripMenuItem";
-        добавитьToolStripMenuItem.Size = new System.Drawing.Size(162, 32);
-        добавитьToolStripMenuItem.Text = "Добавить";
+        AddBotToolStripMenuItem.Name = "AddBotToolStripMenuItem";
+        AddBotToolStripMenuItem.Size = new System.Drawing.Size(162, 32);
+        AddBotToolStripMenuItem.Text = "Добавить";
+        AddBotToolStripMenuItem.Click += AddBotToolStripMenuItem_Click;
         // 
-        // удалитьToolStripMenuItem
+        // DeleteBotToolStripMenuItem
         // 
-        удалитьToolStripMenuItem.Name = "удалитьToolStripMenuItem";
-        удалитьToolStripMenuItem.Size = new System.Drawing.Size(162, 32);
-        удалитьToolStripMenuItem.Text = "Удалить";
+        DeleteBotToolStripMenuItem.Enabled = false;
+        DeleteBotToolStripMenuItem.Name = "DeleteBotToolStripMenuItem";
+        DeleteBotToolStripMenuItem.Size = new System.Drawing.Size(162, 32);
+        DeleteBotToolStripMenuItem.Text = "Удалить";
+        DeleteBotToolStripMenuItem.Click += DeleteBotToolStripMenuItem_Click;
         // 
         // FormMain
         // 
@@ -108,8 +112,8 @@ partial class FormMain
 
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage TabPageBots;
-    private System.Windows.Forms.ListView listView1;
+    private System.Windows.Forms.ListView listViewBots;
     private System.Windows.Forms.ContextMenuStrip ContextMenuStripBots;
-    private System.Windows.Forms.ToolStripMenuItem добавитьToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem удалитьToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AddBotToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem DeleteBotToolStripMenuItem;
 }
