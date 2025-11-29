@@ -6,21 +6,30 @@ namespace DiscordDetective;
 public class ImageDatabase
 {
     private const string _path = "images";
-
-    public ImageDatabase()
+    private readonly string _section;
+    public ImageDatabase(string section)
     {
+        _section = section;
         Directory.CreateDirectory(_path);
+        Directory.CreateDirectory(Path.Combine(_path, section));
     }
 
     public void Store(Image image, string fileName)
     {
-        var path = Path.Combine(_path, fileName + ".png");
+        var path = Path.Combine(_path, _section, fileName + ".png");
         image.Save(path);
+    }
+
+    public void Store(Image image, string fileName, Size size)
+    {
+        var saveImage = new Bitmap(image, size);
+        var path = Path.Combine(_path, _section, fileName + ".png");
+        saveImage.Save(path);
     }
 
     public Image? Load(string fileName)
     {
-        var path = Path.Combine(_path, fileName + ".png");
+        var path = Path.Combine(_path, _section, fileName + ".png");
         if (!File.Exists(path))
         {
             return null;

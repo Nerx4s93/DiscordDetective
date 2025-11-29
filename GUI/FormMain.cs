@@ -27,7 +27,7 @@ public partial class FormMain : Form
         listViewBots.LargeImageList = _botsImageList;
 
         _databaseContext = new();
-        _imageDatabase = new();
+        _imageDatabase = new("bots");
 
         _ = LoadBotsAsync();
     }
@@ -139,7 +139,7 @@ public partial class FormMain : Form
 
             for (var i = 0; i < selectedItems.Count; i++)
             {
-                var selectedItem = listViewBots.SelectedItems[i];
+                var selectedItem = selectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
 
                 var discordClient = new DiscordClient(selectedToken!);
@@ -164,10 +164,8 @@ public partial class FormMain : Form
                 if (avatar == null)
                 {
                     var botAvatar = await discordClient.GetAvatar();
-                    _imageDatabase.Store(botAvatar!, botData.Avatar!);
+                    _imageDatabase.Store(botAvatar!, botData.Avatar!, new Size(48, 48));
                 }
-
-                // Тут добавить аватар
 
                 Log("Progress", $"Обновлены данные бота {i + 1}/{selectedItems.Count}");
             }
@@ -192,7 +190,7 @@ public partial class FormMain : Form
 
             for (var i = 0; i < selectedItems.Count; i++)
             {
-                var selectedItem = listViewBots.SelectedItems[i];
+                var selectedItem = selectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
                 var bot = _databaseContext.Bots.FirstOrDefault(b => b.Token == selectedToken);
 
