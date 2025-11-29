@@ -15,11 +15,13 @@ namespace DiscordDetective.GUI;
 public partial class FormMain : Form
 {
     private DatabaseContext _databaseContext;
+    private ImageDatabase _imageDatabase;
 
     public FormMain()
     {
         InitializeComponent();
         _databaseContext = new();
+        _imageDatabase = new();
         _ = LoadBotsAsync();
     }
 
@@ -116,7 +118,9 @@ public partial class FormMain : Form
 
         try
         {
-            for (var i = 0; i < listViewBots.SelectedItems.Count; i++)
+            var selectedItems = listViewBots.SelectedItems.Cast<ListViewItem>().ToList();
+
+            for (var i = 0; i < selectedItems.Count; i++)
             {
                 var selectedItem = listViewBots.SelectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
@@ -159,9 +163,9 @@ public partial class FormMain : Form
 
         try
         {
-            var itemsToRemove = new List<ListViewItem>();
+            var selectedItems = listViewBots.SelectedItems.Cast<ListViewItem>().ToList();
 
-            for (var i = 0; i < listViewBots.SelectedItems.Count; i++)
+            for (var i = 0; i < selectedItems.Count; i++)
             {
                 var selectedItem = listViewBots.SelectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
@@ -170,19 +174,18 @@ public partial class FormMain : Form
                 if (bot != null)
                 {
                     _databaseContext.Bots.Remove(bot);
-                    itemsToRemove.Add(selectedItem);
                 }
 
                 Log("Progress", $"Удаление ботов: {i + 1}/{listViewBots.SelectedItems.Count}");
             }
 
             await _databaseContext.SaveChangesAsync();
-            foreach (var item in itemsToRemove)
+            foreach (var item in selectedItems)
             {
                 listViewBots.Items.Remove(item);
             }
 
-            Log("Ok", $"Удалено ботов: {itemsToRemove.Count}");
+            Log("Ok", $"Удалено ботов: {selectedItems.Count}");
         }
         catch (Exception ex)
         {
