@@ -6,6 +6,7 @@ using Microsoft.VisualBasic;
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,10 +17,14 @@ public partial class FormMain : Form
 {
     private DatabaseContext _databaseContext;
     private ImageDatabase _imageDatabase;
+    private ImageList _botsImageList;
 
     public FormMain()
     {
         InitializeComponent();
+
+        _botsImageList = new() { ImageSize = new Size(48, 48) };
+        listViewBots.LargeImageList = _botsImageList;
 
         _databaseContext = new();
         _imageDatabase = new();
@@ -53,6 +58,7 @@ public partial class FormMain : Form
     private void UpdateBotsListView(List<BotDTO> bots)
     {
         listViewBots.Items.Clear();
+        _botsImageList.Images.Clear();
 
         foreach (var bot in bots)
         {
@@ -62,8 +68,17 @@ public partial class FormMain : Form
                     .AsNoTracking()
                     .FirstOrDefault(u => u.Id == bot.UserId)?.Username ?? "Не найден";
 
+            var imageKey = _databaseContext.Users.FirstOrDefault(u => u.Id == bot.UserId)?.Avatar;
+            
+            if (imageKey != null)
+            {
+                var image = _imageDatabase.Load(imageKey) ?? SystemIcons.Error.ToBitmap();
+                _botsImageList.Images.Add(imageKey, image);
+            }
+
             var item = new ListViewItem
             {
+                ImageKey = imageKey ?? "",
                 Text = username,
                 Tag = bot.Token
             };
