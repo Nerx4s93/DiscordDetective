@@ -156,6 +156,7 @@ public partial class FormMain : Form
                 {
                     _databaseContext.Users.Add(userDb);
                 }
+                await _databaseContext.SaveChangesAsync();
 
                 var bot = _databaseContext.Bots.First(b => b.Token == selectedToken);
                 bot.UserId = userDb.Id;
