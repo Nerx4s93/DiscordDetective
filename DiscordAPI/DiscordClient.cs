@@ -54,6 +54,8 @@ public class DiscordClient : IDisposable
 
     #endregion
 
+    #region Формирвание запроса
+
     private async Task<T> MakeRequestAsync<T>(string endpoint)
     {
         var response = await MakeRequestAsync($"{BaseUrl}/{endpoint}");
@@ -74,6 +76,8 @@ public class DiscordClient : IDisposable
 
         return response;
     }
+
+    #endregion
 
     public void Dispose()
     {
