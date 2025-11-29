@@ -8,6 +8,7 @@ public class DatabaseContext : DbContext
 {
     public DbSet<BotDTO> Bots { get; set; }
     public DbSet<UserDbDTO> Users { get; set; }
+    public DbSet<GuildDbDTO> Guilds { get; set; }
 
     public DatabaseContext()
     {
