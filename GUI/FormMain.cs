@@ -6,7 +6,6 @@ using Microsoft.VisualBasic;
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -47,7 +46,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при загрузке ботов: {ex.Message}");
+            Log("Error", $"Ошибка при загрузке ботов: {ex}");
         }
     }
 
@@ -111,7 +110,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при добавлении бота: {ex.Message}");
+            Log("Error", $"Ошибка при добавлении бота: {ex}");
         }
     }
 
@@ -160,11 +159,11 @@ public partial class FormMain : Form
 
             await _databaseContext.SaveChangesAsync();
             await LoadBotsAsync();
-            Log("Ok", $"Обновлены данные у {listViewBots.SelectedItems.Count} ботов");
+            Log("Ok", $"Обновлены данные у {selectedItems.Count} ботов");
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при обновлении данных ботов: {ex.Message}");
+            Log("Error", $"Ошибка при обновлении данных ботов: {ex}");
         }
     }
 
@@ -200,7 +199,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при удалении бота: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Ошибка при удалении бота: {ex}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
