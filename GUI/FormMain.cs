@@ -6,6 +6,7 @@ using Microsoft.VisualBasic;
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,8 +21,10 @@ public partial class FormMain : Form
     public FormMain()
     {
         InitializeComponent();
+
         _databaseContext = new();
         _imageDatabase = new();
+
         _ = LoadBotsAsync();
     }
 
@@ -57,7 +60,7 @@ public partial class FormMain : Form
             var username = bot.UserId == null
                 ? "Не загружено"
                 : _databaseContext.Users
-                    .AsNoTracking() // Не трекать для производительности
+                    .AsNoTracking()
                     .FirstOrDefault(u => u.Id == bot.UserId)?.Username ?? "Не найден";
 
             var item = new ListViewItem
@@ -126,25 +129,33 @@ public partial class FormMain : Form
                 var selectedToken = selectedItem.Tag as string;
 
                 var discordClient = new DiscordClient(selectedToken!);
-                var botData = await discordClient.GetMe();
 
+                var botData = await discordClient.GetMe();
                 var userDb = botData.ToDbDTO();
 
                 var existingUser = await _databaseContext.Users.FirstOrDefaultAsync(u => u.Id == userDb.Id);
-
                 if (existingUser != null)
                 {
                     _databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
-                    Log("Progress", $"Обновлены данные бота {i + 1}/{listViewBots.SelectedItems.Count}");
                 }
                 else
                 {
                     _databaseContext.Users.Add(userDb);
-                    Log("Progress", $"Добавлен новый бот {i + 1}/{listViewBots.SelectedItems.Count}");
                 }
 
                 var bot = _databaseContext.Bots.First(b => b.Token == selectedToken);
                 bot.UserId = userDb.Id;
+
+                var avatar = _imageDatabase.Load(botData.Avatar!);
+                if (avatar == null)
+                {
+                    var botAvatar = await discordClient.GetAvatar();
+                    _imageDatabase.Store(botAvatar!, botData.Avatar!);
+                }
+
+                // Тут добавить аватар
+
+                Log("Progress", $"Обновлены данные бота {i + 1}/{selectedItems.Count}");
             }
 
             await _databaseContext.SaveChangesAsync();
@@ -176,7 +187,7 @@ public partial class FormMain : Form
                     _databaseContext.Bots.Remove(bot);
                 }
 
-                Log("Progress", $"Удаление ботов: {i + 1}/{listViewBots.SelectedItems.Count}");
+                Log("Progress", $"Удаление ботов: {i + 1}/{selectedItems.Count}");
             }
 
             await _databaseContext.SaveChangesAsync();

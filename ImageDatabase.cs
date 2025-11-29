@@ -14,13 +14,13 @@ public class ImageDatabase
 
     public void Store(Image image, string fileName)
     {
-        var path = Path.Combine(_path, fileName);
+        var path = Path.Combine(_path, fileName + ".png");
         image.Save(path);
     }
 
     public Image? Load(string fileName)
     {
-        var path = Path.Combine(_path, fileName);
+        var path = Path.Combine(_path, fileName + ".png");
         if (!File.Exists(path))
         {
             return null;

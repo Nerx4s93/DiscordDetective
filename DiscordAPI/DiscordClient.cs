@@ -30,6 +30,8 @@ public class DiscordClient : IDisposable
         };
     }
 
+    #region Информация о боте
+
     public async Task<UserApiDTO> GetMe()
     {
         _userApiDTO = await MakeRequestAsync<UserApiDTO>("users/@me");
@@ -49,6 +51,8 @@ public class DiscordClient : IDisposable
         await using var stream = await response.Content.ReadAsStreamAsync();
         return Image.FromStream(stream);
     }
+
+    #endregion
 
     private async Task<T> MakeRequestAsync<T>(string endpoint)
     {
