@@ -69,7 +69,7 @@ public partial class FormMain : Form
                     .FirstOrDefault(u => u.Id == bot.UserId)?.Username ?? "Не найден";
 
             var imageKey = _databaseContext.Users.FirstOrDefault(u => u.Id == bot.UserId)?.Avatar;
-            
+
             if (imageKey != null)
             {
                 var image = _imageDatabase.Load(imageKey) ?? SystemIcons.Error.ToBitmap();
@@ -89,6 +89,18 @@ public partial class FormMain : Form
     #endregion
 
     #region Страница "Боты"
+
+    private void listViewBots_DoubleClick(object sender, EventArgs e)
+    {
+        if (listViewBots.SelectedItems.Count == 0)
+        {
+            return;
+        }
+
+        var selectedItem = listViewBots.SelectedItems[0];
+        var token = selectedItem.Tag as string;
+        new FormBot(token!).ShowAsync();
+    }
 
     private void listViewBots_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -228,7 +240,7 @@ public partial class FormMain : Form
 
     private void ClearLog()
     {
-        richTextBoxLogs.Clear(); 
+        richTextBoxLogs.Clear();
     }
 
     #endregion

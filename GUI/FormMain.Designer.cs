@@ -51,6 +51,7 @@ partial class FormMain
         tabControl1.SelectedIndex = 0;
         tabControl1.Size = new System.Drawing.Size(831, 726);
         tabControl1.TabIndex = 0;
+        tabControl1.TabStop = false;
         // 
         // TabPageBots
         // 
@@ -73,6 +74,7 @@ partial class FormMain
         listViewBots.TabIndex = 0;
         listViewBots.UseCompatibleStateImageBehavior = false;
         listViewBots.SelectedIndexChanged += listViewBots_SelectedIndexChanged;
+        listViewBots.DoubleClick += listViewBots_DoubleClick;
         // 
         // ContextMenuStripBots
         // 
