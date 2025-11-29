@@ -14,7 +14,7 @@ public class DiscordClient : IDisposable
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    private const string BaseUrl = "https://discord.com/api/v10";
+    private const string BaseUrl = "https://discord.com/api/v9";
 
     private UserApiDTO? _userApiDTO;
 
