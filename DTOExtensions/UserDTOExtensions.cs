@@ -1,7 +1,7 @@
 ﻿using DiscordDetective.Database.Models;
 using DiscordDetective.DiscordAPI.Models;
 
-namespace DiscordDetective;
+namespace DiscordDetective.DTOExtensions;
 
 public static class UserDTOExtensions
 {

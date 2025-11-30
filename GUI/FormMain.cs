@@ -1,5 +1,6 @@
 ﻿using DiscordDetective.Database.Models;
 using DiscordDetective.DiscordAPI;
+using DiscordDetective.DTOExtensions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
