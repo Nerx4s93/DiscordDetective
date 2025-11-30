@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Http;
 using System.Text.Json;
@@ -53,6 +54,16 @@ public class DiscordClient : IDisposable
     }
 
     #endregion
+
+    #region Сервера
+
+    public async Task<IReadOnlyList<GuildApiDTO>> GetGuildsAsync()
+    {
+        return await MakeRequestAsync<IReadOnlyList<GuildApiDTO>>("users/@me/guilds");
+    }
+
+    #endregion
+
 
     #region Формирвание запроса
 
