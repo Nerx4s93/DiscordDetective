@@ -142,6 +142,11 @@ public partial class FormMain : Form
         }
     }
 
+    private void UpdateListToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        _ = LoadBotsAsync();
+    }
+
     private async void UpdateBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
         ClearLog();
