@@ -4,13 +4,13 @@ using System.Windows.Forms;
 
 namespace DiscordDetective.Logging;
 
-internal class TextBoxLogger : ILoggerService
+internal class RichTextBoxLogger : ILoggerService
 {
-    private readonly TextBox _textBox;
+    private readonly RichTextBox _richTextBox;
 
-    public TextBoxLogger(TextBox textBox)
+    public RichTextBoxLogger(RichTextBox richTextBox)
     {
-        _textBox = textBox ?? throw new ArgumentNullException(nameof(textBox));
+        _richTextBox = richTextBox ?? throw new ArgumentNullException(nameof(richTextBox));
     }
 
     public Task LogAsync(string message, LogLevel level = LogLevel.Info)
@@ -20,9 +20,9 @@ internal class TextBoxLogger : ILoggerService
 
     public Task LogAsync(string category, string message, LogLevel level = LogLevel.Info)
     {
-        if (_textBox.InvokeRequired)
+        if (_richTextBox.InvokeRequired)
         {
-            _textBox.BeginInvoke(new Action(() =>
+            _richTextBox.BeginInvoke(new Action(() =>
                 AppendLog(category, message, level)));
         }
         else
@@ -36,18 +36,18 @@ internal class TextBoxLogger : ILoggerService
     private void AppendLog(string category, string message, LogLevel level)
     {
         var logLine = $"[{category}] [{level}] {message}";
-        _textBox.AppendText(logLine + Environment.NewLine);
+        _richTextBox.AppendText(logLine + Environment.NewLine);
     }
 
     public Task ClearAsync()
     {
-        if (_textBox.InvokeRequired)
+        if (_richTextBox.InvokeRequired)
         {
-            _textBox.BeginInvoke(new Action(() => _textBox.Clear()));
+            _richTextBox.BeginInvoke(new Action(() => _richTextBox.Clear()));
         }
         else
         {
-            _textBox.Clear();
+            _richTextBox.Clear();
         }
 
         return Task.CompletedTask;
