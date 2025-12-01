@@ -69,7 +69,7 @@ public partial class FormMain : Form
                     .AsNoTracking()
                     .FirstOrDefault(u => u.Id == bot.UserId)?.Username ?? "Не найден";
 
-            var imageKey = _databaseContext.Users.FirstOrDefault(u => u.Id == bot.UserId)?.Avatar;
+            var imageKey = _databaseContext.Users.AsNoTracking().FirstOrDefault(u => u.Id == bot.UserId)?.Avatar;
 
             if (imageKey != null)
             {
@@ -100,7 +100,7 @@ public partial class FormMain : Form
 
         var selectedItem = listViewBots.SelectedItems[0];
         var token = selectedItem.Tag as string;
-        new FormBot(token!).ShowAsync();
+        new FormBot(_databaseContext, token!).ShowAsync();
     }
 
     private void listViewBots_SelectedIndexChanged(object sender, EventArgs e)
@@ -165,7 +165,7 @@ public partial class FormMain : Form
                 var botData = await discordClient.GetMe();
                 var userDb = botData.ToDbDTO();
 
-                var existingUser = await _databaseContext.Users.FirstOrDefaultAsync(u => u.Id == userDb.Id);
+                var existingUser = await _databaseContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userDb.Id);
                 if (existingUser != null)
                 {
                     _databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
@@ -211,12 +211,9 @@ public partial class FormMain : Form
             {
                 var selectedItem = selectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
-                var bot = _databaseContext.Bots.FirstOrDefault(b => b.Token == selectedToken);
-
-                if (bot != null)
-                {
-                    _databaseContext.Bots.Remove(bot);
-                }
+                var rowsDeleted = await _databaseContext.Bots
+                    .Where(b => b.Token == selectedToken)
+                    .ExecuteDeleteAsync();
 
                 Log("Progress", $"Удаление ботов: {i + 1}/{selectedItems.Count}");
             }
