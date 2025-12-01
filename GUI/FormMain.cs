@@ -1,6 +1,7 @@
 ﻿using DiscordDetective.Database.Models;
 using DiscordDetective.DiscordAPI;
 using DiscordDetective.DTOExtensions;
+using DiscordDetective.Logging;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -19,6 +20,7 @@ public partial class FormMain : Form
     private DatabaseContext _databaseContext;
     private ImageDatabase _imageDatabase;
     private ImageList _botsImageList;
+    private ILoggerService _loggerService;
 
     public FormMain()
     {
@@ -29,6 +31,7 @@ public partial class FormMain : Form
 
         _databaseContext = new();
         _imageDatabase = new("bots");
+        _loggerService = new ConsoleLogger();
 
         _ = LoadBotsAsync();
     }
@@ -52,7 +55,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при загрузке ботов: {ex}");
+            await _loggerService.LogAsync("Database", $"Ошибка при загрузке ботов: {ex}", LogLevel.Error);
         }
     }
 
@@ -112,33 +115,43 @@ public partial class FormMain : Form
 
     private async void AddBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        ClearLog();
+        await _loggerService.ClearAsync();
 
-        var result = Interaction.InputBox("Введите токен бота:", "Добавление бота", "");
-        if (string.IsNullOrEmpty(result))
+        var token = Interaction.InputBox("Введите токен бота:", "Добавление бота", "");
+        if (string.IsNullOrEmpty(token))
         {
+            await _loggerService.LogAsync("AddBot", "Отменено: пустой токен", LogLevel.Info);
             return;
         }
 
         try
         {
-            var bot = new BotDTO() { Token = result };
+            var exists = await _databaseContext.Bots.AnyAsync(b => b.Token == token);
+            if (exists)
+            {
+                await _loggerService.LogAsync("AddBot", "Бот уже существует", LogLevel.Warning);
+                return;
+            }
 
+            var bot = new BotDTO() { Token = token };
             _databaseContext.Bots.Add(bot);
             await _databaseContext.SaveChangesAsync();
 
-            var item = new ListViewItem
+            BeginInvoke(new Action(() =>
             {
-                Text = bot.UserId == null ? "Не загружено" : _databaseContext.Users.First(u => u.Id == bot.UserId).Username,
-                Tag = bot.Token
-            };
-            listViewBots.Items.Add(item);
+                var item = new ListViewItem
+                {
+                    Text = bot.UserId == null ? "Не загружено" : "Загружено",
+                    Tag = bot.Token
+                };
+                listViewBots.Items.Add(item);
+            }));
 
-            Log("Ok", "Бот добавлен успешно");
+            await _loggerService.LogAsync("AddBot", "Бот успешно добавлен", LogLevel.Info);
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при добавлении бота: {ex}");
+            await _loggerService.LogAsync("AddBot", $"Ошибка: {ex.Message}", LogLevel.Error);
         }
     }
 
@@ -149,102 +162,164 @@ public partial class FormMain : Form
 
     private async void UpdateBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        ClearLog();
+        await _loggerService.ClearAsync();
 
         try
         {
             var selectedItems = listViewBots.SelectedItems.Cast<ListViewItem>().ToList();
+
+            await _loggerService.LogAsync("Update", $"Начато обновление {selectedItems.Count} ботов", LogLevel.Info);
+            await _loggerService.LogEmptyLineAsync();
 
             for (var i = 0; i < selectedItems.Count; i++)
             {
                 var selectedItem = selectedItems[i];
                 var selectedToken = selectedItem.Tag as string;
 
-                var discordClient = new DiscordClient(selectedToken!);
+                await _loggerService.LogAsync("Update", $"Бот #{i + 1}: начало обработки", LogLevel.Info);
 
-                var botData = await discordClient.GetMe();
-                var userDb = botData.ToDbDTO();
-
-                var existingUser = await _databaseContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userDb.Id);
-                if (existingUser != null)
+                try
                 {
-                    _databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
+                    var discordClient = new DiscordClient(selectedToken!);
+
+                    await _loggerService.LogAsync("Update/Discord", "Получение данных бота...", LogLevel.Info);
+                    var botData = await discordClient.GetMe();
+                    await _loggerService.LogAsync("Update/Discord", $"Получены данные: {botData.Username}", LogLevel.Info);
+
+                    var userDb = botData.ToDbDTO();
+
+                    var existingUser = await _databaseContext.Users
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(u => u.Id == userDb.Id);
+
+                    if (existingUser != null)
+                    {
+                        await _loggerService.LogAsync("Update/Database", $"Обновление пользователя {userDb.Username}", LogLevel.Info);
+                        _databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
+                    }
+                    else
+                    {
+                        await _loggerService.LogAsync("Update/Database", $"Добавление нового пользователя {userDb.Username}", LogLevel.Info);
+                        _databaseContext.Users.Add(userDb);
+                    }
+
+                    await _databaseContext.SaveChangesAsync();
+                    await _loggerService.LogAsync("Update/Database", "Сохранение пользователя завершено", LogLevel.Info);
+
+                    var bot = await _databaseContext.Bots.FirstAsync(b => b.Token == selectedToken);
+                    bot.UserId = userDb.Id;
+
+                    var avatar = _imageDatabase.Load(botData.Avatar!);
+                    if (avatar == null)
+                    {
+                        await _loggerService.LogAsync("Update/Image", "Аватар бота не згружен, начало загрузки...", LogLevel.Info);
+                        var botAvatar = await discordClient.GetAvatar();
+                        if (botAvatar != null)
+                        {
+                            _imageDatabase.Store(botAvatar, botData.Avatar!, new Size(48, 48));
+                            await _loggerService.LogAsync("Update/Image", "Аватар сохранен", LogLevel.Info);
+                        }
+                        else
+                        {
+                            await _loggerService.LogAsync("Update/Image", "Не удалось загрузить аватар", LogLevel.Warning);
+                        }
+                    }
+                    else
+                    {
+                        await _loggerService.LogAsync("Update/Image", "Аватар бота уже загружен", LogLevel.Info);
+                    }
+
+                    await _loggerService.LogAsync("Update",
+                        $"Бот {botData.Username} успешно обновлен ({i + 1}/{selectedItems.Count})",
+                        LogLevel.Info);
+
+                    await _loggerService.LogEmptyLineAsync();
                 }
-                else
+                catch (Exception botEx)
                 {
-                    _databaseContext.Users.Add(userDb);
+                    await _loggerService.LogAsync("Update",
+                        $"Ошибка при обновлении бота #{i + 1}: {botEx.Message}",
+                        LogLevel.Error);
                 }
-                await _databaseContext.SaveChangesAsync();
-
-                var bot = _databaseContext.Bots.First(b => b.Token == selectedToken);
-                bot.UserId = userDb.Id;
-
-                var avatar = _imageDatabase.Load(botData.Avatar!);
-                if (avatar == null)
-                {
-                    var botAvatar = await discordClient.GetAvatar();
-                    _imageDatabase.Store(botAvatar!, botData.Avatar!, new Size(48, 48));
-                }
-
-                Log("Progress", $"Обновлены данные бота {i + 1}/{selectedItems.Count}");
             }
 
             await _databaseContext.SaveChangesAsync();
+            await _loggerService.LogAsync("Update/Database", "Все изменения сохранены", LogLevel.Info);
+
+            await _loggerService.LogAsync("Update/UI", "Обновление интерфейса...", LogLevel.Info);
             await LoadBotsAsync();
-            Log("Ok", $"Обновлены данные у {selectedItems.Count} ботов");
+
+            await _loggerService.LogAsync("Update",
+                $"Успешно обновлено {selectedItems.Count} ботов",
+                LogLevel.Info);
         }
         catch (Exception ex)
         {
-            Log("Error", $"Ошибка при обновлении данных ботов: {ex}");
+            await _loggerService.LogAsync("Update",
+                $"Критическая ошибка: {ex.Message}\n{ex.StackTrace}",
+                LogLevel.Error);
         }
     }
 
     private async void DeleteBotToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        ClearLog();
+        await _loggerService.ClearAsync();
 
         try
         {
             var selectedItems = listViewBots.SelectedItems.Cast<ListViewItem>().ToList();
 
-            for (var i = 0; i < selectedItems.Count; i++)
+            if (MessageBox.Show($"Удалить {selectedItems.Count} ботов?", "Подтверждение",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
-                var selectedItem = selectedItems[i];
-                var selectedToken = selectedItem.Tag as string;
-                var rowsDeleted = await _databaseContext.Bots
-                    .Where(b => b.Token == selectedToken)
-                    .ExecuteDeleteAsync();
-
-                Log("Progress", $"Удаление ботов: {i + 1}/{selectedItems.Count}");
+                await _loggerService.LogAsync("Delete", "Отменено", LogLevel.Info);
+                return;
             }
 
-            await _databaseContext.SaveChangesAsync();
+            await _loggerService.LogAsync("Delete", $"Удаление {selectedItems.Count} ботов", LogLevel.Info);
+
             foreach (var item in selectedItems)
             {
-                listViewBots.Items.Remove(item);
+                var token = item.Tag as string;
+
+                try
+                {
+                    var deleted = await _databaseContext.Bots
+                        .Where(b => b.Token == token)
+                        .ExecuteDeleteAsync();
+
+                    if (deleted > 0)
+                    {
+                        await _loggerService.LogAsync("Delete", $"Удален бот: {MaskToken(token!)}", LogLevel.Info);
+                        listViewBots.Items.Remove(item);
+                    }
+                    else
+                    {
+                        await _loggerService.LogAsync("Delete", $"Бот не найден: {MaskToken(token!)}", LogLevel.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _loggerService.LogAsync("Delete", $"Ошибка удаления: {ex.Message}", LogLevel.Error);
+                }
             }
 
-            Log("Ok", $"Удалено ботов: {selectedItems.Count}");
+            await _loggerService.LogAsync("Delete", "Удаление завершено", LogLevel.Info);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при удалении бота: {ex}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            await _loggerService.LogAsync("Delete", $"Ошибка: {ex.Message}", LogLevel.Error);
+            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
     #endregion
 
-    #region Log
-
-    private void Log(string status, string message)
+    private string MaskToken(string token)
     {
-        richTextBoxLogs.Text += status + ": " + message + "\n";
-    }
+        if (string.IsNullOrEmpty(token) || token.Length < 10)
+            return "***";
 
-    private void ClearLog()
-    {
-        richTextBoxLogs.Clear();
+        return $"{token.Substring(0, 6)}...{token.Substring(token.Length - 6)}";
     }
-
-    #endregion
 }
