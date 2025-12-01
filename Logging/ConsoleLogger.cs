@@ -32,10 +32,10 @@ internal class ConsoleLogger : ILoggerService
     {
         return level switch
         {
-            LogLevel.Info => ConsoleColor.White,
+            LogLevel.Info => ConsoleColor.Blue,
             LogLevel.Warning => ConsoleColor.Yellow,
             LogLevel.Error => ConsoleColor.Red,
-            LogLevel.Debug => ConsoleColor.Blue,
+            LogLevel.Debug => ConsoleColor.Green,
             _ => ConsoleColor.White
         };
     }
