@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,6 +31,16 @@ internal class RichTextBoxLogger : ILoggerService
             AppendLog(category, message, level);
         }
 
+        return Task.CompletedTask;
+    }
+
+    public Task LogEmptyLineAsync()
+    {
+        if (_richTextBox.InvokeRequired)
+        {
+            _richTextBox.BeginInvoke(new Action(() => 
+                _richTextBox.AppendText(Environment.NewLine)));
+        }
         return Task.CompletedTask;
     }
 

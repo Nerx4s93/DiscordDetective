@@ -22,6 +22,12 @@ internal class ConsoleLogger : ILoggerService
         return Task.CompletedTask;
     }
 
+    public Task LogEmptyLineAsync()
+    {
+        Console.WriteLine();
+        return Task.CompletedTask; 
+    }
+
     public Task ClearAsync()
     {
         Console.Clear();
