@@ -100,6 +100,7 @@ partial class FormBot
         // 
         richTextBoxBio.Location = new System.Drawing.Point(8, 145);
         richTextBoxBio.Name = "richTextBoxBio";
+        richTextBoxBio.ReadOnly = true;
         richTextBoxBio.Size = new System.Drawing.Size(358, 257);
         richTextBoxBio.TabIndex = 10;
         richTextBoxBio.Text = "";
