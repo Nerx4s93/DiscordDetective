@@ -103,7 +103,7 @@ public partial class FormMain : Form
 
         var selectedItem = listViewBots.SelectedItems[0];
         var token = selectedItem.Tag as string;
-        new FormBot(_databaseContext, token!).ShowAsync();
+        new FormBot(_databaseContext, _imageDatabase, token!).ShowAsync();
     }
 
     private void listViewBots_SelectedIndexChanged(object sender, EventArgs e)

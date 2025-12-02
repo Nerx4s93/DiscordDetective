@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -9,12 +10,14 @@ namespace DiscordDetective.GUI;
 public partial class FormBot : Form
 {
     private readonly DatabaseContext _databaseContext;
+    private readonly ImageDatabase _imageDatabase;
     private readonly string _token;
 
-    public FormBot(DatabaseContext databaseContext, string token)
+    public FormBot(DatabaseContext databaseContext, ImageDatabase imageDatabase, string token)
     {
         InitializeComponent();
         _databaseContext = databaseContext;
+        _imageDatabase = imageDatabase;
         _token = token;
         _ = LoadBotsAsync();
     }
@@ -24,7 +27,31 @@ public partial class FormBot : Form
     private async Task LoadBotsAsync()
     {
         var botDbDTO = _databaseContext.Bots.AsNoTracking().First(b => b.Token == _token);
-        var userDbDTO = _databaseContext.Users.AsNoTracking().Where(u => u.Id == botDbDTO.UserId);
+        var userDbDTO = _databaseContext.Users.AsNoTracking().First(u => u.Id == botDbDTO.UserId);
+
+        var avatar = _imageDatabase.Load(userDbDTO.Avatar) ?? SystemIcons.Error.ToBitmap();
+        avatar = new Bitmap(avatar, pictureBoxAvatar.Size);
+        pictureBoxAvatar.Image = avatar;
+
+        labelUserId.Text = $"Id: {userDbDTO.Id}";
+        labelUserUsername.Text = $"Username: {userDbDTO.Username}";
+        labelUserGlobalName.Text = CheckNull("GlobalName", userDbDTO.GlobalName);
+        labelUserDiscriminator.Text = $"Discriminator: {userDbDTO.Discriminator}";
+        labelAvatar.Text = CheckNull("Avatar", userDbDTO.Avatar);
+        labelBanner.Text = CheckNull("Banner", userDbDTO.Banner);
+        labelAccentColor.Text = CheckNull("AccentColor", userDbDTO.AccentColor);
+        labelEmail.Text = CheckNull("Email", userDbDTO.Email);
+        labelVerified.Text = CheckNull("Verified", userDbDTO.Verified);
+        richTextBoxBio.Text = userDbDTO.Bio == null ? "null" : userDbDTO.Bio;
+    }
+
+    private string CheckNull(string name, object? obj)
+    {
+        if (obj == null)
+        {
+            return $"{name}: null";
+        }
+        return $"{name}: {obj}";
     }
 
     #endregion
