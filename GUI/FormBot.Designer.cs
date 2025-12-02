@@ -53,13 +53,12 @@ partial class FormBot
         tabControl1.Controls.Add(tabPage1);
         tabControl1.Controls.Add(tabPage2);
         tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-        tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+        tabControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
         tabControl1.Location = new System.Drawing.Point(0, 0);
-        tabControl1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-        tabControl1.Multiline = true;
+        tabControl1.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
         tabControl1.Name = "tabControl1";
         tabControl1.SelectedIndex = 0;
-        tabControl1.Size = new System.Drawing.Size(998, 441);
+        tabControl1.Size = new System.Drawing.Size(1109, 553);
         tabControl1.TabIndex = 0;
         // 
         // tabPage1
@@ -76,11 +75,11 @@ partial class FormBot
         tabPage1.Controls.Add(labelUserUsername);
         tabPage1.Controls.Add(pictureBoxAvatar);
         tabPage1.Controls.Add(labelUserId);
-        tabPage1.Location = new System.Drawing.Point(4, 29);
-        tabPage1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+        tabPage1.Location = new System.Drawing.Point(4, 34);
+        tabPage1.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
         tabPage1.Name = "tabPage1";
-        tabPage1.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-        tabPage1.Size = new System.Drawing.Size(990, 408);
+        tabPage1.Padding = new System.Windows.Forms.Padding(2, 4, 2, 4);
+        tabPage1.Size = new System.Drawing.Size(1101, 515);
         tabPage1.TabIndex = 0;
         tabPage1.Text = "Информация бота";
         tabPage1.UseVisualStyleBackColor = true;
@@ -89,7 +88,7 @@ partial class FormBot
         // 
         label10.AutoSize = true;
         label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        label10.Location = new System.Drawing.Point(8, 109);
+        label10.Location = new System.Drawing.Point(9, 130);
         label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         label10.Name = "label10";
         label10.Size = new System.Drawing.Size(64, 32);
@@ -98,18 +97,21 @@ partial class FormBot
         // 
         // richTextBoxBio
         // 
-        richTextBoxBio.Location = new System.Drawing.Point(8, 145);
+        richTextBoxBio.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        richTextBoxBio.Location = new System.Drawing.Point(9, 173);
+        richTextBoxBio.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
         richTextBoxBio.Name = "richTextBoxBio";
         richTextBoxBio.ReadOnly = true;
-        richTextBoxBio.Size = new System.Drawing.Size(358, 257);
+        richTextBoxBio.Size = new System.Drawing.Size(397, 328);
         richTextBoxBio.TabIndex = 10;
         richTextBoxBio.Text = "";
         // 
         // labelVerified
         // 
+        labelVerified.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelVerified.AutoSize = true;
         labelVerified.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelVerified.Location = new System.Drawing.Point(371, 374);
+        labelVerified.Location = new System.Drawing.Point(412, 468);
         labelVerified.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelVerified.Name = "labelVerified";
         labelVerified.Size = new System.Drawing.Size(120, 32);
@@ -118,9 +120,10 @@ partial class FormBot
         // 
         // labelEmail
         // 
+        labelEmail.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelEmail.AutoSize = true;
         labelEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelEmail.Location = new System.Drawing.Point(371, 342);
+        labelEmail.Location = new System.Drawing.Point(412, 430);
         labelEmail.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelEmail.Name = "labelEmail";
         labelEmail.Size = new System.Drawing.Size(94, 32);
@@ -129,9 +132,10 @@ partial class FormBot
         // 
         // labelAccentColor
         // 
+        labelAccentColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelAccentColor.AutoSize = true;
         labelAccentColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelAccentColor.Location = new System.Drawing.Point(371, 310);
+        labelAccentColor.Location = new System.Drawing.Point(412, 392);
         labelAccentColor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelAccentColor.Name = "labelAccentColor";
         labelAccentColor.Size = new System.Drawing.Size(177, 32);
@@ -140,9 +144,10 @@ partial class FormBot
         // 
         // labelBanner
         // 
+        labelBanner.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelBanner.AutoSize = true;
         labelBanner.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelBanner.Location = new System.Drawing.Point(371, 278);
+        labelBanner.Location = new System.Drawing.Point(412, 354);
         labelBanner.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelBanner.Name = "labelBanner";
         labelBanner.Size = new System.Drawing.Size(114, 32);
@@ -151,9 +156,10 @@ partial class FormBot
         // 
         // labelAvatar
         // 
+        labelAvatar.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelAvatar.AutoSize = true;
         labelAvatar.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelAvatar.Location = new System.Drawing.Point(371, 246);
+        labelAvatar.Location = new System.Drawing.Point(412, 316);
         labelAvatar.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelAvatar.Name = "labelAvatar";
         labelAvatar.Size = new System.Drawing.Size(104, 32);
@@ -162,9 +168,10 @@ partial class FormBot
         // 
         // labelUserDiscriminator
         // 
+        labelUserDiscriminator.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelUserDiscriminator.AutoSize = true;
         labelUserDiscriminator.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelUserDiscriminator.Location = new System.Drawing.Point(371, 214);
+        labelUserDiscriminator.Location = new System.Drawing.Point(412, 278);
         labelUserDiscriminator.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelUserDiscriminator.Name = "labelUserDiscriminator";
         labelUserDiscriminator.Size = new System.Drawing.Size(188, 32);
@@ -173,9 +180,10 @@ partial class FormBot
         // 
         // labelUserGlobalName
         // 
+        labelUserGlobalName.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelUserGlobalName.AutoSize = true;
         labelUserGlobalName.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelUserGlobalName.Location = new System.Drawing.Point(371, 182);
+        labelUserGlobalName.Location = new System.Drawing.Point(412, 240);
         labelUserGlobalName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelUserGlobalName.Name = "labelUserGlobalName";
         labelUserGlobalName.Size = new System.Drawing.Size(181, 32);
@@ -184,9 +192,10 @@ partial class FormBot
         // 
         // labelUserUsername
         // 
+        labelUserUsername.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelUserUsername.AutoSize = true;
         labelUserUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelUserUsername.Location = new System.Drawing.Point(371, 150);
+        labelUserUsername.Location = new System.Drawing.Point(412, 202);
         labelUserUsername.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelUserUsername.Name = "labelUserUsername";
         labelUserUsername.Size = new System.Drawing.Size(152, 32);
@@ -196,17 +205,19 @@ partial class FormBot
         // pictureBoxAvatar
         // 
         pictureBoxAvatar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        pictureBoxAvatar.Location = new System.Drawing.Point(8, 6);
+        pictureBoxAvatar.Location = new System.Drawing.Point(9, 7);
+        pictureBoxAvatar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
         pictureBoxAvatar.Name = "pictureBoxAvatar";
-        pictureBoxAvatar.Size = new System.Drawing.Size(100, 100);
+        pictureBoxAvatar.Size = new System.Drawing.Size(111, 119);
         pictureBoxAvatar.TabIndex = 1;
         pictureBoxAvatar.TabStop = false;
         // 
         // labelUserId
         // 
+        labelUserId.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         labelUserId.AutoSize = true;
         labelUserId.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        labelUserId.Location = new System.Drawing.Point(371, 118);
+        labelUserId.Location = new System.Drawing.Point(412, 163);
         labelUserId.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         labelUserId.Name = "labelUserId";
         labelUserId.Size = new System.Drawing.Size(45, 32);
@@ -215,23 +226,23 @@ partial class FormBot
         // 
         // tabPage2
         // 
-        tabPage2.Location = new System.Drawing.Point(4, 29);
-        tabPage2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+        tabPage2.Location = new System.Drawing.Point(4, 31);
+        tabPage2.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
         tabPage2.Name = "tabPage2";
-        tabPage2.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-        tabPage2.Size = new System.Drawing.Size(990, 408);
+        tabPage2.Padding = new System.Windows.Forms.Padding(2, 4, 2, 4);
+        tabPage2.Size = new System.Drawing.Size(1101, 518);
         tabPage2.TabIndex = 1;
         tabPage2.Text = "Сервера";
         tabPage2.UseVisualStyleBackColor = true;
         // 
         // FormBot
         // 
-        AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+        AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        ClientSize = new System.Drawing.Size(998, 441);
+        ClientSize = new System.Drawing.Size(1109, 553);
         Controls.Add(tabControl1);
-        Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+        Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
+        Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
         Name = "FormBot";
         Text = "FormBot";
         tabControl1.ResumeLayout(false);
