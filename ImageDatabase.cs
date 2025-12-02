@@ -27,8 +27,13 @@ public class ImageDatabase
         saveImage.Save(path);
     }
 
-    public Image? Load(string fileName)
+    public Image? Load(string? fileName)
     {
+        if (string.IsNullOrEmpty(fileName))
+        {
+            return null;
+        }
+
         var path = Path.Combine(_path, _section, fileName + ".png");
         if (!File.Exists(path))
         {
