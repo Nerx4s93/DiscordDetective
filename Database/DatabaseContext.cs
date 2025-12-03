@@ -11,6 +11,8 @@ public class DatabaseContext : DbContext
     public DbSet<BotDTO> Bots { get; set; }
     public DbSet<GuildMemberDTO> GuildMembers { get; set; }
 
+    public DbSet<ProxyDbDTO> Proxies { get; set; }
+
     public DatabaseContext()
     {
     }
