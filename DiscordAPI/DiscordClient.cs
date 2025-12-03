@@ -64,7 +64,6 @@ public class DiscordClient : IDisposable
 
     #endregion
 
-
     #region Формирвание запроса
 
     private async Task<T> MakeRequestAsync<T>(string endpoint)
