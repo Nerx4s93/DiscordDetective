@@ -47,6 +47,20 @@ public class Px6Client : IDisposable
 
         return await GetAsync<GetCountResponse>($"{BaseUrl}/{_apiKey}/getcount{parameters}");
     }
+
+    public async Task<GetProxyResponse> GetProxiesAsync(ProxyState state = ProxyState.All, string? description = null,
+        bool noKey = false, int page = 1, int limit = 1000)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("state", state, ProxyState.All)
+            .AddParameterIf(!string.IsNullOrEmpty(description), "descr", description!)
+            .AddParameter("nokey", noKey, false)
+            .AddParameterIf(page > 1, "page", page, 1)
+            .AddParameterIf(limit != 1000, "limit", limit, 1000)
+            .Build();
+
+        var url = $"{BaseUrl}/{_apiKey}/getproxy{parameters}";
+        return await GetAsync<GetProxyResponse>(url);
     }
 
     #region Формирвоание запроса
