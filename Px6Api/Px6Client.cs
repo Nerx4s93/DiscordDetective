@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 using DiscordDetective.Px6Api.ApiModels;
 
-using Nager.Country;
-
 namespace DiscordDetective.Px6Api;
 
 public class Px6Client : IDisposable
