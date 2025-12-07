@@ -36,9 +36,9 @@ public class Px6Client : IDisposable
         return await GetAsync<Countries>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
     }
 
-    public async Task GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    public async Task<ProxyCount> GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
-        var response = await GetAsync<ProxyCount>($"{BaseUrl}/{_apiKey}/getcountry?country={countryIso2}&version={(int)proxyVersion}");
+        return await GetAsync<ProxyCount>($"{BaseUrl}/{_apiKey}/getcount?country={countryIso2}&version={(int)proxyVersion}");
     }
 
     #region Формирвоание запроса

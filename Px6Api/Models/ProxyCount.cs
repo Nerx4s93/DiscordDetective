@@ -1,6 +1,9 @@
-﻿namespace DiscordDetective.Px6Api.ApiModels;
+﻿using System.Text.Json.Serialization;
 
-internal class ProxyCount : ApiResponse
+namespace DiscordDetective.Px6Api.ApiModels;
+
+public class ProxyCount : ApiResponse
 {
+    [JsonPropertyName("count")]
     public int Count { get; set; }
 }
