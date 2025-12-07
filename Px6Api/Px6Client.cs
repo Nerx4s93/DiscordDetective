@@ -17,6 +17,7 @@ public class Px6Client : IDisposable
     private readonly string _apiKey;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
+    private readonly CountryProvider _countryProvider;
 
     private const string BaseUrl = "https://px6.link/api";
 
@@ -31,17 +32,17 @@ public class Px6Client : IDisposable
             WriteIndented = false,
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
         };
+        _countryProvider = new CountryProvider();
     }
 
     public async Task<CountriesDTO> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var response = await GetAsync<CountriesApi>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
 
-        var countryProvider = new CountryProvider();
         var countriesDTO = new CountriesDTO()
         {
             Iso2Code = response.CountriesList,
-            CountriesList = response.CountriesList.Select(c => countryProvider.GetCountry(c).OfficialName).ToList()
+            CountriesList = response.CountriesList.Select(c => _countryProvider.GetCountry(c).OfficialName).ToList()
         };
         return countriesDTO;
     }
