@@ -29,7 +29,8 @@ public class Px6Client : IDisposable
         };
     }
 
-    public async Task<GetCountryResponse> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    public async Task<GetCountryResponse> GetCountriesAsync(
+        ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("version", (int)proxyVersion)
@@ -39,7 +40,8 @@ public class Px6Client : IDisposable
         return await GetAsync<GetCountryResponse>(url);
     }
 
-    public async Task<GetCountResponse> GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    public async Task<GetCountResponse> GetProxyCountAsync(
+        string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("country", countryIso2)
@@ -50,7 +52,8 @@ public class Px6Client : IDisposable
         return await GetAsync<GetCountResponse>(url);
     }
 
-    public async Task<GetProxyResponse> GetProxiesAsync(ProxyState state = ProxyState.All, string? description = null,
+    public async Task<GetProxyResponse> GetProxiesAsync(
+        ProxyState state = ProxyState.All, string? description = null,
         bool noKey = false, int page = 1, int limit = 1000)
     {
         var parameters = QueryParametersBuilder.Create()
