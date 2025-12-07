@@ -29,14 +29,14 @@ public class Px6Client : IDisposable
         };
     }
 
-    public async Task<Countries> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    public async Task<GetCountryResponse> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
-        return await GetAsync<Countries>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
+        return await GetAsync<GetCountryResponse>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
     }
 
-    public async Task<ProxyCount> GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    public async Task<GetCountResponse> GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
-        return await GetAsync<ProxyCount>($"{BaseUrl}/{_apiKey}/getcount?country={countryIso2}&version={(int)proxyVersion}");
+        return await GetAsync<GetCountResponse>($"{BaseUrl}/{_apiKey}/getcount?country={countryIso2}&version={(int)proxyVersion}");
     }
 
     #region Формирвоание запроса

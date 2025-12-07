@@ -2,7 +2,7 @@
 
 namespace DiscordDetective.Px6Api.ApiModels;
 
-public class ProxyCount : ApiResponse
+public class GetCountResponse : ApiResponse
 {
     [JsonPropertyName("count")]
     public int Count { get; set; }

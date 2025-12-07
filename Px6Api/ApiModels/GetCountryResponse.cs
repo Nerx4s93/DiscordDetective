@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace DiscordDetective.Px6Api.ApiModels;
 
-public class Countries : ApiResponse
+public class GetCountryResponse : ApiResponse
 {
     [JsonPropertyName("list")]
     public List<string> CountriesList { get; set; } = new List<string>();
