@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using DiscordDetective.Px6Api.ApiModels;
-using DiscordDetective.Px6Api.DTOModels;
 
 using Nager.Country;
 
@@ -17,7 +15,6 @@ public class Px6Client : IDisposable
     private readonly string _apiKey;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
-    private readonly CountryProvider _countryProvider;
 
     private const string BaseUrl = "https://px6.link/api";
 
@@ -32,19 +29,16 @@ public class Px6Client : IDisposable
             WriteIndented = false,
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
         };
-        _countryProvider = new CountryProvider();
     }
 
-    public async Task<CountriesDTO> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    public async Task<Countries> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
-        var response = await GetAsync<CountriesApi>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
+        return await GetAsync<Countries>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
+    }
 
-        var countriesDTO = new CountriesDTO()
-        {
-            Iso2Code = response.CountriesList,
-            CountriesList = response.CountriesList.Select(c => _countryProvider.GetCountry(c).OfficialName).ToList()
-        };
-        return countriesDTO;
+    public async Task GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    {
+        var response = await GetAsync<ProxyCount>($"{BaseUrl}/{_apiKey}/getcountry?country={countryIso2}&version={(int)proxyVersion}");
     }
 
     #region Формирвоание запроса
