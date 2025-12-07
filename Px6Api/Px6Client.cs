@@ -35,7 +35,8 @@ public class Px6Client : IDisposable
             .AddParameter("version", (int)proxyVersion)
             .Build();
 
-        return await GetAsync<GetCountryResponse>($"{BaseUrl}/{_apiKey}/getcountry{parameters}");
+        var url = BuilUrl("getcountry", parameters);
+        return await GetAsync<GetCountryResponse>(url);
     }
 
     public async Task<GetCountResponse> GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
@@ -45,7 +46,8 @@ public class Px6Client : IDisposable
             .AddParameter("version", (int)proxyVersion)
             .Build();
 
-        return await GetAsync<GetCountResponse>($"{BaseUrl}/{_apiKey}/getcount{parameters}");
+        var url = BuilUrl("getcount", parameters);
+        return await GetAsync<GetCountResponse>(url);
     }
 
     public async Task<GetProxyResponse> GetProxiesAsync(ProxyState state = ProxyState.All, string? description = null,
@@ -59,11 +61,16 @@ public class Px6Client : IDisposable
             .AddParameterIf(limit != 1000, "limit", limit, 1000)
             .Build();
 
-        var url = $"{BaseUrl}/{_apiKey}/getproxy{parameters}";
+        var url = BuilUrl("getproxy", parameters);
         return await GetAsync<GetProxyResponse>(url);
     }
 
     #region Формирвоание запроса
+
+    private string BuilUrl(string endpoint, string parameters)
+    {
+        return $"{BaseUrl}/{_apiKey}/{endpoint}{parameters}";
+    }
 
     private async Task<T> GetAsync<T>(string url) where T : ApiResponse
     {
