@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-using DiscordDetective.Px6Api.Models;
+using DiscordDetective.Px6Api.ApiModels;
+using DiscordDetective.Px6Api.DTOModels;
+
+using Nager.Country;
 
 namespace DiscordDetective.Px6Api;
 
@@ -27,6 +31,19 @@ public class Px6Client : IDisposable
             WriteIndented = false,
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
         };
+    }
+
+    public async Task<CountriesDTO> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    {
+        var response = await GetAsync<CountriesApi>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
+
+        var countryProvider = new CountryProvider();
+        var countriesDTO = new CountriesDTO()
+        {
+            Iso2Code = response.CountriesList,
+            CountriesList = response.CountriesList.Select(c => countryProvider.GetCountry(c).OfficialName).ToList()
+        };
+        return countriesDTO;
     }
 
     #region Формирвоание запроса
