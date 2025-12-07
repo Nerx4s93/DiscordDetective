@@ -31,12 +31,22 @@ public class Px6Client : IDisposable
 
     public async Task<GetCountryResponse> GetCountriesAsync(ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
-        return await GetAsync<GetCountryResponse>($"{BaseUrl}/{_apiKey}/getcountry?version={(int)proxyVersion}");
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("version", (int)proxyVersion)
+            .Build();
+
+        return await GetAsync<GetCountryResponse>($"{BaseUrl}/{_apiKey}/getcountry{parameters}");
     }
 
     public async Task<GetCountResponse> GetProxyCountAsync(string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
-        return await GetAsync<GetCountResponse>($"{BaseUrl}/{_apiKey}/getcount?country={countryIso2}&version={(int)proxyVersion}");
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("country", countryIso2)
+            .AddParameter("version", (int)proxyVersion)
+            .Build();
+
+        return await GetAsync<GetCountResponse>($"{BaseUrl}/{_apiKey}/getcount{parameters}");
+    }
     }
 
     #region Формирвоание запроса
