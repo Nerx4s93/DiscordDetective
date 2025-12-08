@@ -176,6 +176,38 @@ public class Px6Client : IDisposable
         return await GetAsync<SetDescriptionResponse>(url);
     }
 
+
+    /// <summary>
+    /// Используется для покупки прокси
+    /// </summary>
+    /// <param name="count">Кол-во прокси для покупки</param>
+    /// <param name="period">Период на который покупаются прокси - кол-во дней</param>
+    /// <param name="country">Страна в формате iso2</param>
+    /// <param name="description">Технический комментарий для списка прокси, максимальная длина 50 символов. Указание данного параметра позволит вам делать выборку списка прокси про этому параметру через метод getproxy</param>
+    /// <param name="autoProlong">При добавлении данного параметра (значение не требуется), у купленных прокси будет включено автопродление</param>
+    /// <param name="nokey">При добавлении данного параметра (значение не требуется), список list будет возвращаться без ключей</param>
+    /// <param name="proxyVersion">Версия прокси</param>
+    /// <param name="proxyProtocol">Тип прокси (протокол)</param>
+    /// <returns></returns>
+    public async Task<BuyResponse> BuyProxy(
+        int count, int period, string country, string description, bool autoProlong, bool nokey,
+        ProxyVersion proxyVersion = ProxyVersion.IPv6, ProxyProtocol proxyProtocol = ProxyProtocol.Http)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("count", count)
+            .AddParameter("period", period)
+            .AddParameter("country", country.ToLower())
+            .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
+            .AddParameter("type", proxyProtocol, ProxyProtocol.Http)
+            .AddParameterIf(!string.IsNullOrWhiteSpace(description), "descr", description)
+            .AddParameterIf(autoProlong, "auto_prolong", "true")
+            .AddParameterIf(nokey, "nokey", "true")
+            .Build();
+
+        var url = BuilUrl("buy", parameters);
+        return await GetAsync<BuyResponse>(url);
+    }
+
     /// <summary>
     /// Используется для продления текущих прокси
     /// </summary>
