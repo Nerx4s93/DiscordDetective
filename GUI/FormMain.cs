@@ -2,6 +2,7 @@
 using DiscordDetective.DiscordAPI;
 using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
+using DiscordDetective.Px6Api;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -9,6 +10,7 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +21,11 @@ public partial class FormMain : Form
 {
     private DatabaseContext _databaseContext;
     private ImageDatabase _imageDatabase;
-    private ImageList _botsImageList;
     private ILoggerService _loggerService;
+
+    private ImageList _botsImageList;
+
+    private Px6Client _px6Client;
 
     public FormMain()
     {
@@ -34,7 +39,10 @@ public partial class FormMain : Form
         _loggerService = new ConsoleLogger();
 
         _ = LoadBotsAsync();
+        _ = LoadProxyAsync();
     }
+
+    #region Страница "Боты"
 
     #region Загрузка
 
@@ -91,8 +99,6 @@ public partial class FormMain : Form
     }
 
     #endregion
-
-    #region Страница "Боты"
 
     private void listViewBots_DoubleClick(object sender, EventArgs e)
     {
@@ -311,6 +317,18 @@ public partial class FormMain : Form
             await _loggerService.LogAsync("Delete", $"Ошибка: {ex.Message}", LogLevel.Error);
             MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+    }
+
+    #endregion
+
+    #region Страница "Прокси"
+
+    private async Task LoadProxyAsync()
+    {
+        var token = await File.ReadAllTextAsync("px6key.txt");
+        _px6Client = new Px6Client(token);
+
+        var prixies = await _px6Client.GetProxiesAsync();
     }
 
     #endregion
