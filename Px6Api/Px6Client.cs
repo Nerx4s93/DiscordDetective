@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -66,6 +68,23 @@ public class Px6Client : IDisposable
 
         var url = BuilUrl("getproxy", parameters);
         return await GetAsync<GetProxyResponse>(url);
+    }
+
+    public async Task<ApiResponse> SetProxyTypeAsync(
+        List<int> proxyIds, ProxyProtocol protocol)
+    {
+        if (proxyIds == null || !proxyIds.Any())
+        {
+            throw new ArgumentException("Proxy IDs cannot be null or empty", nameof(proxyIds));
+        }
+
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ids", proxyIds)
+            .AddParameter("type", protocol.ToString().ToLower())
+            .Build();
+
+        var url = BuilUrl("settype", parameters);
+        return await GetAsync<ApiResponse>(url);
     }
 
     #region Формирвоание запроса
