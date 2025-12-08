@@ -31,6 +31,12 @@ public class Px6Client : IDisposable
         };
     }
 
+    /// <summary>
+    /// Используется для получения информации о доступном для приобретения кол-ве прокси определенной страны
+    /// </summary>
+    /// <param name="countryIso2">Код страны в формате iso2</param>
+    /// <param name="proxyVersion">Версия прокси</param>
+    /// <returns></returns>
     public async Task<GetCountResponse> GetProxyCountAsync(
         string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
@@ -43,6 +49,11 @@ public class Px6Client : IDisposable
         return await GetAsync<GetCountResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для получения информации о доступных для приобретения странах
+    /// </summary>
+    /// <param name="proxyVersion">Версия прокси</param>
+    /// <returns></returns>
     public async Task<GetCountryResponse> GetCountriesAsync(
         ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
@@ -54,6 +65,15 @@ public class Px6Client : IDisposable
         return await GetAsync<GetCountryResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для получения списка ваших прокси.
+    /// </summary>
+    /// <param name="state">Состояние возвращаемых прокси. Доступные значения: active - Активные, expired - Неактивные, expiring - Заканчивающиеся, all - Все (по-умолчанию)</param>
+    /// <param name="description">Технический комментарий, который вы указывали при покупке прокси. Если данный параметр присутствует, то будут выбраны только те прокси, у которых присутствует данный комментарий, если же данный параметр не задан, то будут выбраны все прокси</param>
+    /// <param name="noKey">При добавлении данного параметра (значение не требуется), список list будет возвращаться без ключей</param>
+    /// <param name="page">Номер страницы для вывода. 1 - по-умолчанию</param>
+    /// <param name="limit">Кол-во прокси для вывода в списке. 1000 - по-умолчанию (максимальное значение)</param>
+    /// <returns></returns>
     public async Task<GetProxyResponse> GetProxiesAsync(
         ProxyState state = ProxyState.All, string? description = null,
         bool noKey = false, int page = 1, int limit = 1000)
@@ -70,6 +90,13 @@ public class Px6Client : IDisposable
         return await GetAsync<GetProxyResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для изменения типа (протокола) у списка прокси.
+    /// </summary>
+    /// <param name="proxyIds">Перечень внутренних номеров прокси, через запятую</param>
+    /// <param name="protocol">Устанавливаемый тип (протокол)</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task<ApiResponse> SetProxyTypeAsync(
         List<int> proxyIds, ProxyProtocol protocol)
     {
@@ -87,6 +114,13 @@ public class Px6Client : IDisposable
         return await GetAsync<ApiResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для обновления технического комментария у списка прокси, который был установлен при покупке (метод buy)
+    /// </summary>
+    /// <param name="proxyIds">Перечень внутренних номеров прокси, через запятую</param>
+    /// <param name="newDescription">Технический комментарий, на который нужно изменить. Максимальная длина 50 символов</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task<SetDescriptionResponse> SetProxyDescriptionAsync(
         List<int> proxyIds, string newDescription)
     {
@@ -104,6 +138,12 @@ public class Px6Client : IDisposable
         return await GetAsync<SetDescriptionResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для обновления технического комментария у списка прокси, который был установлен при покупке (метод buy)
+    /// </summary>
+    /// <param name="oldDescription">Технический комментарий, который нужно изменить</param>
+    /// <param name="newDescription">Технический комментарий, на который нужно изменить. Максимальная длина 50 символов</param>
+    /// <returns></returns>
     public async Task<SetDescriptionResponse> SetProxyDescriptionAsync(
         string oldDescription, string newDescription)
     {
@@ -116,6 +156,11 @@ public class Px6Client : IDisposable
         return await GetAsync<SetDescriptionResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для проверки валидности (работоспособности) прокси
+    /// </summary>
+    /// <param name="proxyId">Внутренний номер прокси</param>
+    /// <returns></returns>
     public async Task<CheckResponse> CheckProxyAsync(
         int proxyId)
     {
@@ -127,6 +172,11 @@ public class Px6Client : IDisposable
         return await GetAsync<CheckResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для проверки валидности (работоспособности) прокси
+    /// </summary>
+    /// <param name="proxyIpPortUserPass">Строка прокси в формате: ip:port:user:pass</param>
+    /// <returns></returns>
     public async Task<CheckResponse> CheckProxyAsync(
         string proxyIpPortUserPass)
     {
