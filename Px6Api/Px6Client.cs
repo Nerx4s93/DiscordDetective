@@ -197,6 +197,38 @@ public class Px6Client : IDisposable
     }
 
     /// <summary>
+    /// Используется для удаления прокси
+    /// </summary>
+    /// <param name="proxyIds">Перечень внутренних номеров прокси в нашей системе, через запятую</param>
+    /// <returns></returns>
+    public async Task<DeleteResponse> DeleteProxyAsync(
+        List<int> proxyIds)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ids", proxyIds)
+            .Build();
+
+        var url = BuilUrl("delete", parameters);
+        return await GetAsync<DeleteResponse>(url);
+    }
+
+    /// <summary>
+    /// Используется для удаления прокси
+    /// </summary>
+    /// <param name="description">Технический комментарий, который вы указывали при покупке прокси, либо через метод setdescr</param>
+    /// <returns></returns>
+    public async Task<DeleteResponse> DeleteProxyAsync(
+        string description)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("descr", description)
+            .Build();
+
+        var url = BuilUrl("delete", parameters);
+        return await GetAsync<DeleteResponse>(url);
+    }
+
+    /// <summary>
     /// Используется для проверки валидности (работоспособности) прокси
     /// </summary>
     /// <param name="proxyId">Внутренний номер прокси</param>
