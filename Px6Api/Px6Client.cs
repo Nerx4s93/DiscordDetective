@@ -228,6 +228,36 @@ public class Px6Client : IDisposable
         return await GetAsync<CheckResponse>(url);
     }
 
+    /// <summary>
+    /// Используется для привязки авторизации прокси по ip
+    /// </summary>
+    /// <param name="ips">Список привязываемых ip-адресов</param>
+    /// <returns></returns>
+    public async Task<ApiResponse> IpAuthorizationAsync(
+        List<string> ips)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ip", ips)
+            .Build();
+
+        var url = BuilUrl("ipauth", parameters);
+        return await GetAsync<CheckResponse>(url);
+    }
+
+    /// <summary>
+    /// Используется для удаления привязки авторизации прокси по ip
+    /// </summary>
+    /// <returns></returns>
+    public async Task<ApiResponse> DeleteIpAuthorizationAsync()
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ip", "delete")
+            .Build();
+
+        var url = BuilUrl("ipauth", parameters);
+        return await GetAsync<CheckResponse>(url);
+    }
+
     #region Формирвоание запроса
 
     private string BuilUrl(string endpoint, string parameters)
