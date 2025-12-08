@@ -4,7 +4,7 @@ using System.Text;
 
 using Svg;
 
-namespace DiscordDetective.UI;
+namespace DiscordDetective.UI.Tools;
 
 internal class SvgRenderer
 {

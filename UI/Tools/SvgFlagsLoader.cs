@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace DiscordDetective.UI;
+namespace DiscordDetective.UI.Tools;
 
 internal class SvgFlagsLoader
 {
