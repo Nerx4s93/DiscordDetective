@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DiscordDetective.Px6Api;
 
@@ -15,6 +16,12 @@ internal class RequestParameter
         if (Value is Enum enumValue)
         {
             return $"{Name}={enumValue.ToString().ToLower()}";
+        }
+
+        if (Value is List<int> intList)
+        {
+            var ids = string.Join(",", intList);
+            return $"{Name}={Uri.EscapeDataString(ids)}";
         }
 
         return $"{Name}={Uri.EscapeDataString(Value?.ToString() ?? "")}";
