@@ -177,6 +177,26 @@ public class Px6Client : IDisposable
     }
 
     /// <summary>
+    /// Используется для продления текущих прокси
+    /// </summary>
+    /// <param name="period">Период продления - кол-во дней</param>
+    /// <param name="ids">Перечень внутренних номеров прокси в нашей системе, через запятую</param>
+    /// <param name="noKey"></param>
+    /// <returns></returns>
+    public async Task<ProlongResponse> ProlongProxyAsync(
+        int period, List<int> proxyIds, bool noKey = false)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("period", period)
+            .AddParameter("ids", proxyIds)
+            .AddParameter("noKey", noKey, false)
+            .Build();
+
+        var url = BuilUrl("prolong", parameters);
+        return await GetAsync<ProlongResponse>(url);
+    }
+
+    /// <summary>
     /// Используется для проверки валидности (работоспособности) прокси
     /// </summary>
     /// <param name="proxyId">Внутренний номер прокси</param>
