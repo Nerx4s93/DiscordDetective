@@ -42,7 +42,7 @@ public class Px6Client : IDisposable
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("country", countryIso2)
-            .AddParameter("version", (int)proxyVersion)
+            .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
             .Build();
 
         var url = BuilUrl("getcount", parameters);
@@ -58,7 +58,7 @@ public class Px6Client : IDisposable
         ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
-            .AddParameter("version", (int)proxyVersion)
+            .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
             .Build();
 
         var url = BuilUrl("getcountry", parameters);
