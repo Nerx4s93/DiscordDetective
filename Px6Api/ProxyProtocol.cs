@@ -1,6 +1,6 @@
 ﻿namespace DiscordDetective.Px6Api;
 
-public enum ProxyType
+public enum ProxyProtocol
 {
     Http,
     Socks
