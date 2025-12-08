@@ -87,6 +87,28 @@ public class Px6Client : IDisposable
         return await GetAsync<ApiResponse>(url);
     }
 
+    public async Task<CheckResponse> CheckProxyAsync(
+        int proxyId)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ids", proxyId)
+            .Build();
+
+        var url = BuilUrl("check", parameters);
+        return await GetAsync<CheckResponse>(url);
+    }
+
+    public async Task<CheckResponse> CheckProxyAsync(
+        string proxyIpPortUserPass)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("proxy", proxyIpPortUserPass)
+            .Build();
+
+        var url = BuilUrl("check", parameters);
+        return await GetAsync<CheckResponse>(url);
+    }
+
     #region Формирвоание запроса
 
     private string BuilUrl(string endpoint, string parameters)
