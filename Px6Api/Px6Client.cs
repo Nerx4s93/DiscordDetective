@@ -31,17 +31,6 @@ public class Px6Client : IDisposable
         };
     }
 
-    public async Task<GetCountryResponse> GetCountriesAsync(
-        ProxyVersion proxyVersion = ProxyVersion.IPv6)
-    {
-        var parameters = QueryParametersBuilder.Create()
-            .AddParameter("version", (int)proxyVersion)
-            .Build();
-
-        var url = BuilUrl("getcountry", parameters);
-        return await GetAsync<GetCountryResponse>(url);
-    }
-
     public async Task<GetCountResponse> GetProxyCountAsync(
         string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
@@ -52,6 +41,17 @@ public class Px6Client : IDisposable
 
         var url = BuilUrl("getcount", parameters);
         return await GetAsync<GetCountResponse>(url);
+    }
+
+    public async Task<GetCountryResponse> GetCountriesAsync(
+        ProxyVersion proxyVersion = ProxyVersion.IPv6)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("version", (int)proxyVersion)
+            .Build();
+
+        var url = BuilUrl("getcountry", parameters);
+        return await GetAsync<GetCountryResponse>(url);
     }
 
     public async Task<GetProxyResponse> GetProxiesAsync(
@@ -87,28 +87,6 @@ public class Px6Client : IDisposable
         return await GetAsync<ApiResponse>(url);
     }
 
-    public async Task<CheckResponse> CheckProxyAsync(
-        int proxyId)
-    {
-        var parameters = QueryParametersBuilder.Create()
-            .AddParameter("ids", proxyId)
-            .Build();
-
-        var url = BuilUrl("check", parameters);
-        return await GetAsync<CheckResponse>(url);
-    }
-
-    public async Task<CheckResponse> CheckProxyAsync(
-        string proxyIpPortUserPass)
-    {
-        var parameters = QueryParametersBuilder.Create()
-            .AddParameter("proxy", proxyIpPortUserPass)
-            .Build();
-
-        var url = BuilUrl("check", parameters);
-        return await GetAsync<CheckResponse>(url);
-    }
-
     public async Task<SetDescriptionResponse> SetProxyDescriptionAsync(
         List<int> proxyIds, string newDescription)
     {
@@ -136,6 +114,28 @@ public class Px6Client : IDisposable
 
         var url = BuilUrl("setdescr", parameters);
         return await GetAsync<SetDescriptionResponse>(url);
+    }
+
+    public async Task<CheckResponse> CheckProxyAsync(
+        int proxyId)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ids", proxyId)
+            .Build();
+
+        var url = BuilUrl("check", parameters);
+        return await GetAsync<CheckResponse>(url);
+    }
+
+    public async Task<CheckResponse> CheckProxyAsync(
+        string proxyIpPortUserPass)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("proxy", proxyIpPortUserPass)
+            .Build();
+
+        var url = BuilUrl("check", parameters);
+        return await GetAsync<CheckResponse>(url);
     }
 
     #region Формирвоание запроса
