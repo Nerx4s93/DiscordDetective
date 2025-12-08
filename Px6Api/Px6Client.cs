@@ -39,7 +39,7 @@ public class Px6Client : IDisposable
     /// <param name="proxyVersion">Версия прокси</param>
     /// <returns></returns>
     public async Task<GetPriceResponse> GetPriceAsync(
-        int count, int period, ProxyVersion proxyVersion)
+        int count, int period, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("count", count)
