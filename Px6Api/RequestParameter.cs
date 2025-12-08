@@ -24,6 +24,12 @@ internal class RequestParameter
             return $"{Name}={Uri.EscapeDataString(ids)}";
         }
 
+        if (Value is List<string> stringList)
+        {
+            var ids = string.Join(",", stringList);
+            return $"{Name}={Uri.EscapeDataString(ids)}";
+        }
+
         return $"{Name}={Uri.EscapeDataString(Value?.ToString() ?? "")}";
     }
 }
