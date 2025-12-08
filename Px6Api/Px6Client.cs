@@ -32,6 +32,26 @@ public class Px6Client : IDisposable
     }
 
     /// <summary>
+    /// Используется для получения информации о сумме заказа в зависимости от версии, периода и кол-ва прокси
+    /// </summary>
+    /// <param name="count">Кол-во прокси</param>
+    /// <param name="period">Период - кол-во дней</param>
+    /// <param name="proxyVersion">Версия прокси</param>
+    /// <returns></returns>
+    public async Task<GetPriceResponse> GetPriceAsync(
+        int count, int period, ProxyVersion proxyVersion)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("count", count)
+            .AddParameter("period", period)
+            .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
+            .Build();
+
+        var url = BuilUrl("getprice", parameters);
+        return await GetAsync<GetPriceResponse>(url);
+    }
+
+    /// <summary>
     /// Используется для получения информации о доступном для приобретения кол-ве прокси определенной страны
     /// </summary>
     /// <param name="countryIso2">Код страны в формате iso2</param>
