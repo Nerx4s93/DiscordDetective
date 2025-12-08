@@ -109,6 +109,35 @@ public class Px6Client : IDisposable
         return await GetAsync<CheckResponse>(url);
     }
 
+    public async Task<SetDescriptionResponse> SetProxyDescriptionAsync(
+        List<int> proxyIds, string newDescription)
+    {
+        if (proxyIds == null || !proxyIds.Any())
+        {
+            throw new ArgumentException("Proxy IDs cannot be null or empty", nameof(proxyIds));
+        }
+
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("ids", proxyIds)
+            .AddParameter("new", newDescription)
+            .Build();
+
+        var url = BuilUrl("setdescr", parameters);
+        return await GetAsync<SetDescriptionResponse>(url);
+    }
+
+    public async Task<SetDescriptionResponse> SetProxyDescriptionAsync(
+        string oldDescription, string newDescription)
+    {
+        var parameters = QueryParametersBuilder.Create()
+            .AddParameter("old", oldDescription)
+            .AddParameter("new", newDescription)
+            .Build();
+
+        var url = BuilUrl("setdescr", parameters);
+        return await GetAsync<SetDescriptionResponse>(url);
+    }
+
     #region Формирвоание запроса
 
     private string BuilUrl(string endpoint, string parameters)
