@@ -13,7 +13,6 @@ internal class SvgRenderer
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgContent));
         var svgDocument = SvgDocument.Open<SvgDocument>(stream);
 
-        // Устанавливаем размер SVG документа
         svgDocument.Width = width;
         svgDocument.Height = height;
 
