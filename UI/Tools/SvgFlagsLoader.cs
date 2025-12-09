@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace DiscordDetective.UI.Tools;
 
-internal class SvgFlagsLoader
+internal static class SvgFlagsLoader
 {
-    public string? GetFlagSvg(string countryCode)
+    public static string? GetFlagSvg(string countryCode)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = $"DiscordDetective.Resources.flags.{countryCode.ToLower()}.svg";
