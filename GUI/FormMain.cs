@@ -157,7 +157,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            await _loggerService.LogAsync("AddBot", $"Ошибка: {ex.Message}", LogLevel.Error);
+            await _loggerService.LogAsync("AddBot", $"Ошибка: {ex}", LogLevel.Error);
         }
     }
 
@@ -262,7 +262,7 @@ public partial class FormMain : Form
         catch (Exception ex)
         {
             await _loggerService.LogAsync("Update",
-                $"Критическая ошибка: {ex.Message}\n{ex.StackTrace}",
+                $"Критическая ошибка: {ex}",
                 LogLevel.Error);
         }
     }
@@ -306,7 +306,7 @@ public partial class FormMain : Form
                 }
                 catch (Exception ex)
                 {
-                    await _loggerService.LogAsync("Delete", $"Ошибка удаления: {ex.Message}", LogLevel.Error);
+                    await _loggerService.LogAsync("Delete", $"Ошибка удаления: {ex}", LogLevel.Error);
                 }
             }
 
@@ -314,8 +314,7 @@ public partial class FormMain : Form
         }
         catch (Exception ex)
         {
-            await _loggerService.LogAsync("Delete", $"Ошибка: {ex.Message}", LogLevel.Error);
-            MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
         }
     }
 
