@@ -9,14 +9,12 @@ namespace DiscordDetective.GUI;
 
 public partial class FormBot : Form
 {
-    private readonly DatabaseContext _databaseContext;
     private readonly ImageDatabase _imageDatabase;
     private readonly string _token;
 
-    public FormBot(DatabaseContext databaseContext, ImageDatabase imageDatabase, string token)
+    public FormBot(ImageDatabase imageDatabase, string token)
     {
         InitializeComponent();
-        _databaseContext = databaseContext;
         _imageDatabase = imageDatabase;
         _token = token;
         _ = LoadBotsAsync();
@@ -26,8 +24,9 @@ public partial class FormBot : Form
 
     private async Task LoadBotsAsync()
     {
-        var botDbDTO = _databaseContext.Bots.AsNoTracking().First(b => b.Token == _token);
-        var userDbDTO = _databaseContext.Users.AsNoTracking().First(u => u.Id == botDbDTO.UserId);
+        var databaseContext = new DatabaseContext();
+        var botDbDTO = databaseContext.Bots.AsNoTracking().First(b => b.Token == _token);
+        var userDbDTO = databaseContext.Users.AsNoTracking().First(u => u.Id == botDbDTO.UserId);
 
         var avatar = _imageDatabase.Load(userDbDTO.Avatar) ?? SystemIcons.Error.ToBitmap();
         avatar = new Bitmap(avatar, pictureBoxAvatar.Size);

@@ -19,7 +19,6 @@ namespace DiscordDetective.GUI;
 
 public partial class FormMain : Form
 {
-    private DatabaseContext _databaseContext;
     private ImageDatabase _imageDatabase;
     private ILoggerService _loggerService;
 
@@ -34,7 +33,6 @@ public partial class FormMain : Form
         _botsImageList = new() { ImageSize = new Size(48, 48) };
         listViewBots.LargeImageList = _botsImageList;
 
-        _databaseContext = new();
         _imageDatabase = new("bots");
         _loggerService = new ConsoleLogger();
 
@@ -50,7 +48,8 @@ public partial class FormMain : Form
     {
         try
         {
-            var bots = await _databaseContext.Bots.ToListAsync();
+            var databaseContext = new DatabaseContext();
+            var bots = await databaseContext.Bots.ToListAsync();
 
             if (InvokeRequired)
             {
@@ -72,15 +71,16 @@ public partial class FormMain : Form
         listViewBots.Items.Clear();
         _botsImageList.Images.Clear();
 
+        var databaseContext = new DatabaseContext();
         foreach (var bot in bots)
         {
             var username = bot.UserId == null
                 ? "Не загружено"
-                : _databaseContext.Users
+                : databaseContext.Users
                     .AsNoTracking()
                     .FirstOrDefault(u => u.Id == bot.UserId)?.Username ?? "Не найден";
 
-            var imageKey = _databaseContext.Users.AsNoTracking().FirstOrDefault(u => u.Id == bot.UserId)?.Avatar;
+            var imageKey = databaseContext.Users.AsNoTracking().FirstOrDefault(u => u.Id == bot.UserId)?.Avatar;
 
             if (imageKey != null)
             {
@@ -109,7 +109,7 @@ public partial class FormMain : Form
 
         var selectedItem = listViewBots.SelectedItems[0];
         var token = selectedItem.Tag as string;
-        new FormBot(_databaseContext, _imageDatabase, token!).ShowAsync();
+        new FormBot(_imageDatabase, token!).ShowAsync();
     }
 
     private void listViewBots_SelectedIndexChanged(object sender, EventArgs e)
@@ -132,7 +132,8 @@ public partial class FormMain : Form
 
         try
         {
-            var exists = await _databaseContext.Bots.AnyAsync(b => b.Token == token);
+            var databaseContext = new DatabaseContext();
+            var exists = await databaseContext.Bots.AnyAsync(b => b.Token == token);
             if (exists)
             {
                 await _loggerService.LogAsync("AddBot", "Бот уже существует", LogLevel.Warning);
@@ -140,8 +141,8 @@ public partial class FormMain : Form
             }
 
             var bot = new BotDTO() { Token = token };
-            _databaseContext.Bots.Add(bot);
-            await _databaseContext.SaveChangesAsync();
+            databaseContext.Bots.Add(bot);
+            await databaseContext.SaveChangesAsync();
 
             BeginInvoke(new Action(() =>
             {
@@ -172,6 +173,7 @@ public partial class FormMain : Form
 
         try
         {
+            var databaseContext = new DatabaseContext();
             var selectedItems = listViewBots.SelectedItems.Cast<ListViewItem>().ToList();
 
             await _loggerService.LogAsync("Update", $"Начато обновление {selectedItems.Count} ботов", LogLevel.Info);
@@ -194,25 +196,25 @@ public partial class FormMain : Form
 
                     var userDb = botData.ToDbDTO();
 
-                    var existingUser = await _databaseContext.Users
+                    var existingUser = await databaseContext.Users
                         .AsNoTracking()
                         .FirstOrDefaultAsync(u => u.Id == userDb.Id);
 
                     if (existingUser != null)
                     {
                         await _loggerService.LogAsync("Update/Database", $"Обновление пользователя {userDb.Username}", LogLevel.Info);
-                        _databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
+                        databaseContext.Entry(existingUser).CurrentValues.SetValues(userDb);
                     }
                     else
                     {
                         await _loggerService.LogAsync("Update/Database", $"Добавление нового пользователя {userDb.Username}", LogLevel.Info);
-                        _databaseContext.Users.Add(userDb);
+                        databaseContext.Users.Add(userDb);
                     }
 
-                    await _databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsync();
                     await _loggerService.LogAsync("Update/Database", "Сохранение пользователя завершено", LogLevel.Info);
 
-                    var bot = await _databaseContext.Bots.FirstAsync(b => b.Token == selectedToken);
+                    var bot = await databaseContext.Bots.FirstAsync(b => b.Token == selectedToken);
                     bot.UserId = userDb.Id;
 
                     var avatar = _imageDatabase.Load(botData.Avatar!);
@@ -249,7 +251,7 @@ public partial class FormMain : Form
                 }
             }
 
-            await _databaseContext.SaveChangesAsync();
+            await databaseContext.SaveChangesAsync();
             await _loggerService.LogAsync("Update/Database", "Все изменения сохранены", LogLevel.Info);
 
             await _loggerService.LogAsync("Update/UI", "Обновление интерфейса...", LogLevel.Info);
@@ -273,6 +275,7 @@ public partial class FormMain : Form
 
         try
         {
+            var databaseContext = new DatabaseContext();
             var selectedItems = listViewBots.SelectedItems.Cast<ListViewItem>().ToList();
 
             if (MessageBox.Show($"Удалить {selectedItems.Count} ботов?", "Подтверждение",
@@ -290,7 +293,7 @@ public partial class FormMain : Form
 
                 try
                 {
-                    var deleted = await _databaseContext.Bots
+                    var deleted = await databaseContext.Bots
                         .Where(b => b.Token == token)
                         .ExecuteDeleteAsync();
 
