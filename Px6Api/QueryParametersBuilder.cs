@@ -6,7 +6,7 @@ namespace Px6Api;
 
 public class QueryParametersBuilder
 {
-    private readonly List<RequestParameter> _parameters = new();
+    private readonly List<RequestParameter> _parameters = [];
 
     public QueryParametersBuilder AddParameter(string name, object value, object? defaultValue = null)
     {
@@ -36,8 +36,10 @@ public class QueryParametersBuilder
             .Where(s => !string.IsNullOrEmpty(s))
             .ToList();
 
-        if (!validParameters.Any())
+        if (validParameters.Count == 0)
+        {
             return string.Empty;
+        }
 
         var queryString = new StringBuilder("?");
         queryString.Append(string.Join("&", validParameters));

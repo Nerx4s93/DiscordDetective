@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,26 +9,18 @@ using Px6Api.ApiModels;
 
 namespace Px6Api;
 
-public class Px6Client : IDisposable
+public class Px6Client(string apiKey) : IDisposable
 {
-    private readonly string _apiKey;
-    private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptions _jsonOptions;
-
     private const string BaseUrl = "https://px6.link/api";
 
-    public Px6Client(string apiKey)
+    private readonly HttpClient _httpClient = new();
+    private readonly JsonSerializerOptions _jsonOptions = new()
     {
-        _apiKey = apiKey;
-        _httpClient = new HttpClient();
-        _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = false,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        };
-    }
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        WriteIndented = false,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+    };
 
     /// <summary>
     /// Используется для получения информации о сумме заказа в зависимости от версии, периода и кол-ва прокси
@@ -47,7 +38,7 @@ public class Px6Client : IDisposable
             .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
             .Build();
 
-        var url = BuilUrl("getprice", parameters);
+        var url = BuildUrl("getprice", parameters);
         return await GetAsync<GetPriceResponse>(url);
     }
 
@@ -65,7 +56,7 @@ public class Px6Client : IDisposable
             .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
             .Build();
 
-        var url = BuilUrl("getcount", parameters);
+        var url = BuildUrl("getcount", parameters);
         return await GetAsync<CountResponse>(url);
     }
 
@@ -81,7 +72,7 @@ public class Px6Client : IDisposable
             .AddParameter("version", (int)proxyVersion, (int)ProxyVersion.IPv6)
             .Build();
 
-        var url = BuilUrl("getcountry", parameters);
+        var url = BuildUrl("getcountry", parameters);
         return await GetAsync<GetCountryResponse>(url);
     }
 
@@ -106,7 +97,7 @@ public class Px6Client : IDisposable
             .AddParameterIf(limit != 1000, "limit", limit, 1000)
             .Build();
 
-        var url = BuilUrl("getproxy", parameters);
+        var url = BuildUrl("getproxy", parameters);
         return await GetAsync<GetProxyResponse>(url);
     }
 
@@ -120,7 +111,7 @@ public class Px6Client : IDisposable
     public async Task<ApiResponse> SetProxyTypeAsync(
         List<int> proxyIds, ProxyProtocol protocol)
     {
-        if (proxyIds == null || !proxyIds.Any())
+        if (proxyIds == null || proxyIds.Count == 0)
         {
             throw new ArgumentException("Proxy IDs cannot be null or empty", nameof(proxyIds));
         }
@@ -130,7 +121,7 @@ public class Px6Client : IDisposable
             .AddParameter("type", protocol.ToString().ToLower())
             .Build();
 
-        var url = BuilUrl("settype", parameters);
+        var url = BuildUrl("settype", parameters);
         return await GetAsync<ApiResponse>(url);
     }
 
@@ -144,7 +135,7 @@ public class Px6Client : IDisposable
     public async Task<CountResponse> SetProxyDescriptionAsync(
         List<int> proxyIds, string newDescription)
     {
-        if (proxyIds == null || !proxyIds.Any())
+        if (proxyIds == null || proxyIds.Count == 0)
         {
             throw new ArgumentException("Proxy IDs cannot be null or empty", nameof(proxyIds));
         }
@@ -154,7 +145,7 @@ public class Px6Client : IDisposable
             .AddParameter("new", newDescription)
             .Build();
 
-        var url = BuilUrl("setdescr", parameters);
+        var url = BuildUrl("setdescr", parameters);
         return await GetAsync<CountResponse>(url);
     }
 
@@ -172,7 +163,7 @@ public class Px6Client : IDisposable
             .AddParameter("new", newDescription)
             .Build();
 
-        var url = BuilUrl("setdescr", parameters);
+        var url = BuildUrl("setdescr", parameters);
         return await GetAsync<CountResponse>(url);
     }
 
@@ -204,7 +195,7 @@ public class Px6Client : IDisposable
             .AddParameterIf(nokey, "nokey", "true")
             .Build();
 
-        var url = BuilUrl("buy", parameters);
+        var url = BuildUrl("buy", parameters);
         return await GetAsync<BuyResponse>(url);
     }
 
@@ -224,7 +215,7 @@ public class Px6Client : IDisposable
             .AddParameter("noKey", noKey, false)
             .Build();
 
-        var url = BuilUrl("prolong", parameters);
+        var url = BuildUrl("prolong", parameters);
         return await GetAsync<ProlongResponse>(url);
     }
 
@@ -240,7 +231,7 @@ public class Px6Client : IDisposable
             .AddParameter("ids", proxyIds)
             .Build();
 
-        var url = BuilUrl("delete", parameters);
+        var url = BuildUrl("delete", parameters);
         return await GetAsync<CountResponse>(url);
     }
 
@@ -256,7 +247,7 @@ public class Px6Client : IDisposable
             .AddParameter("descr", description)
             .Build();
 
-        var url = BuilUrl("delete", parameters);
+        var url = BuildUrl("delete", parameters);
         return await GetAsync<CountResponse>(url);
     }
 
@@ -272,7 +263,7 @@ public class Px6Client : IDisposable
             .AddParameter("ids", proxyId)
             .Build();
 
-        var url = BuilUrl("check", parameters);
+        var url = BuildUrl("check", parameters);
         return await GetAsync<CheckResponse>(url);
     }
 
@@ -288,7 +279,7 @@ public class Px6Client : IDisposable
             .AddParameter("proxy", proxyIpPortUserPass)
             .Build();
 
-        var url = BuilUrl("check", parameters);
+        var url = BuildUrl("check", parameters);
         return await GetAsync<CheckResponse>(url);
     }
 
@@ -304,7 +295,7 @@ public class Px6Client : IDisposable
             .AddParameter("ip", ips)
             .Build();
 
-        var url = BuilUrl("ipauth", parameters);
+        var url = BuildUrl("ipauth", parameters);
         return await GetAsync<CheckResponse>(url);
     }
 
@@ -318,15 +309,15 @@ public class Px6Client : IDisposable
             .AddParameter("ip", "delete")
             .Build();
 
-        var url = BuilUrl("ipauth", parameters);
+        var url = BuildUrl("ipauth", parameters);
         return await GetAsync<CheckResponse>(url);
     }
 
     #region Формирвоание запроса
 
-    private string BuilUrl(string endpoint, string parameters)
+    private string BuildUrl(string endpoint, string parameters)
     {
-        return $"{BaseUrl}/{_apiKey}/{endpoint}{parameters}";
+        return $"{BaseUrl}/{apiKey}/{endpoint}{parameters}";
     }
 
     private async Task<T> GetAsync<T>(string url) where T : ApiResponse
@@ -339,12 +330,7 @@ public class Px6Client : IDisposable
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<T>(json, _jsonOptions);
 
-            if (!result!.IsSuccess)
-            {
-                throw new Px6ApiException(result.ErrorId ?? 0, result.Error);
-            }
-
-            return result;
+            return !result!.IsSuccess ? throw new Px6ApiException(result.ErrorId ?? 0, result.Error) : result;
         }
         catch (HttpRequestException ex)
         {

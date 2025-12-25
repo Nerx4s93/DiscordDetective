@@ -13,23 +13,26 @@ internal class RequestParameter
 
     public string GetQueryString()
     {
-        if (Value is Enum enumValue)
+        switch (Value)
         {
-            return $"{Name}={enumValue.ToString().ToLower()}";
+            case Enum enumValue:
+                {
+                    return $"{Name}={enumValue.ToString().ToLower()}";
+                }
+            case List<int> intList:
+                {
+                    var ids = string.Join(",", intList);
+                    return $"{Name}={Uri.EscapeDataString(ids)}";
+                }
+            case List<string> stringList:
+                {
+                    var ids = string.Join(",", stringList);
+                    return $"{Name}={Uri.EscapeDataString(ids)}";
+                }
+            default:
+                {
+                    return $"{Name}={Uri.EscapeDataString(Value?.ToString() ?? "")}";
+                }
         }
-
-        if (Value is List<int> intList)
-        {
-            var ids = string.Join(",", intList);
-            return $"{Name}={Uri.EscapeDataString(ids)}";
-        }
-
-        if (Value is List<string> stringList)
-        {
-            var ids = string.Join(",", stringList);
-            return $"{Name}={Uri.EscapeDataString(ids)}";
-        }
-
-        return $"{Name}={Uri.EscapeDataString(Value?.ToString() ?? "")}";
     }
 }
