@@ -5,10 +5,10 @@ namespace DiscordDetective.UI.Tools;
 
 internal static class SvgDataLoader
 {
-    public static string? GetFlagSvg(string countryCode)
+    public static string? GetSvgData(string svgPath)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"DiscordDetective.Resources.Flags.{countryCode.ToLower()}.svg";
+        var resourceName = $"DiscordDetective.Resources.{svgPath}.svg";
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
