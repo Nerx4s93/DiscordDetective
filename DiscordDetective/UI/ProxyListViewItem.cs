@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
-
 using DiscordDetective.UI.Tools;
 
 using Px6Api.DTOModels;
@@ -10,6 +10,9 @@ namespace DiscordDetective.UI;
 public partial class ProxyListViewItem : UserControl
 {
     private ProxyInfo? _proxy;
+
+    private readonly Color BaseColor = Color.FromArgb(252, 252, 252);
+    private readonly Color SelectedColor = Color.FromArgb(245, 245, 245);
 
     public ProxyListViewItem()
     {
@@ -59,5 +62,11 @@ public partial class ProxyListViewItem : UserControl
         var daysLeft = dateTimeEnd - dateTimeStart;
         labelDateEnd.Text = dateTimeEnd.ToString("dd:MM:yy, HH:mm");
         labelDaysEnd.Text = daysLeft.Days.ToString() + "д";
+    }
+
+    private void checkBoxItemSelected_CheckedChanged(object sender, EventArgs e)
+    {
+        var selected = checkBoxItemSelected.Checked;
+        BackColor = selected ? SelectedColor : BaseColor;
     }
 }

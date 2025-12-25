@@ -29,7 +29,7 @@ partial class ProxyListViewItem
     private void InitializeComponent()
     {
         panel1 = new System.Windows.Forms.Panel();
-        _checkBoxItemSelected = new System.Windows.Forms.CheckBox();
+        checkBoxItemSelected = new System.Windows.Forms.CheckBox();
         panel2 = new System.Windows.Forms.Panel();
         _flagPictureBox = new System.Windows.Forms.PictureBox();
         panel3 = new System.Windows.Forms.Panel();
@@ -48,32 +48,38 @@ partial class ProxyListViewItem
         label7 = new System.Windows.Forms.Label();
         label6 = new System.Windows.Forms.Label();
         panel5 = new System.Windows.Forms.Panel();
+        svgButtonComment = new SvgButton();
         textBox1 = new System.Windows.Forms.TextBox();
         panel6 = new System.Windows.Forms.Panel();
+        svgButtonDelete = new SvgButton();
+        svgButtonCheck = new SvgButton();
+        svgButtonCopy = new SvgButton();
         panel1.SuspendLayout();
         panel2.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)_flagPictureBox).BeginInit();
         panel3.SuspendLayout();
         panel4.SuspendLayout();
         panel5.SuspendLayout();
+        panel6.SuspendLayout();
         SuspendLayout();
         // 
         // panel1
         // 
-        panel1.Controls.Add(_checkBoxItemSelected);
+        panel1.Controls.Add(checkBoxItemSelected);
         panel1.Location = new System.Drawing.Point(0, 0);
         panel1.Name = "panel1";
         panel1.Size = new System.Drawing.Size(32, 150);
         panel1.TabIndex = 0;
         // 
-        // _checkBoxItemSelected
+        // checkBoxItemSelected
         // 
-        _checkBoxItemSelected.Location = new System.Drawing.Point(6, 15);
-        _checkBoxItemSelected.Name = "_checkBoxItemSelected";
-        _checkBoxItemSelected.Size = new System.Drawing.Size(26, 25);
-        _checkBoxItemSelected.TabIndex = 0;
-        _checkBoxItemSelected.Text = "checkBox1";
-        _checkBoxItemSelected.UseVisualStyleBackColor = true;
+        checkBoxItemSelected.Location = new System.Drawing.Point(6, 15);
+        checkBoxItemSelected.Name = "checkBoxItemSelected";
+        checkBoxItemSelected.Size = new System.Drawing.Size(26, 25);
+        checkBoxItemSelected.TabIndex = 0;
+        checkBoxItemSelected.Text = "checkBox1";
+        checkBoxItemSelected.UseVisualStyleBackColor = true;
+        checkBoxItemSelected.CheckedChanged += checkBoxItemSelected_CheckedChanged;
         // 
         // panel2
         // 
@@ -245,31 +251,83 @@ partial class ProxyListViewItem
         // 
         // panel5
         // 
+        panel5.Controls.Add(svgButtonComment);
         panel5.Controls.Add(textBox1);
         panel5.Location = new System.Drawing.Point(866, 0);
         panel5.Name = "panel5";
         panel5.Size = new System.Drawing.Size(286, 150);
         panel5.TabIndex = 4;
         // 
+        // svgButtonComment
+        // 
+        svgButtonComment.IconName = "Comment";
+        svgButtonComment.IconOffset = new System.Drawing.Point(0, 0);
+        svgButtonComment.IconPadding = 5;
+        svgButtonComment.Location = new System.Drawing.Point(6, 53);
+        svgButtonComment.Name = "svgButtonComment";
+        svgButtonComment.Size = new System.Drawing.Size(40, 40);
+        svgButtonComment.TabIndex = 2;
+        svgButtonComment.UseVisualStyleBackColor = true;
+        // 
         // textBox1
         // 
         textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         textBox1.Location = new System.Drawing.Point(6, 17);
         textBox1.Name = "textBox1";
+        textBox1.ReadOnly = true;
         textBox1.Size = new System.Drawing.Size(272, 30);
         textBox1.TabIndex = 0;
         // 
         // panel6
         // 
+        panel6.Controls.Add(svgButtonDelete);
+        panel6.Controls.Add(svgButtonCheck);
+        panel6.Controls.Add(svgButtonCopy);
         panel6.Location = new System.Drawing.Point(1150, 0);
         panel6.Name = "panel6";
         panel6.Size = new System.Drawing.Size(50, 150);
         panel6.TabIndex = 5;
         // 
-        // UserControl1
+        // svgButtonDelete
+        // 
+        svgButtonDelete.IconName = "Delete";
+        svgButtonDelete.IconOffset = new System.Drawing.Point(3, 3);
+        svgButtonDelete.IconPadding = 5;
+        svgButtonDelete.Location = new System.Drawing.Point(5, 101);
+        svgButtonDelete.Name = "svgButtonDelete";
+        svgButtonDelete.OffsetX = 3;
+        svgButtonDelete.OffsetY = 3;
+        svgButtonDelete.Size = new System.Drawing.Size(40, 40);
+        svgButtonDelete.TabIndex = 3;
+        svgButtonDelete.UseVisualStyleBackColor = true;
+        // 
+        // svgButtonCheck
+        // 
+        svgButtonCheck.IconName = "Check";
+        svgButtonCheck.IconOffset = new System.Drawing.Point(0, 4);
+        svgButtonCheck.IconPadding = 5;
+        svgButtonCheck.Location = new System.Drawing.Point(5, 55);
+        svgButtonCheck.Name = "svgButtonCheck";
+        svgButtonCheck.OffsetY = 4;
+        svgButtonCheck.Size = new System.Drawing.Size(40, 40);
+        svgButtonCheck.TabIndex = 2;
+        svgButtonCheck.UseVisualStyleBackColor = true;
+        // 
+        // svgButtonCopy
+        // 
+        svgButtonCopy.IconName = "Copy";
+        svgButtonCopy.IconOffset = new System.Drawing.Point(0, 0);
+        svgButtonCopy.IconPadding = 5;
+        svgButtonCopy.Location = new System.Drawing.Point(5, 10);
+        svgButtonCopy.Name = "svgButtonCopy";
+        svgButtonCopy.Size = new System.Drawing.Size(40, 40);
+        svgButtonCopy.TabIndex = 1;
+        svgButtonCopy.UseVisualStyleBackColor = true;
+        // 
+        // ProxyListViewItem
         // 
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-        BackColor = System.Drawing.Color.White;
+        BackColor = System.Drawing.Color.FromArgb(252, 252, 252);
         Controls.Add(panel6);
         Controls.Add(panel5);
         Controls.Add(panel4);
@@ -279,7 +337,7 @@ partial class ProxyListViewItem
         Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
         MaximumSize = new System.Drawing.Size(1200, 150);
         MinimumSize = new System.Drawing.Size(1200, 150);
-        Name = "UserControl1";
+        Name = "ProxyListViewItem";
         Size = new System.Drawing.Size(1200, 150);
         panel1.ResumeLayout(false);
         panel2.ResumeLayout(false);
@@ -290,6 +348,7 @@ partial class ProxyListViewItem
         panel4.PerformLayout();
         panel5.ResumeLayout(false);
         panel5.PerformLayout();
+        panel6.ResumeLayout(false);
         ResumeLayout(false);
     }
 
@@ -301,7 +360,7 @@ partial class ProxyListViewItem
     private System.Windows.Forms.Panel panel4;
     private System.Windows.Forms.Panel panel5;
     private System.Windows.Forms.Panel panel6;
-    private System.Windows.Forms.CheckBox _checkBoxItemSelected;
+    private System.Windows.Forms.CheckBox checkBoxItemSelected;
     private System.Windows.Forms.PictureBox _flagPictureBox;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
@@ -317,4 +376,8 @@ partial class ProxyListViewItem
     private System.Windows.Forms.Label labelDaysEnd;
     private System.Windows.Forms.Label labelDateEnd;
     private System.Windows.Forms.TextBox textBox1;
+    private SvgButton svgButtonCopy;
+    private SvgButton svgButtonDelete;
+    private SvgButton svgButtonCheck;
+    private SvgButton svgButtonComment;
 }
