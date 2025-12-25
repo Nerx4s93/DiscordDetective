@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+
 using DiscordDetective.UI.Tools;
 
 using Px6Api.DTOModels;
@@ -13,6 +15,19 @@ public partial class ProxyListViewItem : UserControl
 
     private readonly Color BaseColor = Color.FromArgb(252, 252, 252);
     private readonly Color SelectedColor = Color.FromArgb(245, 245, 245);
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    public ProxyInfo? Proxy
+    {
+        get => _proxy;
+        set
+        {
+            _proxy = value;
+            Invalidate();
+        }
+    }
+
+    public bool Selected => checkBoxItemSelected.Checked;
 
     public ProxyListViewItem()
     {
