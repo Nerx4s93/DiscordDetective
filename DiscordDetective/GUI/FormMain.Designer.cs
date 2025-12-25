@@ -31,7 +31,6 @@ partial class FormMain
         components = new System.ComponentModel.Container();
         tabControlMain = new System.Windows.Forms.TabControl();
         tabPageProxy = new System.Windows.Forms.TabPage();
-        listView1 = new System.Windows.Forms.ListView();
         TabPageBots = new System.Windows.Forms.TabPage();
         listViewBots = new System.Windows.Forms.ListView();
         ContextMenuStripBots = new System.Windows.Forms.ContextMenuStrip(components);
@@ -40,7 +39,6 @@ partial class FormMain
         UpdateBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabControlMain.SuspendLayout();
-        tabPageProxy.SuspendLayout();
         TabPageBots.SuspendLayout();
         ContextMenuStripBots.SuspendLayout();
         SuspendLayout();
@@ -59,21 +57,12 @@ partial class FormMain
         // 
         // tabPageProxy
         // 
-        tabPageProxy.Controls.Add(listView1);
         tabPageProxy.Location = new System.Drawing.Point(4, 34);
         tabPageProxy.Name = "tabPageProxy";
         tabPageProxy.Size = new System.Drawing.Size(1300, 688);
         tabPageProxy.TabIndex = 1;
         tabPageProxy.Text = "Прокси";
         tabPageProxy.UseVisualStyleBackColor = true;
-        // 
-        // listView1
-        // 
-        listView1.Location = new System.Drawing.Point(-8, 0);
-        listView1.Name = "listView1";
-        listView1.Size = new System.Drawing.Size(1300, 688);
-        listView1.TabIndex = 0;
-        listView1.UseCompatibleStateImageBehavior = false;
         // 
         // TabPageBots
         // 
@@ -144,7 +133,6 @@ partial class FormMain
         Name = "FormMain";
         Text = "FormMain";
         tabControlMain.ResumeLayout(false);
-        tabPageProxy.ResumeLayout(false);
         TabPageBots.ResumeLayout(false);
         ContextMenuStripBots.ResumeLayout(false);
         ResumeLayout(false);
@@ -161,5 +149,4 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem UpdateBotToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem UpdateListToolStripMenuItem;
     private System.Windows.Forms.TabPage tabPageProxy;
-    private System.Windows.Forms.ListView listView1;
 }
