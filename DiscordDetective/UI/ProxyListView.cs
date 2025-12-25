@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -8,10 +7,9 @@ using Px6Api.DTOModels;
 
 namespace DiscordDetective.UI;
 
-public class ProxyListView : Panel
+public partial class ProxyListView : UserControl
 {
     private List<ProxyListViewItem> _items = [];
-    private FlowLayoutPanel _container = null!;
 
     // TODO
     public event EventHandler<ProxyInfo> SelectionChanged = null!;
@@ -28,35 +26,7 @@ public class ProxyListView : Panel
     public ProxyListView()
     {
         InitializeComponent();
-        SetupContainer();
     }
-
-    #region Загрузка
-
-    private void InitializeComponent()
-    {
-        Size = new Size(1236, 600);
-        BorderStyle = BorderStyle.FixedSingle;
-        BackColor = Color.White;
-        Padding = new Padding(1);
-    }
-
-    private void SetupContainer()
-    {
-        _container = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.TopDown,
-            WrapContents = false,
-            AutoSize = false,
-            AutoScroll = true,
-            BackColor = Color.White
-        };
-
-        Controls.Add(_container);
-    }
-
-    #endregion
 
     public void AddProxy(ProxyInfo proxy)
     {
@@ -65,7 +35,7 @@ public class ProxyListView : Panel
             Proxy = proxy
         };
 
-        _container.Controls.Add(item);
+        container.Controls.Add(item);
         _items.Add(item);
     }
 
@@ -120,7 +90,7 @@ public class ProxyListView : Panel
             item.Dispose();
         }
 
-        _container.Controls.Clear();
+        container.Controls.Clear();
         _items.Clear();
 
         ResumeLayout();
@@ -166,8 +136,8 @@ public class ProxyListView : Panel
     {
         SuspendLayout();
 
-        _container.Controls.Clear();
-        _container.Controls.AddRange(sortedItems.Cast<Control>().ToArray());
+        container.Controls.Clear();
+        container.Controls.AddRange(sortedItems.Cast<Control>().ToArray());
         _items = sortedItems;
 
         ResumeLayout();
@@ -175,7 +145,7 @@ public class ProxyListView : Panel
 
     private void RemoveItem(ProxyListViewItem item)
     {
-        _container.Controls.Remove(item);
+        container.Controls.Remove(item);
         _items.Remove(item);
         item.Dispose();
     }
