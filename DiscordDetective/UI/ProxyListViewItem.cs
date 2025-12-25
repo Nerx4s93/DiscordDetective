@@ -23,7 +23,7 @@ public partial class ProxyListViewItem : UserControl
         set
         {
             _proxy = value;
-            Invalidate();
+            UpdateUI();
         }
     }
 
@@ -32,25 +32,6 @@ public partial class ProxyListViewItem : UserControl
     public ProxyListViewItem()
     {
         InitializeComponent();
-
-        _proxy = new ProxyInfo
-        {
-            Id = "35746304",
-            Ip = "193.31.102.188",
-            Host = "193.31.102.188",
-            Port = "9481",
-            User = "WqoQuf",
-            Password = "PDQvDM",
-            Type = "socks",
-            Country = "us",
-            Date = "2025-12-03 15:44:13",
-            DateEnd = "2025-12-17 15:44:13",
-            UnixTime = 1764765853,
-            UnixTimeEnd = 1765975453,
-            Description = "asdasd1",
-            Active = "1"
-        };
-        UpdateUI();
     }
 
     private void UpdateUI()
