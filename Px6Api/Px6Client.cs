@@ -99,7 +99,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="page">Номер страницы для вывода. 1 - по-умолчанию</param>
     /// <param name="limit">Кол-во прокси для вывода в списке. 1000 - по-умолчанию (максимальное значение)</param>
     /// <returns></returns>
-    public async Task<(User user, Dictionary<string, ProxyInfo> proxy)> GetProxiesAsync(
+    public async Task<(User user, Dictionary<string, ProxyInfo> proxies)> GetProxiesAsync(
         ProxyState state = ProxyState.All, string? description = null,
         bool noKey = false, int page = 1, int limit = 1000)
     {
@@ -172,7 +172,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="oldDescription">Технический комментарий, который нужно изменить</param>
     /// <param name="newDescription">Технический комментарий, на который нужно изменить. Максимальная длина 50 символов</param>
-    /// <returns></returns>
+    /// <returns></returns>ф
     public async Task<(User user, int changedCount)> SetProxyDescriptionAsync(string oldDescription, string newDescription)
     {
         var parameters = QueryParametersBuilder.Create()
@@ -198,7 +198,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="proxyVersion">Версия прокси</param>
     /// <param name="proxyProtocol">Тип прокси (протокол)</param>
     /// <returns></returns>
-    public async Task<(User user, BuyInfo buyInfo, Dictionary<string, ProxyInfo> ProxyList)> BuyProxy(
+    public async Task<(User user, BuyInfo buyInfo, Dictionary<string, ProxyInfo> proxyList)> BuyProxy(
         int count, int period, string country, string description, bool autoProlong, bool nokey,
         ProxyVersion proxyVersion = ProxyVersion.IPv6, ProxyProtocol proxyProtocol = ProxyProtocol.Http)
     {
@@ -344,7 +344,7 @@ public class Px6Client(string apiKey) : IDisposable
         return answer.User;
     }
 
-    #region Формирвоание запроса
+    #region Формирование запроса
 
     private string BuildUrl(string endpoint, string parameters)
     {
