@@ -1,6 +1,6 @@
 ﻿namespace DiscordDetective.UI;
 
-partial class UserControl1
+partial class ProxyListViewItem
 {
     /// <summary> 
     /// Обязательная переменная конструктора.
@@ -33,6 +33,9 @@ partial class UserControl1
         panel2 = new System.Windows.Forms.Panel();
         _flagPictureBox = new System.Windows.Forms.PictureBox();
         panel3 = new System.Windows.Forms.Panel();
+        _labelTypeData = new System.Windows.Forms.Label();
+        _labelPasswordData = new System.Windows.Forms.Label();
+        _labelLoginData = new System.Windows.Forms.Label();
         _labelProxyData = new System.Windows.Forms.Label();
         label5 = new System.Windows.Forms.Label();
         label4 = new System.Windows.Forms.Label();
@@ -40,15 +43,19 @@ partial class UserControl1
         label2 = new System.Windows.Forms.Label();
         label1 = new System.Windows.Forms.Label();
         panel4 = new System.Windows.Forms.Panel();
+        labelDaysEnd = new System.Windows.Forms.Label();
+        labelDateEnd = new System.Windows.Forms.Label();
+        label7 = new System.Windows.Forms.Label();
+        label6 = new System.Windows.Forms.Label();
         panel5 = new System.Windows.Forms.Panel();
+        textBox1 = new System.Windows.Forms.TextBox();
         panel6 = new System.Windows.Forms.Panel();
-        _labelLoginData = new System.Windows.Forms.Label();
-        _labelPasswordData = new System.Windows.Forms.Label();
-        _labelTypeData = new System.Windows.Forms.Label();
         panel1.SuspendLayout();
         panel2.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)_flagPictureBox).BeginInit();
         panel3.SuspendLayout();
+        panel4.SuspendLayout();
+        panel5.SuspendLayout();
         SuspendLayout();
         // 
         // panel1
@@ -100,8 +107,40 @@ partial class UserControl1
         panel3.Size = new System.Drawing.Size(514, 150);
         panel3.TabIndex = 2;
         // 
+        // _labelTypeData
+        // 
+        _labelTypeData.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+        _labelTypeData.Location = new System.Drawing.Point(191, 102);
+        _labelTypeData.Name = "_labelTypeData";
+        _labelTypeData.Size = new System.Drawing.Size(310, 23);
+        _labelTypeData.TabIndex = 8;
+        _labelTypeData.Text = "data";
+        _labelTypeData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+        // 
+        // _labelPasswordData
+        // 
+        _labelPasswordData.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+        _labelPasswordData.Location = new System.Drawing.Point(191, 73);
+        _labelPasswordData.Name = "_labelPasswordData";
+        _labelPasswordData.Size = new System.Drawing.Size(310, 23);
+        _labelPasswordData.TabIndex = 7;
+        _labelPasswordData.Text = "data";
+        _labelPasswordData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+        // 
+        // _labelLoginData
+        // 
+        _labelLoginData.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 204);
+        _labelLoginData.ForeColor = System.Drawing.Color.FromArgb(185, 95, 43);
+        _labelLoginData.Location = new System.Drawing.Point(191, 44);
+        _labelLoginData.Name = "_labelLoginData";
+        _labelLoginData.Size = new System.Drawing.Size(310, 23);
+        _labelLoginData.TabIndex = 6;
+        _labelLoginData.Text = "data";
+        _labelLoginData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+        // 
         // _labelProxyData
         // 
+        _labelProxyData.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
         _labelProxyData.Location = new System.Drawing.Point(191, 15);
         _labelProxyData.Name = "_labelProxyData";
         _labelProxyData.Size = new System.Drawing.Size(310, 23);
@@ -149,7 +188,7 @@ partial class UserControl1
         // label1
         // 
         label1.AutoSize = true;
-        label1.Location = new System.Drawing.Point(5, 15);
+        label1.Location = new System.Drawing.Point(6, 15);
         label1.Name = "label1";
         label1.Size = new System.Drawing.Size(74, 23);
         label1.TabIndex = 0;
@@ -157,17 +196,68 @@ partial class UserControl1
         // 
         // panel4
         // 
+        panel4.Controls.Add(labelDaysEnd);
+        panel4.Controls.Add(labelDateEnd);
+        panel4.Controls.Add(label7);
+        panel4.Controls.Add(label6);
         panel4.Location = new System.Drawing.Point(635, 0);
         panel4.Name = "panel4";
         panel4.Size = new System.Drawing.Size(230, 150);
         panel4.TabIndex = 3;
         // 
+        // labelDaysEnd
+        // 
+        labelDaysEnd.ForeColor = System.Drawing.Color.FromArgb(92, 184, 92);
+        labelDaysEnd.Location = new System.Drawing.Point(67, 44);
+        labelDaysEnd.Name = "labelDaysEnd";
+        labelDaysEnd.Size = new System.Drawing.Size(150, 23);
+        labelDaysEnd.TabIndex = 7;
+        labelDaysEnd.Text = "data";
+        labelDaysEnd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+        // 
+        // labelDateEnd
+        // 
+        labelDateEnd.ForeColor = System.Drawing.Color.FromArgb(92, 184, 92);
+        labelDateEnd.Location = new System.Drawing.Point(67, 17);
+        labelDateEnd.Name = "labelDateEnd";
+        labelDateEnd.Size = new System.Drawing.Size(150, 23);
+        labelDateEnd.TabIndex = 6;
+        labelDateEnd.Text = "data";
+        labelDateEnd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+        // 
+        // label7
+        // 
+        label7.AutoSize = true;
+        label7.Location = new System.Drawing.Point(6, 44);
+        label7.Name = "label7";
+        label7.Size = new System.Drawing.Size(44, 23);
+        label7.TabIndex = 3;
+        label7.Text = "Дни";
+        // 
+        // label6
+        // 
+        label6.AutoSize = true;
+        label6.Location = new System.Drawing.Point(6, 15);
+        label6.Name = "label6";
+        label6.Size = new System.Drawing.Size(55, 23);
+        label6.TabIndex = 2;
+        label6.Text = "Дата";
+        // 
         // panel5
         // 
+        panel5.Controls.Add(textBox1);
         panel5.Location = new System.Drawing.Point(866, 0);
         panel5.Name = "panel5";
         panel5.Size = new System.Drawing.Size(286, 150);
         panel5.TabIndex = 4;
+        // 
+        // textBox1
+        // 
+        textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+        textBox1.Location = new System.Drawing.Point(6, 17);
+        textBox1.Name = "textBox1";
+        textBox1.Size = new System.Drawing.Size(272, 30);
+        textBox1.TabIndex = 0;
         // 
         // panel6
         // 
@@ -175,33 +265,6 @@ partial class UserControl1
         panel6.Name = "panel6";
         panel6.Size = new System.Drawing.Size(50, 150);
         panel6.TabIndex = 5;
-        // 
-        // _labelLoginData
-        // 
-        _labelLoginData.Location = new System.Drawing.Point(191, 44);
-        _labelLoginData.Name = "_labelLoginData";
-        _labelLoginData.Size = new System.Drawing.Size(310, 23);
-        _labelLoginData.TabIndex = 6;
-        _labelLoginData.Text = "data";
-        _labelLoginData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-        // 
-        // _labelPasswordData
-        // 
-        _labelPasswordData.Location = new System.Drawing.Point(191, 73);
-        _labelPasswordData.Name = "_labelPasswordData";
-        _labelPasswordData.Size = new System.Drawing.Size(310, 23);
-        _labelPasswordData.TabIndex = 7;
-        _labelPasswordData.Text = "data";
-        _labelPasswordData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-        // 
-        // _labelTypeData
-        // 
-        _labelTypeData.Location = new System.Drawing.Point(191, 102);
-        _labelTypeData.Name = "_labelTypeData";
-        _labelTypeData.Size = new System.Drawing.Size(310, 23);
-        _labelTypeData.TabIndex = 8;
-        _labelTypeData.Text = "data";
-        _labelTypeData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
         // 
         // UserControl1
         // 
@@ -223,6 +286,10 @@ partial class UserControl1
         ((System.ComponentModel.ISupportInitialize)_flagPictureBox).EndInit();
         panel3.ResumeLayout(false);
         panel3.PerformLayout();
+        panel4.ResumeLayout(false);
+        panel4.PerformLayout();
+        panel5.ResumeLayout(false);
+        panel5.PerformLayout();
         ResumeLayout(false);
     }
 
@@ -245,4 +312,9 @@ partial class UserControl1
     private System.Windows.Forms.Label _labelTypeData;
     private System.Windows.Forms.Label _labelPasswordData;
     private System.Windows.Forms.Label _labelLoginData;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.Label labelDaysEnd;
+    private System.Windows.Forms.Label labelDateEnd;
+    private System.Windows.Forms.TextBox textBox1;
 }
