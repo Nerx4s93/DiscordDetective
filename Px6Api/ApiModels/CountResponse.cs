@@ -2,7 +2,7 @@
 
 namespace Px6Api.ApiModels;
 
-public class SetDescriptionResponse : ApiResponse
+public class CountResponse : ApiResponse
 {
     [JsonPropertyName("count")]
     public int Count { get; set; }
