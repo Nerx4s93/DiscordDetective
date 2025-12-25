@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
+using Px6Api.DTOModels;
+
 namespace Px6Api.ApiModels;
 
 public class ApiResponse
@@ -7,18 +9,7 @@ public class ApiResponse
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
 
-
-    [JsonPropertyName("user_id")]
-    public string UserId { get; set; } = string.Empty;
-
-
-    [JsonPropertyName("balance")]
-    public decimal Balance { get; set; } = 0;
-
-
-    [JsonPropertyName("currency")]
-    public string Currency { get; set; } = string.Empty;
-
+    public UserDTO User { get; set; } = new();
 
     [JsonPropertyName("error_id")]
     public int? ErrorId { get; set; }
