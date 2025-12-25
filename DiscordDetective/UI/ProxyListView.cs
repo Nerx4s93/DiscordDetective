@@ -35,7 +35,7 @@ public class ProxyListView : Panel
 
     private void InitializeComponent()
     {
-        //Dock = DockStyle.Fill;
+        Size = new Size(1236, 600);
         BorderStyle = BorderStyle.FixedSingle;
         BackColor = Color.White;
         Padding = new Padding(1);
