@@ -65,8 +65,6 @@ namespace DiscordDetective.UI
                 Proxy = proxy
             };
 
-            WireItemEvents(item);
-
             _container.Controls.Add(item);
             _items.Add(item);
         }
