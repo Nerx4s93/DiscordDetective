@@ -3,14 +3,14 @@ using System.Windows.Forms;
 
 using DiscordDetective.UI.Tools;
 using System.ComponentModel;
-using System.Net.Mime;
 
 namespace DiscordDetective.UI;
 
 public class SvgButton : Button
 {
-    private string _iconName;
-    private int _padding;
+    private string _iconName = string.Empty;
+    private int _padding = 0;
+    private Point _iconOffset = Point.Empty;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string IconName
@@ -32,6 +32,56 @@ public class SvgButton : Button
             _padding = value;
             Invalidate();
         }
+    }
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    public Point IconOffset
+    {
+        get => _iconOffset;
+        set
+        {
+            _iconOffset = value;
+            Invalidate();
+        }
+    }
+
+    [DefaultValue(0)]
+    public int OffsetX
+    {
+        get => _iconOffset.X;
+        set
+        {
+            _iconOffset = new Point(value, _iconOffset.Y);
+            Invalidate();
+        }
+    }
+
+    [DefaultValue(0)]
+    public int OffsetY
+    {
+        get => _iconOffset.Y;
+        set
+        {
+            _iconOffset = new Point(_iconOffset.X, value);
+            Invalidate();
+        }
+    }
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public override string Text
+    {
+        get => string.Empty;
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+        set { }
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+    }
+
+    public SvgButton()
+    {
+        SetStyle(ControlStyles.OptimizedDoubleBuffer |
+                 ControlStyles.AllPaintingInWmPaint |
+                 ControlStyles.ResizeRedraw, true);
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -63,6 +113,8 @@ public class SvgButton : Button
         var height = Height - _padding * 2;
         using var svgImage = SvgRenderer.SvgToBitmap(svgCode, width, height);
 
-        graphics.DrawImage(svgImage, _padding, _padding);
+        var x = _padding + OffsetX;
+        var y = _padding + OffsetY;
+        graphics.DrawImage(svgImage, x, y);
     }
 }
