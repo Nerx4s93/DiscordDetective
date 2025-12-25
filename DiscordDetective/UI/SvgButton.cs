@@ -12,7 +12,7 @@ public class SvgButton : Button
     private string _iconName;
     private int _padding;
 
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string IconName
     {
         get => _iconName;
@@ -23,7 +23,7 @@ public class SvgButton : Button
         }
     }
 
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public new int Padding
     {
         get => _padding;
