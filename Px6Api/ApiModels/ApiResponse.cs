@@ -9,7 +9,7 @@ public class ApiResponse
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
 
-    public UserDTO User { get; set; } = new();
+    public User User { get; set; } = new();
 
     [JsonPropertyName("error_id")]
     public int? ErrorId { get; set; }

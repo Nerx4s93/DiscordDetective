@@ -7,17 +7,7 @@ namespace Px6Api.ApiModels;
 
 public class BuyResponse : ApiResponse
 {
-    [JsonPropertyName("count")]
-    public int Count { get; set; }
-
-    [JsonPropertyName("price")]
-    public double Price { get; set; }
-
-    [JsonPropertyName("period")]
-    public int Period { get; set; }
-
-    [JsonPropertyName("country")]
-    public string Country { get; set; } = string.Empty;
+    public BuyInfo BuyInfo { get; set; } = null!;
 
     [JsonPropertyName("list")]
     public Dictionary<string, ProxyInfo> ProxyList { get; set; } = new Dictionary<string, ProxyInfo>();

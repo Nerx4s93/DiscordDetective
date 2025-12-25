@@ -2,7 +2,7 @@
 
 namespace Px6Api.DTOModels;
 
-public class UserDTO
+public class User
 {
     [JsonPropertyName("user_id")]
     public string UserId { get; set; } = string.Empty;

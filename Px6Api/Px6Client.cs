@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using Px6Api.ApiModels;
+using Px6Api.DTOModels;
 
 namespace Px6Api;
 
@@ -29,7 +30,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="period">Период - кол-во дней</param>
     /// <param name="proxyVersion">Версия прокси</param>
     /// <returns></returns>
-    public async Task<GetPriceResponse> GetPriceAsync(
+    public async Task<(User user, PriceInfo price)> GetPriceAsync(
         int count, int period, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
@@ -39,7 +40,16 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("getprice", parameters);
-        return await GetAsync<GetPriceResponse>(url);
+        var answer = await GetAsync<GetPriceResponse>(url);
+
+        var priceInfo = new PriceInfo
+        {
+            Price = answer.Price,
+            Count = answer.Count,
+            Period = answer.Period,
+            PriceSingle = answer.PriceSingle
+        };
+        return (answer.User, priceInfo);
     }
 
     /// <summary>
@@ -48,7 +58,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="countryIso2">Код страны в формате iso2</param>
     /// <param name="proxyVersion">Версия прокси</param>
     /// <returns></returns>
-    public async Task<CountResponse> GetProxyCountAsync(
+    public async Task<(User user, int proxiesCount)> GetProxyCountAsync(
         string countryIso2, ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
@@ -57,7 +67,9 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("getcount", parameters);
-        return await GetAsync<CountResponse>(url);
+        var answer = await GetAsync<CountResponse>(url);
+
+        return (answer.User, answer.Count);
     }
 
     /// <summary>
@@ -65,7 +77,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="proxyVersion">Версия прокси</param>
     /// <returns></returns>
-    public async Task<GetCountryResponse> GetCountriesAsync(
+    public async Task<(User user, List<string> countries)> GetCountriesAsync(
         ProxyVersion proxyVersion = ProxyVersion.IPv6)
     {
         var parameters = QueryParametersBuilder.Create()
@@ -73,7 +85,9 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("getcountry", parameters);
-        return await GetAsync<GetCountryResponse>(url);
+        var answer = await GetAsync<GetCountryResponse>(url);
+
+        return (answer.User, answer.CountriesList);
     }
 
     /// <summary>
@@ -85,7 +99,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="page">Номер страницы для вывода. 1 - по-умолчанию</param>
     /// <param name="limit">Кол-во прокси для вывода в списке. 1000 - по-умолчанию (максимальное значение)</param>
     /// <returns></returns>
-    public async Task<GetProxyResponse> GetProxiesAsync(
+    public async Task<(User user, Dictionary<string, ProxyInfo> proxy)> GetProxiesAsync(
         ProxyState state = ProxyState.All, string? description = null,
         bool noKey = false, int page = 1, int limit = 1000)
     {
@@ -98,7 +112,9 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("getproxy", parameters);
-        return await GetAsync<GetProxyResponse>(url);
+        var answer = await GetAsync<GetProxyResponse>(url);
+
+        return (answer.User, answer.ProxyList);
     }
 
     /// <summary>
@@ -108,8 +124,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="protocol">Устанавливаемый тип (протокол)</param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<ApiResponse> SetProxyTypeAsync(
-        List<int> proxyIds, ProxyProtocol protocol)
+    public async Task<User> SetProxyTypeAsync(List<int> proxyIds, ProxyProtocol protocol)
     {
         if (proxyIds == null || proxyIds.Count == 0)
         {
@@ -122,7 +137,9 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("settype", parameters);
-        return await GetAsync<ApiResponse>(url);
+        var answer = await GetAsync<ApiResponse>(url);
+
+        return answer.User;
     }
 
     /// <summary>
@@ -132,8 +149,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="newDescription">Технический комментарий, на который нужно изменить. Максимальная длина 50 символов</param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<CountResponse> SetProxyDescriptionAsync(
-        List<int> proxyIds, string newDescription)
+    public async Task<(User user, int changedCount)> SetProxyDescriptionAsync(List<int> proxyIds, string newDescription)
     {
         if (proxyIds == null || proxyIds.Count == 0)
         {
@@ -146,7 +162,9 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("setdescr", parameters);
-        return await GetAsync<CountResponse>(url);
+        var answer = await GetAsync<CountResponse>(url);
+
+        return (answer.User, answer.Count);
     }
 
     /// <summary>
@@ -155,8 +173,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="oldDescription">Технический комментарий, который нужно изменить</param>
     /// <param name="newDescription">Технический комментарий, на который нужно изменить. Максимальная длина 50 символов</param>
     /// <returns></returns>
-    public async Task<CountResponse> SetProxyDescriptionAsync(
-        string oldDescription, string newDescription)
+    public async Task<(User user, int changedCount)> SetProxyDescriptionAsync(string oldDescription, string newDescription)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("old", oldDescription)
@@ -164,9 +181,10 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("setdescr", parameters);
-        return await GetAsync<CountResponse>(url);
-    }
+        var answer = await GetAsync<CountResponse>(url);
 
+        return (answer.User, answer.Count);
+    }
 
     /// <summary>
     /// Используется для покупки прокси
@@ -180,7 +198,7 @@ public class Px6Client(string apiKey) : IDisposable
     /// <param name="proxyVersion">Версия прокси</param>
     /// <param name="proxyProtocol">Тип прокси (протокол)</param>
     /// <returns></returns>
-    public async Task<BuyResponse> BuyProxy(
+    public async Task<(User user, BuyInfo buyInfo, Dictionary<string, ProxyInfo> ProxyList)> BuyProxy(
         int count, int period, string country, string description, bool autoProlong, bool nokey,
         ProxyVersion proxyVersion = ProxyVersion.IPv6, ProxyProtocol proxyProtocol = ProxyProtocol.Http)
     {
@@ -196,18 +214,20 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("buy", parameters);
-        return await GetAsync<BuyResponse>(url);
+        var answer = await GetAsync<BuyResponse>(url);
+
+        return (answer.User, answer.BuyInfo, answer.ProxyList);
     }
 
     /// <summary>
     /// Используется для продления текущих прокси
     /// </summary>
     /// <param name="period">Период продления - кол-во дней</param>
-    /// <param name="ids">Перечень внутренних номеров прокси в нашей системе, через запятую</param>
+    /// <param name="proxyIds">Перечень внутренних номеров прокси в нашей системе, через запятую</param>
     /// <param name="noKey"></param>
     /// <returns></returns>
-    public async Task<ProlongResponse> ProlongProxyAsync(
-        int period, List<int> proxyIds, bool noKey = false)
+    public async Task<(User user, Dictionary<string, ProxyProlong> proxiesProlongs)> ProlongProxyAsync
+        (int period, List<int> proxyIds, bool noKey = false)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("period", period)
@@ -216,7 +236,9 @@ public class Px6Client(string apiKey) : IDisposable
             .Build();
 
         var url = BuildUrl("prolong", parameters);
-        return await GetAsync<ProlongResponse>(url);
+        var answer = await GetAsync<ProlongResponse>(url);
+
+        return (answer.User, answer.ProxyList);
     }
 
     /// <summary>
@@ -224,15 +246,16 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="proxyIds">Перечень внутренних номеров прокси в нашей системе, через запятую</param>
     /// <returns></returns>
-    public async Task<CountResponse> DeleteProxyAsync(
-        List<int> proxyIds)
+    public async Task<(User user, int deletedCount)> DeleteProxyAsync(List<int> proxyIds)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("ids", proxyIds)
             .Build();
 
         var url = BuildUrl("delete", parameters);
-        return await GetAsync<CountResponse>(url);
+        var answer = await GetAsync<CountResponse>(url);
+
+        return (answer.User, answer.Count);
     }
 
     /// <summary>
@@ -240,15 +263,16 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="description">Технический комментарий, который вы указывали при покупке прокси, либо через метод setdescr</param>
     /// <returns></returns>
-    public async Task<CountResponse> DeleteProxyAsync(
-        string description)
+    public async Task<(User user, int deletedCount)> DeleteProxyAsync(string description)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("descr", description)
             .Build();
 
         var url = BuildUrl("delete", parameters);
-        return await GetAsync<CountResponse>(url);
+        var answer = await GetAsync<CountResponse>(url);
+
+        return (answer.User, answer.Count);
     }
 
     /// <summary>
@@ -256,15 +280,17 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="proxyId">Внутренний номер прокси</param>
     /// <returns></returns>
-    public async Task<CheckResponse> CheckProxyAsync(
-        int proxyId)
+    public async Task<(User user, ProxyStatus proxyStatus)> CheckProxyAsync(int proxyId)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("ids", proxyId)
             .Build();
 
         var url = BuildUrl("check", parameters);
-        return await GetAsync<CheckResponse>(url);
+        var answer = await GetAsync<CheckResponse>(url);
+
+        var proxyStatus = new ProxyStatus { ProxyId = answer.ProxyId, Status = answer.ProxyStatus };
+        return (answer.User, proxyStatus);
     }
 
     /// <summary>
@@ -272,15 +298,17 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="proxyIpPortUserPass">Строка прокси в формате: ip:port:user:pass</param>
     /// <returns></returns>
-    public async Task<CheckResponse> CheckProxyAsync(
-        string proxyIpPortUserPass)
+    public async Task<(User user, ProxyStatus proxyStatus)> CheckProxyAsync(string proxyIpPortUserPass)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("proxy", proxyIpPortUserPass)
             .Build();
 
         var url = BuildUrl("check", parameters);
-        return await GetAsync<CheckResponse>(url);
+        var answer = await GetAsync<CheckResponse>(url);
+
+        var proxyStatus = new ProxyStatus { ProxyId = answer.ProxyId, Status = answer.ProxyStatus };
+        return (answer.User, proxyStatus);
     }
 
     /// <summary>
@@ -288,29 +316,32 @@ public class Px6Client(string apiKey) : IDisposable
     /// </summary>
     /// <param name="ips">Список привязываемых ip-адресов</param>
     /// <returns></returns>
-    public async Task<ApiResponse> IpAuthorizationAsync(
-        List<string> ips)
+    public async Task<User> IpAuthorizationAsync(List<string> ips)
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("ip", ips)
             .Build();
 
         var url = BuildUrl("ipauth", parameters);
-        return await GetAsync<CheckResponse>(url);
+        var answer = await GetAsync<CheckResponse>(url);
+
+        return answer.User;
     }
 
     /// <summary>
     /// Используется для удаления привязки авторизации прокси по ip
     /// </summary>
     /// <returns></returns>
-    public async Task<ApiResponse> DeleteIpAuthorizationAsync()
+    public async Task<User> DeleteIpAuthorizationAsync()
     {
         var parameters = QueryParametersBuilder.Create()
             .AddParameter("ip", "delete")
             .Build();
 
         var url = BuildUrl("ipauth", parameters);
-        return await GetAsync<CheckResponse>(url);
+        var answer = await GetAsync<CheckResponse>(url);
+
+        return answer.User;
     }
 
     #region Формирвоание запроса
@@ -330,7 +361,7 @@ public class Px6Client(string apiKey) : IDisposable
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<T>(json, _jsonOptions);
 
-            return !result!.IsSuccess ? throw new Px6ApiException(result.ErrorId ?? 0, result.Error) : result;
+            return !result!.IsSuccess ? throw new Px6ApiException(result.ErrorId!.Value, result.Error) : result;
         }
         catch (HttpRequestException ex)
         {
@@ -346,7 +377,7 @@ public class Px6Client(string apiKey) : IDisposable
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _httpClient.Dispose();
         GC.SuppressFinalize(this);
     }
 }
