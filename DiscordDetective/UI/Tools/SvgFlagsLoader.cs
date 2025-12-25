@@ -8,7 +8,7 @@ internal static class SvgFlagsLoader
     public static string? GetFlagSvg(string countryCode)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"DiscordDetective.Resources.flags.{countryCode.ToLower()}.svg";
+        var resourceName = $"DiscordDetective.Resources.Flags.{countryCode.ToLower()}.svg";
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
