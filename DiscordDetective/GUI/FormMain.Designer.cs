@@ -69,7 +69,7 @@ partial class FormMain
         // 
         // listView1
         // 
-        listView1.Location = new System.Drawing.Point(0, 0);
+        listView1.Location = new System.Drawing.Point(-8, 0);
         listView1.Name = "listView1";
         listView1.Size = new System.Drawing.Size(1300, 688);
         listView1.TabIndex = 0;

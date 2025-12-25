@@ -41,6 +41,11 @@ public class ProxyListViewItem : UserControl
         Size = new Size(1200, 150);
         InitializeComponent();
 
+        AutoScaleMode = AutoScaleMode.None;
+        AutoSize = false;
+        MinimumSize = new Size(1200, 150);
+        MaximumSize = new Size(1200, 150);
+
         _proxy = new ProxyInfo()
         {
             Id = "35746304",
@@ -60,6 +65,7 @@ public class ProxyListViewItem : UserControl
         };
         UpdateUI();
     }
+
 
     public void SetProxyData(ProxyInfo proxy)
     {
