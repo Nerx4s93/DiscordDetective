@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace DiscordDetective.UI.Tools;
 
-internal static class SvgFlagsLoader
+internal static class SvgDataLoader
 {
     public static string? GetFlagSvg(string countryCode)
     {

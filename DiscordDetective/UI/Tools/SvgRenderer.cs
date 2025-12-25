@@ -17,11 +17,10 @@ internal class SvgRenderer
         svgDocument.Height = height;
 
         var bitmap = new Bitmap(width, height);
-        using (var graphics = Graphics.FromImage(bitmap))
-        {
-            graphics.Clear(Color.Transparent);
-            svgDocument.Draw(graphics);
-        }
+        using var graphics = Graphics.FromImage(bitmap);
+
+        graphics.Clear(Color.Transparent);
+        svgDocument.Draw(graphics);
 
         return bitmap;
     }
