@@ -27,7 +27,12 @@ public partial class ProxyListViewItem : UserControl
         }
     }
 
-    public bool Selected => checkBoxItemSelected.Checked;
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool Selected
+    {
+        get => checkBoxItemSelected.Checked;
+        set => checkBoxItemSelected.Checked = value;
+    }
 
     public ProxyListViewItem()
     {
