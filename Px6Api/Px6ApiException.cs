@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DiscordDetective.Px6Api;
+namespace Px6Api;
 
 public class Px6ApiException : Exception
 {

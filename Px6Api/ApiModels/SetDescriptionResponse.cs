@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordDetective.Px6Api.ApiModels;
+namespace Px6Api.ApiModels;
 
-public class GetCountResponse : ApiResponse
+public class SetDescriptionResponse : ApiResponse
 {
     [JsonPropertyName("count")]
     public int Count { get; set; }

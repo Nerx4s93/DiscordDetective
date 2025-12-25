@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace DiscordDetective.Px6Api;
+namespace Px6Api;
 
 public class QueryParametersBuilder
 {

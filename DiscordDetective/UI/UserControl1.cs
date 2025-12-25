@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using DiscordDetective.Px6Api.DTOModels;
+using Px6Api.DTOModels;
 using DiscordDetective.UI.Tools;
 
 namespace DiscordDetective.UI;

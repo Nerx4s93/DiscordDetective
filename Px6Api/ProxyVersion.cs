@@ -1,4 +1,4 @@
-﻿namespace DiscordDetective.Px6Api;
+﻿namespace Px6Api;
 
 public enum ProxyVersion
 {

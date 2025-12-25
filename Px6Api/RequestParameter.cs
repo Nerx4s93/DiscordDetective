@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DiscordDetective.Px6Api;
+namespace Px6Api;
 
 internal class RequestParameter
 {

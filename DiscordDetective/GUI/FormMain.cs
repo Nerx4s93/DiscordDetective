@@ -2,7 +2,7 @@
 using DiscordDetective.DiscordAPI;
 using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
-using DiscordDetective.Px6Api;
+using Px6Api;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;

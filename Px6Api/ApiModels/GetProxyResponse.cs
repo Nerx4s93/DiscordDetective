@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-using DiscordDetective.Px6Api.DTOModels;
+using Px6Api.DTOModels;
 
-namespace DiscordDetective.Px6Api.ApiModels;
+namespace Px6Api.ApiModels;
 
 public class GetProxyResponse : ApiResponse
 {

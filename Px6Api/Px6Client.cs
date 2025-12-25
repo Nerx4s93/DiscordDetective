@@ -6,9 +6,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-using DiscordDetective.Px6Api.ApiModels;
+using Px6Api.ApiModels;
 
-namespace DiscordDetective.Px6Api;
+namespace Px6Api;
 
 public class Px6Client : IDisposable
 {

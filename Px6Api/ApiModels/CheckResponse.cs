@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordDetective.Px6Api.ApiModels;
+namespace Px6Api.ApiModels;
 
 public class CheckResponse : ApiResponse
 {

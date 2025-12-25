@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordDetective.Px6Api.DTOModels;
+namespace Px6Api.DTOModels;
 
 public class ProxyInfo
 {
