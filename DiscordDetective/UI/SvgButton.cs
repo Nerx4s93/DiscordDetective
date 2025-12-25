@@ -9,7 +9,7 @@ namespace DiscordDetective.UI;
 public class SvgButton : Button
 {
     private string _iconName = string.Empty;
-    private int _padding = 0;
+    private int _iconPadding = 0;
     private Point _iconOffset = Point.Empty;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -24,12 +24,12 @@ public class SvgButton : Button
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public new int Padding
+    public new int IconPadding
     {
-        get => _padding;
+        get => _iconPadding;
         set
         {
-            _padding = value;
+            _iconPadding = value;
             Invalidate();
         }
     }
@@ -109,12 +109,12 @@ public class SvgButton : Button
             return;
         }
 
-        var width = Width - _padding * 2;
-        var height = Height - _padding * 2;
+        var width = Width - _iconPadding * 2;
+        var height = Height - _iconPadding * 2;
         using var svgImage = SvgRenderer.SvgToBitmap(svgCode, width, height);
 
-        var x = _padding + OffsetX;
-        var y = _padding + OffsetY;
+        var x = _iconPadding + OffsetX;
+        var y = _iconPadding + OffsetY;
         graphics.DrawImage(svgImage, x, y);
     }
 }
