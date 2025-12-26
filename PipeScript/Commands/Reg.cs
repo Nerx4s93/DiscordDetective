@@ -13,7 +13,7 @@ internal sealed class Reg : PipeCommand
             throw new ArgumentException("Usage: reg <alias>, \"CLR.Type\"");
         }    
 
-        var alias = args[0].TrimEnd(',').Trim();
+        var alias = args[0].Trim();
         var clrTypeName = args[1].Trim().Trim('"');
 
         if (string.IsNullOrWhiteSpace(alias))
@@ -22,7 +22,9 @@ internal sealed class Reg : PipeCommand
         }
 
         if (ctx.ScriptTypeRegistry.IsRegistered(alias))
+        {
             throw new Exception($"Type '{alias}' already registered");
+        }
 
         ctx.ScriptTypeRegistry.Register(alias, clrTypeName);
         return null;
