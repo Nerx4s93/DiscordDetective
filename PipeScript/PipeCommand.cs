@@ -5,7 +5,6 @@ namespace PipeScript;
 public abstract class PipeCommand
 {
     public abstract string Name { get; }
-    public abstract string Description { get; }
 
     public abstract object Execute(string[] args, Variables variables);
 
