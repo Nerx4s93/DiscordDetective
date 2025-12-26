@@ -19,7 +19,7 @@ namespace DiscordDetective.GUI;
 
 public partial class FormMain : Form
 {
-    private Px6Client _px6Client;
+    private Px6Client _px6Client = null!;
 
     private readonly ImageDatabase _imageDatabase = new("bots");
     private readonly ImageList _botsImageList = new() { ImageSize = new Size(48, 48) };
