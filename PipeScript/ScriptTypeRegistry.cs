@@ -22,4 +22,6 @@ public class ScriptTypeRegistry
 
         throw new Exception($"Type not registered: {alias}");
     }
+
+    public bool IsRegistered(string alias) => _types.ContainsKey(alias);
 }
