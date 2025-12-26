@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace PipeScript.Commands;
 
-internal class Cvar : PipeCommand
+internal sealed class Cvar : PipeCommand
 {
     public override string Name { get; } = "cvar";
 

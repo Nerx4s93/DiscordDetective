@@ -1,29 +1,52 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PipeScript;
 
-public sealed class PipeScriptEngine(string scriptName = "unnamed")
+public sealed class PipeScriptEngine
 {
     private readonly CommandRegistry _commandRegistry = new();
+    private readonly Stack<ScriptFrame> _callStack = new();
 
-    public ExecutionContext Context { get; } = new()
+    public ExecutionContext Context { get; }
+
+    public PipeScriptEngine(string scriptName = "unnamed")
     {
-        ScriptName = scriptName
-    };
+        Context = new ExecutionContext
+        {
+            Engine = this,
+            ScriptName = scriptName
+        };
+    }
 
     public void Execute(string script)
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-        Context.CurrentLineNumber = 0;
-
-        while (Context.CurrentLineNumber < lines.Length)
+        _callStack.Push(new ScriptFrame
         {
-            var rawLine = lines[Context.CurrentLineNumber].Trim();
+            ScriptName = Context.ScriptName,
+            Lines = lines,
+            LineIndex = 0
+        });
 
-            if (rawLine.Length == 0 || rawLine.StartsWith(';'))
+        while (_callStack.Count > 0)
+        {
+            var frame = _callStack.Peek();
+
+            if (frame.LineIndex >= frame.Lines.Length)
             {
-                Context.CurrentLineNumber++;
+                _callStack.Pop();
+                continue;
+            }
+
+            Context.CurrentLineNumber = frame.LineIndex + 1;
+
+            var rawLine = frame.Lines[frame.LineIndex].Trim();
+            frame.LineIndex++;
+
+            if (rawLine.Length == 0)
+            {
                 continue;
             }
 
@@ -32,16 +55,12 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
             if (line.Length == 0)
             {
-                Context.CurrentLineNumber++;
                 continue;
             }
 
             ExecuteLine(line);
-
-            Context.CurrentLineNumber++;
         }
     }
-
 
     private void ExecuteLine(string line)
     {

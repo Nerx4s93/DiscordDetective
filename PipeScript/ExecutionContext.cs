@@ -4,6 +4,8 @@ namespace PipeScript;
 
 public class ExecutionContext
 {
+    public PipeScriptEngine Engine { get; internal set; } = null!;
+
     public Guid ExecutionId { get; } = Guid.NewGuid();
     public string ScriptName { get; internal set; } = "unnamed";
     public int CurrentLineNumber { get; set; } = 0;
