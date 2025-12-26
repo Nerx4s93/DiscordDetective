@@ -20,8 +20,8 @@ internal class Cvar : PipeCommand
 
         var type = ctx.ScriptTypeRegistry.Resolve(typeAlias);
         var value = CreateValue(type, valueArgs, ctx.Variables);
-        ctx.Variables.Set(name, new Variable(type, value));
 
+        ctx.Variables.Set(name, new Variable(type, value));
         return null;
     }
 
@@ -34,18 +34,11 @@ internal class Cvar : PipeCommand
                 throw new Exception($"Type {type.Name} expects 1 argument, got {args.Length}");
             }
 
-            var value = args[0];
-            if (value.StartsWith('$'))
-            {
-                var varName = value[1..];
-                value = vars.Get(varName).Value.ToString();
-            }
-
+            var value = ScriptUtils.ResolveArg(args[0], vars);
             return Convert.ChangeType(value, type)!;
         }
 
         var constructors = type.GetConstructors();
-
         var constructor = constructors.FirstOrDefault(c => c.GetParameters().Length == args.Length);
         if (constructor == null)
         {
@@ -57,15 +50,8 @@ internal class Cvar : PipeCommand
 
         for (var i = 0; i < args.Length; i++)
         {
-            var value = args[i];
-
-            if (value.StartsWith('$'))
-            {
-                var varName = value[1..];
-                value = vars.Get(varName).Value.ToString();
-            }
-
-            ctorValues[i] = Convert.ChangeType(value, ctorParams[i].ParameterType)!;
+            var value = ScriptUtils.ResolveArg(args[i], vars);
+            ctorValues[i] = Convert.ChangeType(value, ctorParams[i].ParameterType);
         }
 
         return constructor.Invoke(ctorValues);
