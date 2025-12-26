@@ -1,4 +1,5 @@
 ﻿using System;
+using PipeScript.CommandResults;
 
 namespace PipeScript.Commands;
 
@@ -6,7 +7,7 @@ internal sealed class Reg : PipeCommand
 {
     public override string Name => "reg";
 
-    public override object Execute(string[] args, ExecutionContext ctx)
+    public override ContinueResult Execute(string[] args, ExecutionContext ctx)
     {
         if (args.Length != 2)
         {
@@ -27,7 +28,8 @@ internal sealed class Reg : PipeCommand
         }
 
         ctx.ScriptTypeRegistry.Register(alias, clrTypeName);
-        return null;
+
+        return ContinueResult.Instance;
     }
 
     public override bool ValidateArgs(string[] args)

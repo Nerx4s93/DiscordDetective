@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+
+using PipeScript.CommandResults;
 
 namespace PipeScript.Commands;
 
@@ -6,12 +9,23 @@ internal sealed class Include : PipeCommand
 {
     public override string Name => "include";
 
-    public override object Execute(string[] args, ExecutionContext ctx)
+    public override CommandResult Execute(string[] args, ExecutionContext ctx)
     {
-        var path = args[0];
-        var script = File.ReadAllText(path);
+        if (args.Length != 1)
+        {
+            throw new ArgumentException("Usage: include <path>");
+        }
 
-        ctx.Engine.Execute(script);
-        return null;
+        var path = args[0];
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException($"File not found: {path}", path);
+        }
+
+        var code = File.ReadAllText(path);
+
+        return new IncludeResult(code);
     }
+
+    public override bool ValidateArgs(string[] args) => args.Length == 1;
 }

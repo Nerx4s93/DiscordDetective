@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using PipeScript.CommandResults;
+
 namespace PipeScript;
 
 public sealed class PipeScriptEngine
@@ -85,7 +87,28 @@ public sealed class PipeScriptEngine
             throw new Exception($"Invalid arguments for '{commandName}' at line {Context.CurrentLineNumber}");
         }
 
-        command.Execute(args, Context);
+        var result = command.Execute(args, Context);
+        ProcessCommandResult(result);
+    }
+
+    private void ProcessCommandResult(CommandResult result)
+    {
+        switch (result)
+        {
+            case ContinueResult:
+                {
+                    break;
+                }
+            case IncludeResult include:
+                {
+                    Execute(include.Code);
+                    break;
+                }
+            default:
+                {
+                    throw new Exception($"Unknown command result type: {result.GetType().Name}");
+                }
+        }
     }
 
     private static string[] ParseArgs(string argString)

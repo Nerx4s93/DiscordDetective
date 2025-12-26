@@ -6,9 +6,9 @@ public abstract class PipeCommand
 {
     public abstract string Name { get; }
 
-    public abstract object Execute(string[] args, ExecutionContext ctx);
+    public abstract CommandResult Execute(string[] args, ExecutionContext ctx);
 
-    public virtual Task<object> ExecuteAsync(string[] args, ExecutionContext ctx)
+    public virtual Task<CommandResult> ExecuteAsync(string[] args, ExecutionContext ctx)
     {
         return Task.FromResult(Execute(args, ctx));
     }

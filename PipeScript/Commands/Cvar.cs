@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using PipeScript.CommandResults;
 
 namespace PipeScript.Commands;
 
@@ -7,7 +8,7 @@ internal sealed class Cvar : PipeCommand
 {
     public override string Name { get; } = "cvar";
 
-    public override object Execute(string[] args, ExecutionContext ctx)
+    public override ContinueResult Execute(string[] args, ExecutionContext ctx)
     {
         if (args.Length < 3)
         {
@@ -22,7 +23,8 @@ internal sealed class Cvar : PipeCommand
         var value = CreateValue(type, valueArgs, ctx.Variables);
 
         ctx.Variables.Set(name, new Variable(type, value));
-        return null;
+
+        return ContinueResult.Instance;
     }
 
     private static object CreateValue(Type type, string[] args, Variables vars)
