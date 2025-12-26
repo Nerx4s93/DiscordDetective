@@ -360,7 +360,11 @@ public partial class FormMain : Form
         var token = await File.ReadAllTextAsync("px6key.txt");
         _px6Client = new Px6Client(token);
 
-        var prixies = await _px6Client.GetProxiesAsync();
+        var prixies = (await _px6Client.GetProxiesAsync()).proxies;
+        foreach (var proxy in prixies)
+        {
+            proxyListView.AddProxy(proxy.Value);
+        }
     }
 
     #endregion
