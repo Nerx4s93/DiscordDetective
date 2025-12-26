@@ -78,7 +78,8 @@ partial class FormMain
         // button4
         // 
         button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        button4.Location = new System.Drawing.Point(1242, 632);
+        button4.Enabled = false;
+        button4.Location = new System.Drawing.Point(1242, 634);
         button4.Name = "button4";
         button4.Size = new System.Drawing.Size(194, 52);
         button4.TabIndex = 4;
@@ -87,6 +88,7 @@ partial class FormMain
         // 
         // button3
         // 
+        button3.Enabled = false;
         button3.Location = new System.Drawing.Point(1242, 119);
         button3.Name = "button3";
         button3.Size = new System.Drawing.Size(194, 52);
@@ -96,6 +98,7 @@ partial class FormMain
         // 
         // button2
         // 
+        button2.Enabled = false;
         button2.Location = new System.Drawing.Point(1242, 61);
         button2.Name = "button2";
         button2.Size = new System.Drawing.Size(194, 52);
@@ -105,6 +108,7 @@ partial class FormMain
         // 
         // button1
         // 
+        button1.Enabled = false;
         button1.Location = new System.Drawing.Point(1242, 3);
         button1.Name = "button1";
         button1.Size = new System.Drawing.Size(194, 52);
@@ -123,7 +127,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 692);
+        proxyListView.Size = new System.Drawing.Size(1236, 694);
         proxyListView.TabIndex = 0;
         // 
         // TabPageBots
