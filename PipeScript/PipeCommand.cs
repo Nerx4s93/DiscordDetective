@@ -13,4 +13,9 @@ public abstract class PipeCommand
     {
         return Task.FromResult(Execute(args, variables));
     }
+
+    public virtual bool ValidateArgs(string[] args)
+    {
+        return true;
+    }
 }
