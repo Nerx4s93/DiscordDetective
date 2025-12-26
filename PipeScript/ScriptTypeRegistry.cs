@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PipeScript;
 
@@ -9,8 +10,30 @@ public class ScriptTypeRegistry
 
     public void Register(string alias, string clrTypeName)
     {
+        if (string.IsNullOrWhiteSpace(alias))
+        {
+            throw new ArgumentException("Alias cannot be empty", nameof(alias));
+        }
+
+        if (_types.ContainsKey(alias))
+        {
+            throw new Exception($"Type '{alias}' already registered");
+        }
+
         var type = Type.GetType(clrTypeName, throwOnError: false);
-        _types[alias] = type ?? throw new Exception($"CLR type not found: {clrTypeName}");
+        if (type == null)
+        {
+            type = AppDomain.CurrentDomain.GetAssemblies()
+                .Select(a => a.GetType(clrTypeName))
+                .FirstOrDefault(t => t != null);
+        }
+
+        if (type == null)
+        {
+            throw new Exception($"CLR type not found: {clrTypeName}");
+        }
+
+        _types[alias] = type;
     }
 
     public Type Resolve(string alias)
