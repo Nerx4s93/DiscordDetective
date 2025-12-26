@@ -15,14 +15,15 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-        for (var i = 0; i < lines.Length; i++)
+        Context.CurrentLineNumber = 0;
+
+        while (Context.CurrentLineNumber < lines.Length)
         {
-            Context.CurrentLineNumber = i + 1;
+            var rawLine = lines[Context.CurrentLineNumber].Trim();
 
-            var rawLine = lines[i].Trim();
-
-            if (rawLine.Length == 0)
+            if (rawLine.Length == 0 || rawLine.StartsWith(';'))
             {
+                Context.CurrentLineNumber++;
                 continue;
             }
 
@@ -31,12 +32,16 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
             if (line.Length == 0)
             {
+                Context.CurrentLineNumber++;
                 continue;
             }
 
             ExecuteLine(line);
+
+            Context.CurrentLineNumber++;
         }
     }
+
 
     private void ExecuteLine(string line)
     {
