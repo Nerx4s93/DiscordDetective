@@ -15,6 +15,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Include="Resources\PipeScripts\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="Resources\**\*">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
