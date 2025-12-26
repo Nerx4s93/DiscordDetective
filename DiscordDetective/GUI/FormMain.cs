@@ -357,13 +357,26 @@ public partial class FormMain : Form
 
     private async Task LoadProxyAsync()
     {
-        var token = await File.ReadAllTextAsync("px6key.txt");
-        _px6Client = new Px6Client(token);
-
-        var prixies = (await _px6Client.GetProxiesAsync()).proxies;
-        foreach (var proxy in prixies)
+        try
         {
-            proxyListView.AddProxy(proxy.Value);
+            await _loggerService.ClearAsync();
+
+            await _loggerService.LogAsync("Px6Api", $"Создание api клиента...", LogLevel.Info);
+            var token = await File.ReadAllTextAsync("px6key.txt");
+            _px6Client = new Px6Client(token);
+
+            await _loggerService.LogAsync("Px6Api", $"Получение списка прокси...", LogLevel.Info);
+            var proxies = (await _px6Client.GetProxiesAsync()).proxies;
+            foreach (var proxy in proxies)
+            {
+                proxyListView.AddProxy(proxy.Value);
+            }
+
+            await _loggerService.LogAsync("Px6Api", $"Загрузка завершена", LogLevel.Info);
+        }
+        catch (Exception ex)
+        {
+            await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
         }
     }
 
