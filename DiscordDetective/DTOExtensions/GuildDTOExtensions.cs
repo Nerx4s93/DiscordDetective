@@ -1,5 +1,5 @@
 ﻿using DiscordDetective.Database.Models;
-using DiscordDetective.DiscordAPI.Models;
+using DiscordApi.Models;
 
 namespace DiscordDetective.DTOExtensions;
 

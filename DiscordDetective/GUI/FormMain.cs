@@ -1,7 +1,7 @@
 ﻿using DiscordDetective.Database.Models;
-using DiscordDetective.DiscordAPI;
 using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
+using DiscordApi;
 using Px6Api;
 
 using Microsoft.EntityFrameworkCore;

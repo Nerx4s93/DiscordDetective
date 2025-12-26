@@ -5,31 +5,24 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using DiscordDetective.DiscordAPI.Models;
+using DiscordApi.Models;
 
-namespace DiscordDetective.DiscordAPI;
+namespace DiscordApi;
 
-public class DiscordClient : IDisposable
+public class DiscordClient(string token) : IDisposable
 {
-    private readonly string _token;
-    private readonly HttpClient _httpClient;
-    private readonly JsonSerializerOptions _jsonOptions;
+    private readonly string _token = token ?? throw new ArgumentNullException(nameof(token));
+    private readonly HttpClient _httpClient = new();
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        WriteIndented = false
+    };
 
     private const string BaseUrl = "https://discord.com/api/v9";
 
     private UserApiDTO? _userApiDTO;
-
-    public DiscordClient(string token)
-    {
-        _token = token ?? throw new ArgumentNullException(nameof(token));
-        _httpClient = new HttpClient();
-        _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = false
-        };
-    }
 
     #region Информация о боте
 

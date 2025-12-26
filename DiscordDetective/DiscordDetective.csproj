@@ -21,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\DiscordApi\DiscordApi.csproj" />
 	  <ProjectReference Include="..\Px6Api\Px6Api.csproj" />
 	</ItemGroup>
 

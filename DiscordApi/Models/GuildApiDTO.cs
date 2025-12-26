@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordDetective.DiscordAPI.Models;
+namespace DiscordApi.Models;
 
 public class GuildApiDTO
 {
