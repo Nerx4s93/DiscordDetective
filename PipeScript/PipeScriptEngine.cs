@@ -15,9 +15,11 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-        foreach (var l in lines)
+        for (var i = 0; i < lines.Length; i++)
         {
-            var rawLine = l.Trim();
+            Context.CurrentLineNumber = i + 1;
+
+            var rawLine = lines[i].Trim();
 
             if (rawLine.Length == 0)
             {
@@ -41,7 +43,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         var firstSpace = line.IndexOf(' ');
         if (firstSpace < 0)
         {
-            throw new Exception($"Invalid syntax at line \"{line}\"");
+            throw new Exception($"Invalid syntax at line {Context.CurrentLineNumber}");
         }
 
         var commandName = line[..firstSpace];
@@ -50,13 +52,13 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         var command = _commandRegistry.GetCommand(commandName);
         if (command == null)
         {
-            throw new Exception($"Unknown command '{commandName}' at line \"{line}\"");
+            throw new Exception($"Unknown command '{commandName}' at line {Context.CurrentLineNumber}");
         }
 
         var args = ParseArgs(argString);
         if (!command.ValidateArgs(args))
         {
-            throw new Exception($"Invalid arguments for '{commandName}' at line \"{line}\"");
+            throw new Exception($"Invalid arguments for '{commandName}' at line {Context.CurrentLineNumber}");
         }
 
         command.Execute(args, Context);
