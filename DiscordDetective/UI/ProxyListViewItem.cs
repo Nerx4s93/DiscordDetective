@@ -9,6 +9,7 @@ using Px6Api.DTOModels;
 
 namespace DiscordDetective.UI;
 
+[ToolboxItem(false)]
 public partial class ProxyListViewItem : UserControl
 {
     private ProxyInfo? _proxy;
