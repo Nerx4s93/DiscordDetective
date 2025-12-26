@@ -12,19 +12,14 @@ public class Variables
         _variables[name] = value;
     }
 
-    public T Get<T>(string name)
+    public Variable Get(string name)
     {
         if (!_variables.TryGetValue(name, out var value))
         {
             throw new KeyNotFoundException($"Variable '{name}' not found");
         }
 
-        if (value is T typedValue)
-        {
-            return typedValue;
-        }
-        throw new InvalidCastException($"Variable '{name}' is not of type {typeof(T)}");
-
+        return value;
     }
 
     public bool Exists(string name)
