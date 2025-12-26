@@ -8,4 +8,10 @@
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Update="GUI\ScriptForm.cs">
+	    <SubType>Form</SubType>
+	  </Compile>
+	</ItemGroup>
+
 </Project>
