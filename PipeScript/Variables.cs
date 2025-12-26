@@ -5,9 +5,9 @@ namespace PipeScript;
 
 public class Variables
 {
-    private readonly Dictionary<string, object> _variables = new();
+    private readonly Dictionary<string, Variable> _variables = new();
 
-    public void Set(string name, object value)
+    public void Set(string name, Variable value)
     {
         _variables[name] = value;
     }
@@ -32,7 +32,7 @@ public class Variables
         return _variables.ContainsKey(name);
     }
 
-    public IEnumerable<KeyValuePair<string, object>> GetAllVariables()
+    public IEnumerable<KeyValuePair<string, Variable>> GetAllVariables()
     {
         return _variables;
     }
