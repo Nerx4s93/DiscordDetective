@@ -216,22 +216,31 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     {
         var result = new List<string>();
         var stringBuilder = new StringBuilder();
-
         var inQuotes = false;
+        var skipLeadingSpaces = true;
 
         foreach (var c in argString)
         {
+            if (skipLeadingSpaces && char.IsWhiteSpace(c) && !inQuotes)
+            {
+                continue;
+            }
+
+            skipLeadingSpaces = false;
+
             switch (c)
             {
                 case '"':
                 {
                     inQuotes = !inQuotes;
-                    continue;
+                    break;
                 }
                 case ',' when !inQuotes:
                 {
-                    AddArg();
-                    continue;
+                    result.Add(stringBuilder.ToString());
+                    stringBuilder.Clear();
+                    skipLeadingSpaces = true;
+                    break;
                 }
                 default:
                 {
@@ -241,18 +250,12 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
             }
         }
 
-        AddArg();
-        return result.ToArray();
-
-        void AddArg()
+        if (stringBuilder.Length > 0)
         {
-            var value = stringBuilder.ToString().Trim();
-            if (value.Length > 0)
-            {
-                result.Add(value);
-            }
-            stringBuilder.Clear();
+            result.Add(stringBuilder.ToString());
         }
+
+        return result.ToArray();
     }
 
     private void WaitIfPaused()

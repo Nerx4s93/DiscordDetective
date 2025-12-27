@@ -6,7 +6,6 @@ internal static class ScriptUtils
 {
     public static object ResolveArg(string arg, Variables vars)
     {
-        arg = arg.Trim();
         if (arg.StartsWith('$'))
         {
             var varName = arg[1..];
