@@ -10,11 +10,12 @@ namespace PipeScript;
 
 public sealed class PipeScriptEngine(string scriptName = "unnamed")
 {
-    private Thread? _scriptThread;
-    private CancellationTokenSource? _cts;
-
     private readonly CommandRegistry _commandRegistry = new();
     private readonly Stack<ScriptFrame> _callStack = new();
+
+    private Thread? _scriptThread;
+    private CancellationTokenSource? _cts;
+    private volatile bool _paused;
 
     public ExecutionContext Context { get; } = new()
     {
@@ -22,6 +23,10 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     };
 
     public bool IsRunning => _scriptThread?.IsAlive == true;
+
+    public void Pause() => _paused = true;
+
+    public void Resume() => _paused = false;
 
     public void Start(string script)
     {
@@ -58,6 +63,9 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
         _cts!.Cancel();
         _scriptThread!.Join();
+
+        _cts = null;
+        _scriptThread = null;
     }
 
     public void Restart(string script)
@@ -107,12 +115,14 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
                 continue;
             }
 
-            ExecuteLine(line);
+            ExecuteLine(line, token);
         }
     }
 
-    private void ExecuteLine(string line)
+    private void ExecuteLine(string line, CancellationToken token)
     {
+        WaitIfPaused();
+
         var firstSpace = line.IndexOf(' ');
         if (firstSpace < 0)
         {
@@ -135,10 +145,10 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         }
 
         var result = command.Execute(args, Context);
-        ProcessCommandResult(result);
+        ProcessCommandResult(result, token);
     }
 
-    private void ProcessCommandResult(CommandResult result)
+    private void ProcessCommandResult(CommandResult result, CancellationToken token)
     {
         switch (result)
         {
@@ -148,7 +158,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
                 }
             case IncludeResult include:
                 {
-                    Execute(include.Code);
+                    Execute(include.Code, token);
                     break;
                 }
             default:
@@ -161,5 +171,13 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     private static string[] ParseArgs(string argString)
     {
         return argString.Split(',', StringSplitOptions.RemoveEmptyEntries); ;
+    }
+
+    private void WaitIfPaused()
+    {
+        while (_paused)
+        {
+            Thread.Sleep(50);
+        }
     }
 }
