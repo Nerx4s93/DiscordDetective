@@ -83,50 +83,46 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         }
 
         _cts!.Cancel();
-    }   
+    }
+
+    public void Step()
+    {
+        if (!IsRunning || !_paused)
+        {
+            return;
+        }
+
+        var line = GetCodeLine(out _);
+        if (line != null)
+        {
+            ExecuteLine(line, CancellationToken.None);
+        }
+    }
 
     private void Execute(string script, CancellationToken token)
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-        _callStack.Push(new ScriptFrame
+        lock (_callStack)
         {
-            ScriptName = Context.ScriptName,
-            Lines = lines,
-            LineIndex = 0
-        });
-
-        while (_callStack.Count > 0)
-        {
-            token.ThrowIfCancellationRequested();
-
-            var frame = _callStack.Peek();
-
-            if (frame.LineIndex >= frame.Lines.Length)
+            _callStack.Push(new ScriptFrame
             {
-                _callStack.Pop();
-                continue;
-            }
+                ScriptName = Context.ScriptName,
+                Lines = lines,
+                LineIndex = 0
+            });
 
-            Context.CurrentLineNumber = frame.LineIndex + 1;
 
-            var rawLine = frame.Lines[frame.LineIndex].Trim();
-            frame.LineIndex++;
-
-            if (rawLine.Length == 0)
+            while (_callStack.Count > 0)
             {
-                continue;
+                token.ThrowIfCancellationRequested();
+
+                var line = GetCodeLine(out _);
+                if (line == null)
+                    continue;
+
+                ExecuteLine(line, token);
             }
-
-            var semicolonIndex = rawLine.IndexOf(';');
-            var line = semicolonIndex >= 0 ? rawLine[..semicolonIndex].Trim() : rawLine;
-
-            if (line.Length == 0)
-            {
-                continue;
-            }
-
-            ExecuteLine(line, token);
         }
     }
 
@@ -176,6 +172,38 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
                 {
                     throw new Exception($"Unknown command result type: {result.GetType().Name}");
                 }
+        }
+    }
+
+    private string? GetCodeLine(out ScriptFrame? frame)
+    {
+        lock (_callStack)
+        {
+            frame = _callStack.Count > 0 ? _callStack.Peek() : null;
+            if (frame == null)
+                return null;
+
+            if (frame.LineIndex >= frame.Lines.Length)
+            {
+                _callStack.Pop();
+                return null;
+            }
+
+            Context.CurrentLineNumber = frame.LineIndex + 1;
+
+            var rawLine = frame.Lines[frame.LineIndex].Trim();
+            frame.LineIndex++;
+
+            if (rawLine.Length == 0)
+                return null;
+
+            var semicolonIndex = rawLine.IndexOf(';');
+            var line = semicolonIndex >= 0 ? rawLine[..semicolonIndex].Trim() : rawLine;
+
+            if (line.Length == 0)
+                return null;
+
+            return line;
         }
     }
 

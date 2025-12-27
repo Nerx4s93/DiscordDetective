@@ -33,6 +33,7 @@ sealed partial class ScriptForm
         buttonStop = new System.Windows.Forms.Button();
         buttonStart = new System.Windows.Forms.Button();
         buttonPauseResume = new System.Windows.Forms.Button();
+        buttonStep = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
         // richTextBoxOutput
@@ -87,11 +88,24 @@ sealed partial class ScriptForm
         buttonPauseResume.UseVisualStyleBackColor = true;
         buttonPauseResume.Click += buttonPauseResume_Click;
         // 
+        // buttonStep
+        // 
+        buttonStep.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonStep.Enabled = false;
+        buttonStep.Location = new System.Drawing.Point(453, 516);
+        buttonStep.Name = "buttonStep";
+        buttonStep.Size = new System.Drawing.Size(141, 48);
+        buttonStep.TabIndex = 6;
+        buttonStep.Text = "Шаг";
+        buttonStep.UseVisualStyleBackColor = true;
+        buttonStep.Click += buttonStep_Click;
+        // 
         // ScriptForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(11F, 23F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1101, 573);
+        Controls.Add(buttonStep);
         Controls.Add(buttonPauseResume);
         Controls.Add(buttonStart);
         Controls.Add(buttonStop);
@@ -111,4 +125,5 @@ sealed partial class ScriptForm
     private System.Windows.Forms.Button buttonStop;
     private System.Windows.Forms.Button buttonStart;
     private System.Windows.Forms.Button buttonPauseResume;
+    private System.Windows.Forms.Button buttonStep;
 }

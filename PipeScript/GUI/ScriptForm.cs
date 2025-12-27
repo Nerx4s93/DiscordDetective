@@ -41,6 +41,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             buttonStop.Enabled = true;
+            buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
             UpdateTitle("Running");
         });
     }
@@ -51,6 +52,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         {
             _isPaused = true;
             buttonPauseResume.Text = "Возобновить";
+            buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
             UpdateTitle("Paused");
         });
     }
@@ -61,6 +63,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         {
             _isPaused = false;
             buttonPauseResume.Text = "Пауза";
+            buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
             UpdateTitle("Running");
         });
     }
@@ -70,8 +73,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
             buttonStop.Enabled = false;
+            buttonPauseResume.Text = "Пауза";
+            buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
             WriteLine("=== Script finished ===");
             UpdateTitle("Finished");
         });
@@ -82,8 +86,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
             buttonStop.Enabled = false;
+            buttonPauseResume.Text = "Пауза";
+            buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
             WriteLine("=== Script stopped ===");
             UpdateTitle("Stopped");
         });
@@ -126,6 +131,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
         {
             _pipeScriptEngine.Pause();
         }
+    }
+
+    private void buttonStep_Click(object sender, EventArgs e)
+    {
+        _pipeScriptEngine.Step();
     }
 
     public void WriteLine(string text)
