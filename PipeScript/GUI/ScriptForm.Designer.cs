@@ -32,7 +32,6 @@ sealed partial class ScriptForm
         label1 = new System.Windows.Forms.Label();
         buttonStop = new System.Windows.Forms.Button();
         buttonStart = new System.Windows.Forms.Button();
-        buttonRestart = new System.Windows.Forms.Button();
         buttonPauseResume = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
@@ -76,21 +75,10 @@ sealed partial class ScriptForm
         buttonStart.UseVisualStyleBackColor = true;
         buttonStart.Click += buttonStart_Click;
         // 
-        // buttonRestart
-        // 
-        buttonRestart.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonRestart.Location = new System.Drawing.Point(306, 516);
-        buttonRestart.Name = "buttonRestart";
-        buttonRestart.Size = new System.Drawing.Size(141, 48);
-        buttonRestart.TabIndex = 4;
-        buttonRestart.Text = "Перезапуск";
-        buttonRestart.UseVisualStyleBackColor = true;
-        buttonRestart.Click += buttonRestart_Click;
-        // 
         // buttonPauseResume
         // 
         buttonPauseResume.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonPauseResume.Location = new System.Drawing.Point(453, 516);
+        buttonPauseResume.Location = new System.Drawing.Point(306, 516);
         buttonPauseResume.Name = "buttonPauseResume";
         buttonPauseResume.Size = new System.Drawing.Size(141, 48);
         buttonPauseResume.TabIndex = 5;
@@ -104,7 +92,6 @@ sealed partial class ScriptForm
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1101, 573);
         Controls.Add(buttonPauseResume);
-        Controls.Add(buttonRestart);
         Controls.Add(buttonStart);
         Controls.Add(buttonStop);
         Controls.Add(label1);
@@ -122,6 +109,5 @@ sealed partial class ScriptForm
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button buttonStop;
     private System.Windows.Forms.Button buttonStart;
-    private System.Windows.Forms.Button buttonRestart;
     private System.Windows.Forms.Button buttonPauseResume;
 }

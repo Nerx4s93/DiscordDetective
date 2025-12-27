@@ -115,11 +115,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
         _pipeScriptEngine.Stop();
     }
 
-    private void buttonRestart_Click(object sender, EventArgs e)
-    {
-        _pipeScriptEngine.Restart(_code);
-    }
-
     private void buttonPauseResume_Click(object sender, EventArgs e)
     {
         if (!_pipeScriptEngine.IsRunning)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PipeScript;
 
@@ -26,6 +25,8 @@ public class Variables
     {
         return _variables.ContainsKey(name);
     }
+
+    public void Clear() => _variables.Clear();
 
     public IEnumerable<KeyValuePair<string, Variable>> GetAllVariables()
     {

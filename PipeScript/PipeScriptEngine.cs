@@ -38,8 +38,13 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     {
         if (IsRunning)
         {
-            throw new InvalidOperationException("Script already running");
+            Stop();
+            _scriptThread!.Join();
         }
+
+        Context.CurrentLineNumber = 0;
+        Context.Variables.Clear();
+        Context.ScriptTypeRegistry.Clear();
 
         _cts = new CancellationTokenSource();
 
@@ -78,13 +83,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         }
 
         _cts!.Cancel();
-    }
-
-    public void Restart(string script)
-    {
-        Stop();
-        Start(script);
-    }
+    }   
 
     private void Execute(string script, CancellationToken token)
     {

@@ -20,20 +20,11 @@ public class ScriptTypeRegistry
             throw new Exception($"Type '{alias}' already registered");
         }
 
-        var type = Type.GetType(clrTypeName, throwOnError: false);
-        if (type == null)
-        {
-            type = AppDomain.CurrentDomain.GetAssemblies()
-                .Select(a => a.GetType(clrTypeName))
-                .FirstOrDefault(t => t != null);
-        }
+        var type = Type.GetType(clrTypeName, throwOnError: false) ?? AppDomain.CurrentDomain.GetAssemblies()
+            .Select(a => a.GetType(clrTypeName))
+            .FirstOrDefault(t => t != null);
 
-        if (type == null)
-        {
-            throw new Exception($"CLR type not found: {clrTypeName}");
-        }
-
-        _types[alias] = type;
+        _types[alias] = type ?? throw new Exception($"CLR type not found: {clrTypeName}");
     }
 
     public Type Resolve(string alias)
@@ -45,6 +36,8 @@ public class ScriptTypeRegistry
 
         throw new Exception($"Type not registered: {alias}");
     }
+
+    public void Clear() => _types.Clear();
 
     public bool IsRegistered(string alias) => _types.ContainsKey(alias);
 }
