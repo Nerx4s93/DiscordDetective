@@ -218,9 +218,23 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         var stringBuilder = new StringBuilder();
         var inQuotes = false;
         var skipLeadingSpaces = true;
+        var escape = false;
 
         foreach (var c in argString)
         {
+            if (escape)
+            {
+                stringBuilder.Append(c);
+                escape = false;
+                continue;
+            }
+
+            if (c == '\\')
+            {
+                escape = true;
+                continue;
+            }
+
             if (skipLeadingSpaces && char.IsWhiteSpace(c) && !inQuotes)
             {
                 continue;
