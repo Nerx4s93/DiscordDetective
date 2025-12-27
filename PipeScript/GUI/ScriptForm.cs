@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
+using PipeScript.API;
 
 namespace PipeScript.GUI;
 
-public sealed partial class ScriptForm : Form
+public sealed partial class ScriptForm : Form, IScriptHost
 {
     private readonly PipeScriptEngine _pipeScriptEngine;
     private readonly string _code;
@@ -38,7 +39,7 @@ public sealed partial class ScriptForm : Form
         _pipeScriptEngine.Restart(_code);
     }
 
-    public void AppendLine(string text)
+    public void WriteLine(string text)
     {
         InvokeIfRequired(() =>
         {
@@ -46,7 +47,7 @@ public sealed partial class ScriptForm : Form
         });
     }
 
-    public void AppendText(string text)
+    public void Write(string text)
     {
         InvokeIfRequired(() =>
         {
