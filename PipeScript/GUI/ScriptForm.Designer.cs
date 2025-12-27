@@ -79,7 +79,6 @@ sealed partial class ScriptForm
         // buttonPauseResume
         // 
         buttonPauseResume.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonPauseResume.Enabled = false;
         buttonPauseResume.Location = new System.Drawing.Point(306, 516);
         buttonPauseResume.Name = "buttonPauseResume";
         buttonPauseResume.Size = new System.Drawing.Size(141, 48);

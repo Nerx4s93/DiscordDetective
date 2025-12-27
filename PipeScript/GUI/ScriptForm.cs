@@ -40,10 +40,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
             buttonStop.Enabled = true;
-            buttonPauseResume.Enabled = true;
             UpdateTitle("Running");
         });
     }
@@ -75,7 +72,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
             _isPaused = false;
             buttonPauseResume.Text = "Пауза";
             buttonStop.Enabled = false;
-            buttonPauseResume.Enabled = false;
             WriteLine("=== Script finished ===");
             UpdateTitle("Finished");
         });
@@ -88,7 +84,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
             _isPaused = false;
             buttonPauseResume.Text = "Пауза";
             buttonStop.Enabled = false;
-            buttonPauseResume.Enabled = false;
             WriteLine("=== Script stopped ===");
             UpdateTitle("Stopped");
         });
@@ -101,7 +96,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
             _isPaused = false;
             buttonPauseResume.Text = "Пауза";
             buttonStop.Enabled = false;
-            buttonPauseResume.Enabled = false;
             WriteLine("=== ERROR ===");
             WriteLine(message);
 
@@ -124,11 +118,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
     private void buttonPauseResume_Click(object sender, EventArgs e)
     {
-        if (!_pipeScriptEngine.IsRunning)
-        {
-            return;
-        }
-
         if (_isPaused)
         {
             _pipeScriptEngine.Resume();
