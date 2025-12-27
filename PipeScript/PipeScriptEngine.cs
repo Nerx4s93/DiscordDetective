@@ -10,9 +10,8 @@ namespace PipeScript;
 
 public sealed class PipeScriptEngine(string scriptName = "unnamed")
 {
-    private ScriptForm? _form;
-    private Thread? _uiThread;
     private Thread? _scriptThread;
+    private CancellationTokenSource? _cts;
 
     private readonly CommandRegistry _commandRegistry = new();
     private readonly Stack<ScriptFrame> _callStack = new();
@@ -22,37 +21,52 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         ScriptName = scriptName
     };
 
-    public void Run(string script)
-    {
-        _uiThread = new Thread(() =>
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+    public bool IsRunning => _scriptThread?.IsAlive == true;
 
-            _form = new ScriptForm(this);
-            Context.Host = new WinFormsHost(_form);
-            Application.Run(_form);
-        });
-        _uiThread.SetApartmentState(ApartmentState.STA);
-        _uiThread.IsBackground = true;
-        _uiThread.Start();
+    public void Start(string script)
+    {
+        if (IsRunning)
+        {
+            throw new InvalidOperationException("Script already running");
+        }
+
+        _cts = new CancellationTokenSource();
 
         _scriptThread = new Thread(() =>
         {
             try
             {
-                Execute(script);
+                Execute(script, _cts.Token);
             }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                _form?.AppendLine("ERROR: " + ex.Message);
+                Context.Host?.WriteLine("ERROR: " + ex.Message);
             }
         });
+
         _scriptThread.IsBackground = true;
         _scriptThread.Start();
     }
 
-    private void Execute(string script)
+    public void Stop()
+    {
+        if (!IsRunning)
+        {
+            return;
+        }
+
+        _cts!.Cancel();
+        _scriptThread!.Join();
+    }
+
+    public void Restart(string script)
+    {
+        Stop();
+        Start(script);
+    }
+
+    private void Execute(string script, CancellationToken token)
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
@@ -65,6 +79,8 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
         while (_callStack.Count > 0)
         {
+            token.ThrowIfCancellationRequested();
+
             var frame = _callStack.Peek();
 
             if (frame.LineIndex >= frame.Lines.Length)

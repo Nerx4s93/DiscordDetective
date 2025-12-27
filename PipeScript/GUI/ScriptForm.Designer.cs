@@ -1,6 +1,6 @@
 ﻿namespace PipeScript.GUI;
 
-partial class ScriptForm
+sealed partial class ScriptForm
 {
     /// <summary>
     /// Required designer variable.
@@ -31,7 +31,7 @@ partial class ScriptForm
         richTextBoxOutput = new System.Windows.Forms.RichTextBox();
         label1 = new System.Windows.Forms.Label();
         buttonStop = new System.Windows.Forms.Button();
-        buttonPause = new System.Windows.Forms.Button();
+        buttonStart = new System.Windows.Forms.Button();
         buttonRestart = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
@@ -56,35 +56,35 @@ partial class ScriptForm
         // buttonStop
         // 
         buttonStop.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonStop.Enabled = false;
         buttonStop.Location = new System.Drawing.Point(159, 516);
         buttonStop.Name = "buttonStop";
         buttonStop.Size = new System.Drawing.Size(141, 48);
         buttonStop.TabIndex = 2;
         buttonStop.Text = "Стоп";
         buttonStop.UseVisualStyleBackColor = true;
+        buttonStop.Click += buttonStop_Click;
         // 
-        // buttonPause
+        // buttonStart
         // 
-        buttonPause.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonPause.Enabled = false;
-        buttonPause.Location = new System.Drawing.Point(12, 516);
-        buttonPause.Name = "buttonPause";
-        buttonPause.Size = new System.Drawing.Size(141, 48);
-        buttonPause.TabIndex = 3;
-        buttonPause.Text = "Пауза";
-        buttonPause.UseVisualStyleBackColor = true;
+        buttonStart.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonStart.Location = new System.Drawing.Point(12, 516);
+        buttonStart.Name = "buttonStart";
+        buttonStart.Size = new System.Drawing.Size(141, 48);
+        buttonStart.TabIndex = 3;
+        buttonStart.Text = "Старт";
+        buttonStart.UseVisualStyleBackColor = true;
+        buttonStart.Click += buttonStart_Click;
         // 
         // buttonRestart
         // 
         buttonRestart.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonRestart.Enabled = false;
         buttonRestart.Location = new System.Drawing.Point(306, 516);
         buttonRestart.Name = "buttonRestart";
         buttonRestart.Size = new System.Drawing.Size(141, 48);
         buttonRestart.TabIndex = 4;
         buttonRestart.Text = "Перезапуск";
         buttonRestart.UseVisualStyleBackColor = true;
+        buttonRestart.Click += buttonRestart_Click;
         // 
         // ScriptForm
         // 
@@ -92,7 +92,7 @@ partial class ScriptForm
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1101, 573);
         Controls.Add(buttonRestart);
-        Controls.Add(buttonPause);
+        Controls.Add(buttonStart);
         Controls.Add(buttonStop);
         Controls.Add(label1);
         Controls.Add(richTextBoxOutput);
@@ -108,6 +108,6 @@ partial class ScriptForm
     private System.Windows.Forms.RichTextBox richTextBoxOutput;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button buttonStop;
-    private System.Windows.Forms.Button buttonPause;
+    private System.Windows.Forms.Button buttonStart;
     private System.Windows.Forms.Button buttonRestart;
 }
