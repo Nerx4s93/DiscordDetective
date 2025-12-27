@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
+
 using PipeScript.CommandResults;
 
 namespace PipeScript;
@@ -212,7 +214,45 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
     private static string[] ParseArgs(string argString)
     {
-        return argString.Split(',', StringSplitOptions.RemoveEmptyEntries); ;
+        var result = new List<string>();
+        var stringBuilder = new StringBuilder();
+
+        var inQuotes = false;
+
+        foreach (var c in argString)
+        {
+            switch (c)
+            {
+                case '"':
+                {
+                    inQuotes = !inQuotes;
+                    continue;
+                }
+                case ',' when !inQuotes:
+                {
+                    AddArg();
+                    continue;
+                }
+                default:
+                {
+                    stringBuilder.Append(c);
+                    break;
+                }
+            }
+        }
+
+        AddArg();
+        return result.ToArray();
+
+        void AddArg()
+        {
+            var value = stringBuilder.ToString().Trim();
+            if (value.Length > 0)
+            {
+                result.Add(value);
+            }
+            stringBuilder.Clear();
+        }
     }
 
     private void WaitIfPaused()
