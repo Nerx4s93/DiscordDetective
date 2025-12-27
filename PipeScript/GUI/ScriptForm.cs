@@ -138,22 +138,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
         _pipeScriptEngine.Step();
     }
 
-    public void WriteLine(string text)
-    {
-        InvokeIfRequired(() =>
-        {
-            richTextBoxOutput.AppendText(text + Environment.NewLine);
-        });
-    }
-
-    public void Write(string text)
-    {
-        InvokeIfRequired(() =>
-        {
-            richTextBoxOutput.AppendText(text);
-        });
-    }
-
     private void InvokeIfRequired(Action action)
     {
         if (InvokeRequired)
@@ -169,5 +153,20 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private void UpdateTitle(string status)
     {
         InvokeIfRequired(() => Text = $"{_scriptName} [{status}]");
+    }
+
+    public void WriteLine(string text)
+    {
+        Write(text + Environment.NewLine);
+    }
+
+    public void Write(string text)
+    {
+        InvokeIfRequired(() =>
+        {
+            richTextBoxOutput.AppendText(text);
+            richTextBoxOutput.SelectionStart = richTextBoxOutput.TextLength;
+            richTextBoxOutput.ScrollToCaret();
+        });
     }
 }
