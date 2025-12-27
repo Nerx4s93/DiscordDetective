@@ -11,6 +11,11 @@ public class Variables
         _variables[name] = value;
     }
 
+    public void Delete(string name)
+    {
+        _variables.Remove(name);
+    }
+
     public Variable Get(string name)
     {
         if (!_variables.TryGetValue(name, out var value))
