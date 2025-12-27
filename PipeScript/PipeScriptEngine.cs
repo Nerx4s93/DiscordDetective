@@ -24,9 +24,17 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
     public bool IsRunning => _scriptThread?.IsAlive == true;
 
-    public void Pause() => _paused = true;
+    public void Pause()
+    {
+        _paused = true;
+        Paused?.Invoke();
+    }
 
-    public void Resume() => _paused = false;
+    public void Resume()
+    {
+        _paused = false;
+        Resumed?.Invoke();
+    }
 
     public void Start(string script)
     {
@@ -41,12 +49,22 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         {
             try
             {
+                Started?.Invoke();
                 Execute(script, _cts.Token);
+                Finished?.Invoke();
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException)
+            {
+                Stopped?.Invoke();
+            }
             catch (Exception ex)
             {
-                Context.Host?.WriteLine("ERROR: " + ex.Message);
+                Error?.Invoke(ex.Message);
+            }
+            finally
+            {
+                _cts = null;
+                _scriptThread = null;
             }
         });
 
@@ -62,10 +80,6 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         }
 
         _cts!.Cancel();
-        _scriptThread!.Join();
-
-        _cts = null;
-        _scriptThread = null;
     }
 
     public void Restart(string script)
@@ -180,4 +194,11 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
             Thread.Sleep(50);
         }
     }
+
+    public event Action? Started;
+    public event Action? Paused;
+    public event Action? Resumed;
+    public event Action? Finished;
+    public event Action? Stopped;
+    public event Action<string>? Error;
 }
