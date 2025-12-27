@@ -7,6 +7,7 @@ namespace PipeScript.GUI;
 public sealed partial class ScriptForm : Form, IScriptHost
 {
     private readonly PipeScriptEngine _pipeScriptEngine;
+    private readonly string _scriptName;
     private readonly string _code;
 
     public ScriptForm(string scriptName, string code)
@@ -21,6 +22,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
                 Host = new WinFormsHost(this)
             }
         };
+        _scriptName = scriptName;
         _code = code;
     }
 
