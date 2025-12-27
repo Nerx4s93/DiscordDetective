@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows.Forms;
 using PipeScript.CommandResults;
 
 namespace PipeScript;
@@ -13,8 +12,8 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
     private Thread? _scriptThread;
     private CancellationTokenSource? _cts;
+    private readonly ManualResetEventSlim _pauseEvent = new(true);
     private volatile bool _paused;
-    private volatile bool _step;
 
     public ExecutionContext Context { get; } = new()
     {
@@ -26,12 +25,14 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     public void Pause()
     {
         _paused = true;
+        _pauseEvent.Reset();
         Paused?.Invoke();
     }
 
     public void Resume()
     {
         _paused = false;
+        _pauseEvent.Set();
         Resumed?.Invoke();
     }
 
@@ -93,7 +94,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
             return;
         }
 
-        _step = true;
+        _pauseEvent.Set();
     }
 
     private void Execute(string script, CancellationToken token)
@@ -210,14 +211,10 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
     private void WaitIfPaused()
     {
-        while (_paused && !_step)
+        _pauseEvent.Wait();
+        if (_paused)
         {
-            Thread.Sleep(50);
-        }
-
-        if (_step)
-        {
-            _step = false;
+            _pauseEvent.Reset();
         }
     }
 
