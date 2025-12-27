@@ -11,7 +11,7 @@ internal sealed class Dvar : PipeCommand
 
     public override ContinueResult Execute(string[] args, ExecutionContext ctx)
     {
-        if (args.Length < 3)
+        if (args.Length != 1)
         {
             throw new ArgumentException("Usage: dvar <name>");
         }
