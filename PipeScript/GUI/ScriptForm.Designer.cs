@@ -28,21 +28,21 @@ partial class ScriptForm
     /// </summary>
     private void InitializeComponent()
     {
-        richTextBox1 = new System.Windows.Forms.RichTextBox();
+        richTextBoxOutput = new System.Windows.Forms.RichTextBox();
         label1 = new System.Windows.Forms.Label();
         buttonStop = new System.Windows.Forms.Button();
         buttonPause = new System.Windows.Forms.Button();
         buttonRestart = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
-        // richTextBox1
+        // richTextBoxOutput
         // 
-        richTextBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-        richTextBox1.Location = new System.Drawing.Point(12, 35);
-        richTextBox1.Name = "richTextBox1";
-        richTextBox1.Size = new System.Drawing.Size(1077, 475);
-        richTextBox1.TabIndex = 0;
-        richTextBox1.Text = "";
+        richTextBoxOutput.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+        richTextBoxOutput.Location = new System.Drawing.Point(12, 35);
+        richTextBoxOutput.Name = "richTextBoxOutput";
+        richTextBoxOutput.Size = new System.Drawing.Size(1077, 475);
+        richTextBoxOutput.TabIndex = 0;
+        richTextBoxOutput.Text = "";
         // 
         // label1
         // 
@@ -95,7 +95,7 @@ partial class ScriptForm
         Controls.Add(buttonPause);
         Controls.Add(buttonStop);
         Controls.Add(label1);
-        Controls.Add(richTextBox1);
+        Controls.Add(richTextBoxOutput);
         Font = new System.Drawing.Font("Arial", 10F);
         Name = "ScriptForm";
         Text = "Form1";
@@ -105,7 +105,7 @@ partial class ScriptForm
 
     #endregion
 
-    private System.Windows.Forms.RichTextBox richTextBox1;
+    private System.Windows.Forms.RichTextBox richTextBoxOutput;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button buttonStop;
     private System.Windows.Forms.Button buttonPause;

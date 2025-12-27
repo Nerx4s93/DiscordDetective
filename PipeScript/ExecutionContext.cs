@@ -1,10 +1,12 @@
 ﻿using System;
 
+using PipeScript.API;
+
 namespace PipeScript;
 
 public class ExecutionContext
 {
-    public PipeScriptEngine Engine { get; internal set; } = null!;
+    public IScriptHost Host { get; internal set; } = null!;
 
     public Guid ExecutionId { get; } = Guid.NewGuid();
     public string ScriptName { get; internal set; } = "unnamed";

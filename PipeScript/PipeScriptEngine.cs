@@ -1,27 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Windows.Forms;
 
 using PipeScript.CommandResults;
+using PipeScript.GUI;
 
 namespace PipeScript;
 
-public sealed class PipeScriptEngine
+public sealed class PipeScriptEngine(string scriptName = "unnamed")
 {
+    private ScriptForm? _form;
+    private Thread? _uiThread;
+    private Thread? _scriptThread;
+
     private readonly CommandRegistry _commandRegistry = new();
     private readonly Stack<ScriptFrame> _callStack = new();
 
-    public ExecutionContext Context { get; }
-
-    public PipeScriptEngine(string scriptName = "unnamed")
+    public ExecutionContext Context { get; } = new()
     {
-        Context = new ExecutionContext
+        ScriptName = scriptName
+    };
+
+    public void Run(string script)
+    {
+        _uiThread = new Thread(() =>
         {
-            Engine = this,
-            ScriptName = scriptName
-        };
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            _form = new ScriptForm(this);
+            Context.Host = new WinFormsHost(_form);
+            Application.Run(_form);
+        });
+        _uiThread.SetApartmentState(ApartmentState.STA);
+        _uiThread.IsBackground = true;
+        _uiThread.Start();
+
+        _scriptThread = new Thread(() =>
+        {
+            try
+            {
+                Execute(script);
+            }
+            catch (Exception ex)
+            {
+                _form?.AppendLine("ERROR: " + ex.Message);
+            }
+        });
+        _scriptThread.IsBackground = true;
+        _scriptThread.Start();
     }
 
-    public void Execute(string script)
+    private void Execute(string script)
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
