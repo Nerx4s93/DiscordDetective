@@ -178,7 +178,9 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         {
             frame = _callStack.Count > 0 ? _callStack.Peek() : null;
             if (frame == null)
+            {
                 return null;
+            }
 
             if (frame.LineIndex >= frame.Lines.Length)
             {
@@ -192,13 +194,17 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
             frame.LineIndex++;
 
             if (rawLine.Length == 0)
+            {
                 return null;
+            }
 
             var semicolonIndex = rawLine.IndexOf(';');
             var line = semicolonIndex >= 0 ? rawLine[..semicolonIndex].Trim() : rawLine;
 
             if (line.Length == 0)
+            {
                 return null;
+            }
 
             return line;
         }
