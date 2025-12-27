@@ -33,6 +33,7 @@ sealed partial class ScriptForm
         buttonStop = new System.Windows.Forms.Button();
         buttonStart = new System.Windows.Forms.Button();
         buttonRestart = new System.Windows.Forms.Button();
+        buttonPauseResume = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
         // richTextBoxOutput
@@ -86,11 +87,23 @@ sealed partial class ScriptForm
         buttonRestart.UseVisualStyleBackColor = true;
         buttonRestart.Click += buttonRestart_Click;
         // 
+        // buttonPauseResume
+        // 
+        buttonPauseResume.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonPauseResume.Location = new System.Drawing.Point(453, 516);
+        buttonPauseResume.Name = "buttonPauseResume";
+        buttonPauseResume.Size = new System.Drawing.Size(141, 48);
+        buttonPauseResume.TabIndex = 5;
+        buttonPauseResume.Text = "Пауза";
+        buttonPauseResume.UseVisualStyleBackColor = true;
+        buttonPauseResume.Click += buttonPauseResume_Click;
+        // 
         // ScriptForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(11F, 23F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1101, 573);
+        Controls.Add(buttonPauseResume);
         Controls.Add(buttonRestart);
         Controls.Add(buttonStart);
         Controls.Add(buttonStop);
@@ -110,4 +123,5 @@ sealed partial class ScriptForm
     private System.Windows.Forms.Button buttonStop;
     private System.Windows.Forms.Button buttonStart;
     private System.Windows.Forms.Button buttonRestart;
+    private System.Windows.Forms.Button buttonPauseResume;
 }

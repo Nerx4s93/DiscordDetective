@@ -10,11 +10,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private readonly string _scriptName;
     private readonly string _code;
 
+    private bool _isPaused;
+
     public ScriptForm(string scriptName, string code)
     {
         InitializeComponent();
-        Text = scriptName;
-
         _pipeScriptEngine = new PipeScriptEngine(scriptName)
         {
             Context =
@@ -24,7 +24,69 @@ public sealed partial class ScriptForm : Form, IScriptHost
         };
         _scriptName = scriptName;
         _code = code;
+
+        _pipeScriptEngine.Started += OnStarted;
+        _pipeScriptEngine.Paused += OnPaused;
+        _pipeScriptEngine.Resumed += OnResumed;
+        _pipeScriptEngine.Finished += OnFinished;
+        _pipeScriptEngine.Stopped += OnStopped;
     }
+
+    #region MyRegion
+
+    private void OnStarted()
+    {
+        InvokeIfRequired(() =>
+        {
+            _isPaused = false;
+            buttonPauseResume.Text = "Пауза";
+            UpdateTitle("Running");
+        });
+    }
+
+    private void OnPaused()
+    {
+        InvokeIfRequired(() =>
+        {
+            _isPaused = true;
+            buttonPauseResume.Text = "Возобновить";
+            UpdateTitle("Paused");
+        });
+    }
+
+    private void OnResumed()
+    {
+        InvokeIfRequired(() =>
+        {
+            _isPaused = false;
+            buttonPauseResume.Text = "Пауза";
+            UpdateTitle("Running");
+        });
+    }
+
+    private void OnFinished()
+    {
+        InvokeIfRequired(() =>
+        {
+            _isPaused = false;
+            buttonPauseResume.Text = "Пауза";
+            WriteLine("=== Script finished ===");
+            UpdateTitle("Finished");
+        });
+    }
+
+    private void OnStopped()
+    {
+        InvokeIfRequired(() =>
+        {
+            _isPaused = false;
+            buttonPauseResume.Text = "Пауза";
+            WriteLine("=== Script stopped ===");
+            UpdateTitle("Stopped");
+        });
+    }
+
+    #endregion
 
     private void buttonStart_Click(object sender, EventArgs e)
     {
@@ -39,6 +101,23 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private void buttonRestart_Click(object sender, EventArgs e)
     {
         _pipeScriptEngine.Restart(_code);
+    }
+
+    private void buttonPauseResume_Click(object sender, EventArgs e)
+    {
+        if (!_pipeScriptEngine.IsRunning)
+        {
+            return;
+        }
+
+        if (_isPaused)
+        {
+            _pipeScriptEngine.Resume();
+        }
+        else
+        {
+            _pipeScriptEngine.Pause();
+        }
     }
 
     public void WriteLine(string text)
@@ -67,5 +146,10 @@ public sealed partial class ScriptForm : Form, IScriptHost
         {
             action();
         }
+    }
+
+    private void UpdateTitle(string status)
+    {
+        InvokeIfRequired(() => Text = $"{_scriptName} [{status}]");
     }
 }
