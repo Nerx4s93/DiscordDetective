@@ -30,6 +30,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         _pipeScriptEngine.Resumed += OnResumed;
         _pipeScriptEngine.Finished += OnFinished;
         _pipeScriptEngine.Stopped += OnStopped;
+        _pipeScriptEngine.Error += OnError;
     }
 
     #region Событие движка
@@ -85,6 +86,21 @@ public sealed partial class ScriptForm : Form, IScriptHost
             UpdateTitle("Stopped");
         });
     }
+
+    private void OnError(string message)
+    {
+        InvokeIfRequired(() =>
+        {
+            _isPaused = false;
+            buttonPauseResume.Text = "Пауза";
+
+            WriteLine("=== ERROR ===");
+            WriteLine(message);
+
+            UpdateTitle("Error");
+        });
+    }
+
 
     #endregion
 
