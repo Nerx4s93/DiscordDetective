@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows.Forms;
 
 using PipeScript.CommandResults;
-using PipeScript.GUI;
 
 namespace PipeScript;
 
