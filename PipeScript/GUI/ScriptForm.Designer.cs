@@ -56,6 +56,7 @@ sealed partial class ScriptForm
         // buttonStop
         // 
         buttonStop.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonStop.Enabled = false;
         buttonStop.Location = new System.Drawing.Point(159, 516);
         buttonStop.Name = "buttonStop";
         buttonStop.Size = new System.Drawing.Size(141, 48);
@@ -78,6 +79,7 @@ sealed partial class ScriptForm
         // buttonPauseResume
         // 
         buttonPauseResume.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonPauseResume.Enabled = false;
         buttonPauseResume.Location = new System.Drawing.Point(306, 516);
         buttonPauseResume.Name = "buttonPauseResume";
         buttonPauseResume.Size = new System.Drawing.Size(141, 48);
