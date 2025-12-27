@@ -15,7 +15,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     public ScriptForm(string scriptName, string code)
     {
         InitializeComponent();
-        Text = _scriptName;
+        Text = scriptName;
         _pipeScriptEngine = new PipeScriptEngine(scriptName)
         {
             Context =
