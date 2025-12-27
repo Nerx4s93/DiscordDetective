@@ -16,7 +16,9 @@ internal static class Program
 
         Console.Write($"\x1b[8;{12};{80}t");
         ApplicationConfiguration.Initialize();
-        Application.Run(new FormMain());
+
+        var code = File.ReadAllText(@"Resources\PipeScripts\Types\BasicTypes.psc");
+        Application.Run(new PipeScript.GUI.ScriptForm("MyScript", code));
     }
 
     private static void CheckFile(string path, string message)

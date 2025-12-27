@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-
+using System.Windows.Forms;
 using PipeScript.CommandResults;
 
 namespace PipeScript;
@@ -14,6 +14,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
     private Thread? _scriptThread;
     private CancellationTokenSource? _cts;
     private volatile bool _paused;
+    private volatile bool _step;
 
     public ExecutionContext Context { get; } = new()
     {
@@ -92,11 +93,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
             return;
         }
 
-        var line = GetCodeLine(out _);
-        if (line != null)
-        {
-            ExecuteLine(line, CancellationToken.None);
-        }
+        _step = true;
     }
 
     private void Execute(string script, CancellationToken token)
@@ -121,6 +118,7 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
                 if (line == null)
                     continue;
 
+                WaitIfPaused();
                 ExecuteLine(line, token);
             }
         }
@@ -128,8 +126,6 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
     private void ExecuteLine(string line, CancellationToken token)
     {
-        WaitIfPaused();
-
         var firstSpace = line.IndexOf(' ');
         if (firstSpace < 0)
         {
@@ -214,9 +210,14 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
 
     private void WaitIfPaused()
     {
-        while (_paused)
+        while (_paused && !_step)
         {
             Thread.Sleep(50);
+        }
+
+        if (_step)
+        {
+            _step = false;
         }
     }
 
