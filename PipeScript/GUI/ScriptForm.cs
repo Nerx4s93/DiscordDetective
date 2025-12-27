@@ -32,7 +32,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         _pipeScriptEngine.Stopped += OnStopped;
     }
 
-    #region MyRegion
+    #region Событие движка
 
     private void OnStarted()
     {
