@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace PipeScript.UI;
 
-public class RichTextBoxNoSmoothScroll : RichTextBox
+internal class RichTextBoxNoSmoothScroll : RichTextBox
 {
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);

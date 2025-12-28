@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
+
 using PipeScript.API;
+using PipeScript.UI;
 
 namespace PipeScript.GUI;
 
@@ -15,6 +18,12 @@ public sealed partial class ScriptForm : Form, IScriptHost
     public ScriptForm(string scriptName, string code)
     {
         InitializeComponent();
+
+        scriptCodeView1.SetScript(code);
+        var commands = new CommandRegistry().Commands.ToList();
+        scriptCodeView1.SendCommands(commands);
+        scriptCodeView1.HighlightVisibleSyntax();
+
         Text = scriptName;
         _pipeScriptEngine = new PipeScriptEngine(scriptName)
         {
