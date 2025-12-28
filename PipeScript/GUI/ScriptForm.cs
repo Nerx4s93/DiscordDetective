@@ -164,9 +164,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            richTextBoxOutput.AppendText(text);
-            richTextBoxOutput.SelectionStart = richTextBoxOutput.TextLength;
-            richTextBoxOutput.ScrollToCaret();
+            _richTextBoxNoSmoothScrollOutput.AppendText(text);
+            _richTextBoxNoSmoothScrollOutput.SelectionStart = _richTextBoxNoSmoothScrollOutput.TextLength;
+            _richTextBoxNoSmoothScrollOutput.ScrollToCaret();
         });
     }
 }
