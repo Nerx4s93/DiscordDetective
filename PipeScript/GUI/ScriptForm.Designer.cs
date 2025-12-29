@@ -116,11 +116,13 @@ sealed partial class ScriptForm
         // richTextBoxCode
         // 
         richTextBoxCode.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+        richTextBoxCode.DetectUrls = false;
         richTextBoxCode.Location = new System.Drawing.Point(819, 35);
         richTextBoxCode.Name = "richTextBoxCode";
         richTextBoxCode.Size = new System.Drawing.Size(567, 600);
         richTextBoxCode.TabIndex = 9;
         richTextBoxCode.Text = "";
+        richTextBoxCode.WordWrap = false;
         // 
         // ScriptForm
         // 
