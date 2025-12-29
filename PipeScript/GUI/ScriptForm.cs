@@ -1,26 +1,34 @@
 ﻿using System;
-
+using System.Drawing;
 using System.Windows.Forms;
 
 using PipeScript.API;
+using PipeScript.Highlighter;
 
 namespace PipeScript.GUI;
 
 public sealed partial class ScriptForm : Form, IScriptHost
 {
-    private readonly PipeScriptEngine _pipeScriptEngine;
-    private readonly string _scriptName;
-    private readonly string _code;
+    private PipeScriptEngine _pipeScriptEngine = null!;
+    private string _scriptName = null!;
+    private string _code = null!;
 
     private bool _isPaused;
 
     public ScriptForm(string scriptName, string code)
     {
         InitializeComponent();
+        AdjustScriptEngine(scriptName, code);
+    }
 
+    private void AdjustScriptEngine(string scriptName, string code)
+    {
         richTextBoxCode.Text = code;
-
         Text = scriptName;
+
+        _scriptName = scriptName;
+        _code = code;
+
         _pipeScriptEngine = new PipeScriptEngine(scriptName)
         {
             Context =
@@ -28,8 +36,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
                 Host = new WinFormsHost(this)
             }
         };
-        _scriptName = scriptName;
-        _code = code;
 
         _pipeScriptEngine.Started += OnStarted;
         _pipeScriptEngine.Paused += OnPaused;
