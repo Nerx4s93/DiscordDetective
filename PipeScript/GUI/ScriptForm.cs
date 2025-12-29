@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using PipeScript.API;
+using PipeScript.Highlighter;
 
 namespace PipeScript.GUI;
 
@@ -21,6 +24,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InitializeComponent();
         AdjustScriptEngine(scriptName, code);
+        AdjustHighlighter(richTextBoxCode);
     }
 
     private void AdjustScriptEngine(string scriptName, string code)
@@ -46,6 +50,29 @@ public sealed partial class ScriptForm : Form, IScriptHost
         _pipeScriptEngine.Stopped += OnStopped;
         _pipeScriptEngine.Error += OnError;
     }
+
+    private void AdjustHighlighter(RichTextBox richTextBox)
+    {
+        var commands = new CommandRegistry().CommandNames;
+
+        var syntaxHighlighter = new SyntaxHighlighter(richTextBox);
+
+        // команды
+        syntaxHighlighter.AddPattern(new PatternDefinition(commands), new SyntaxStyle(Color.DeepPink));
+
+        // комментарии
+        syntaxHighlighter.AddPattern(new PatternDefinition(new Regex(@";.*?$", RegexOptions.Multiline | RegexOptions.Compiled)), new SyntaxStyle(Color.DarkGray, false, true));
+
+        // переменные ($name)
+        syntaxHighlighter.AddPattern(new PatternDefinition(@"\$[a-zA-Z_]\w*"), new SyntaxStyle(Color.FromArgb(31, 55, 127)));
+
+        // числа
+        syntaxHighlighter.AddPattern(new PatternDefinition(@"\d+\.\d+|\d+"), new SyntaxStyle(Color.Purple));
+
+        // операторы
+        syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
+    }
+
 
     #region Событие движка
 
