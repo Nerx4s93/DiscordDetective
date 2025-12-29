@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 using PipeScript.API;
-using PipeScript.Highlighter;
 
 namespace PipeScript.GUI;
 
@@ -14,6 +12,10 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private string _code = null!;
 
     private bool _isPaused;
+
+    public ScriptForm() : this("unnamed", "") { }
+
+    public ScriptForm(string code) : this("unnamed", code) { }
 
     public ScriptForm(string scriptName, string code)
     {
