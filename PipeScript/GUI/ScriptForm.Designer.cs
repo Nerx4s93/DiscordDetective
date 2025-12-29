@@ -36,8 +36,8 @@ sealed partial class ScriptForm
         buttonStart = new System.Windows.Forms.Button();
         buttonPauseResume = new System.Windows.Forms.Button();
         buttonStep = new System.Windows.Forms.Button();
-        scriptCodeView1 = new ScriptCodeView();
         label2 = new System.Windows.Forms.Label();
+        richTextBoxCode = new RichTextBoxNoSmoothScroll();
         SuspendLayout();
         // 
         // _richTextBoxNoSmoothScrollOutput
@@ -104,18 +104,6 @@ sealed partial class ScriptForm
         buttonStep.UseVisualStyleBackColor = true;
         buttonStep.Click += buttonStep_Click;
         // 
-        // scriptCodeView1
-        // 
-        scriptCodeView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-        scriptCodeView1.DetectUrls = false;
-        scriptCodeView1.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 204);
-        scriptCodeView1.Location = new System.Drawing.Point(819, 35);
-        scriptCodeView1.Name = "scriptCodeView1";
-        scriptCodeView1.Size = new System.Drawing.Size(567, 600);
-        scriptCodeView1.TabIndex = 7;
-        scriptCodeView1.Text = "";
-        scriptCodeView1.WordWrap = false;
-        // 
         // label2
         // 
         label2.AutoSize = true;
@@ -125,13 +113,22 @@ sealed partial class ScriptForm
         label2.TabIndex = 8;
         label2.Text = "Код:";
         // 
+        // richTextBoxCode
+        // 
+        richTextBoxCode.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+        richTextBoxCode.Location = new System.Drawing.Point(819, 35);
+        richTextBoxCode.Name = "richTextBoxCode";
+        richTextBoxCode.Size = new System.Drawing.Size(567, 600);
+        richTextBoxCode.TabIndex = 9;
+        richTextBoxCode.Text = "";
+        // 
         // ScriptForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(11F, 23F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1398, 698);
+        Controls.Add(richTextBoxCode);
         Controls.Add(label2);
-        Controls.Add(scriptCodeView1);
         Controls.Add(buttonStep);
         Controls.Add(buttonPauseResume);
         Controls.Add(buttonStart);
@@ -153,6 +150,6 @@ sealed partial class ScriptForm
     private System.Windows.Forms.Button buttonStart;
     private System.Windows.Forms.Button buttonPauseResume;
     private System.Windows.Forms.Button buttonStep;
-    private ScriptCodeView scriptCodeView1;
     private System.Windows.Forms.Label label2;
+    private RichTextBoxNoSmoothScroll richTextBoxCode;
 }

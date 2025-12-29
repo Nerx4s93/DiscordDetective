@@ -19,10 +19,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InitializeComponent();
 
-        scriptCodeView1.SetScript(code);
-        var commands = new CommandRegistry().Commands.ToList();
-        scriptCodeView1.SendCommands(commands);
-        scriptCodeView1.HighlightVisibleSyntax();
+        richTextBoxCode.Text = code;
 
         Text = scriptName;
         _pipeScriptEngine = new PipeScriptEngine(scriptName)
