@@ -195,7 +195,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
     #region  IScriptHost
 
-
     public void WriteLine(string text)
     {
         Write(text + Environment.NewLine);
