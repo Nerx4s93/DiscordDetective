@@ -38,6 +38,7 @@ sealed partial class ScriptForm
         buttonStep = new System.Windows.Forms.Button();
         label2 = new System.Windows.Forms.Label();
         richTextBoxCode = new RichTextBoxNoSmoothScroll();
+        buttonStepOver = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
         // _richTextBoxNoSmoothScrollOutput
@@ -124,11 +125,24 @@ sealed partial class ScriptForm
         richTextBoxCode.Text = "";
         richTextBoxCode.WordWrap = false;
         // 
+        // buttonStepOver
+        // 
+        buttonStepOver.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonStepOver.Enabled = false;
+        buttonStepOver.Location = new System.Drawing.Point(600, 641);
+        buttonStepOver.Name = "buttonStepOver";
+        buttonStepOver.Size = new System.Drawing.Size(175, 48);
+        buttonStepOver.TabIndex = 10;
+        buttonStepOver.Text = "Шаг без входа";
+        buttonStepOver.UseVisualStyleBackColor = true;
+        buttonStepOver.Click += buttonStepOver_Click;
+        // 
         // ScriptForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(11F, 23F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1398, 698);
+        Controls.Add(buttonStepOver);
         Controls.Add(richTextBoxCode);
         Controls.Add(label2);
         Controls.Add(buttonStep);
@@ -154,4 +168,5 @@ sealed partial class ScriptForm
     private System.Windows.Forms.Button buttonStep;
     private System.Windows.Forms.Label label2;
     private RichTextBoxNoSmoothScroll richTextBoxCode;
+    private System.Windows.Forms.Button buttonStepOver;
 }

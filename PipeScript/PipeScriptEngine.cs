@@ -7,36 +7,26 @@ using PipeScript.CommandResults;
 
 namespace PipeScript;
 
-public sealed class PipeScriptEngine(string scriptName = "unnamed")
+public sealed class PipeScriptEngine
 {
     private readonly CommandRegistry _commandRegistry = new();
     private readonly Stack<ScriptFrame> _callStack = new();
+    private readonly IExecutionObserver? _observer;
 
     private Thread? _scriptThread;
     private CancellationTokenSource? _cts;
-    private readonly ManualResetEventSlim _pauseEvent = new(true);
-    private volatile bool _paused;
 
-    public ExecutionContext Context { get; } = new()
+    public PipeScriptEngine(string scriptName = "unnamed", IExecutionObserver? observer = null)
     {
-        ScriptName = scriptName
-    };
+        Context.ScriptName = scriptName;
+        _observer = observer;
+    }
+
+    public ExecutionContext Context { get; } = new();
 
     public bool IsRunning => _scriptThread?.IsAlive == true;
 
-    public void Pause()
-    {
-        _paused = true;
-        _pauseEvent.Reset();
-        Paused?.Invoke();
-    }
-
-    public void Resume()
-    {
-        _paused = false;
-        _pauseEvent.Set();
-        Resumed?.Invoke();
-    }
+    public Stack<ScriptFrame> CallStack => _callStack;
 
     public void Start(string script)
     {
@@ -89,16 +79,6 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         _cts!.Cancel();
     }
 
-    public void Step()
-    {
-        if (!IsRunning || !_paused)
-        {
-            return;
-        }
-
-        _pauseEvent.Set();
-    }
-
     private void Execute(string script, CancellationToken token)
     {
         var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
@@ -112,17 +92,19 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
                 LineIndex = 0
             });
 
-
             while (_callStack.Count > 0)
             {
                 token.ThrowIfCancellationRequested();
 
-                var line = GetCodeLine(out _);
-                if (line == null)
+                var line = GetCodeLine(out var frame);
+                if (line == null || frame == null)
+                {
                     continue;
+                }
 
-                WaitIfPaused();
+                _observer?.BeforeExecute(frame);
                 ExecuteLine(line, token);
+                _observer?.AfterExecute(frame);
             }
         }
     }
@@ -138,13 +120,11 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         var commandName = line[..firstSpace];
         var argString = line[(firstSpace + 1)..];
 
-        var command = _commandRegistry.GetCommand(commandName);
-        if (command == null)
-        {
-            throw new Exception($"Unknown command '{commandName}' at line {Context.CurrentLineNumber}");
-        }
+        var command = _commandRegistry.GetCommand(commandName)
+            ?? throw new Exception($"Unknown command '{commandName}' at line {Context.CurrentLineNumber}");
 
         var args = ParseArgs(argString);
+
         if (!command.ValidateArgs(args))
         {
             throw new Exception($"Invalid arguments for '{commandName}' at line {Context.CurrentLineNumber}");
@@ -159,18 +139,14 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
         switch (result)
         {
             case ContinueResult:
-                {
-                    break;
-                }
+                return;
+
             case IncludeResult include:
-                {
-                    Execute(include.Code, token);
-                    break;
-                }
+                Execute(include.Code, token);
+                return;
+
             default:
-                {
-                    throw new Exception($"Unknown command result type: {result.GetType().Name}");
-                }
+                throw new Exception($"Unknown command result type: {result.GetType().Name}");
         }
     }
 
@@ -201,30 +177,28 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
             }
 
             var semicolonIndex = rawLine.IndexOf(';');
-            var line = semicolonIndex >= 0 ? rawLine[..semicolonIndex].Trim() : rawLine;
+            var line = semicolonIndex >= 0
+                ? rawLine[..semicolonIndex].Trim()
+                : rawLine;
 
-            if (line.Length == 0)
-            {
-                return null;
-            }
-
-            return line;
+            return line.Length == 0 ? null : line;
         }
     }
 
     private static string[] ParseArgs(string argString)
     {
         var result = new List<string>();
-        var stringBuilder = new StringBuilder();
+        var sb = new StringBuilder();
+
         var inQuotes = false;
-        var skipLeadingSpaces = true;
+        var skipSpaces = true;
         var escape = false;
 
         foreach (var c in argString)
         {
             if (escape)
             {
-                stringBuilder.Append(c);
+                sb.Append(c);
                 escape = false;
                 continue;
             }
@@ -235,55 +209,40 @@ public sealed class PipeScriptEngine(string scriptName = "unnamed")
                 continue;
             }
 
-            if (skipLeadingSpaces && char.IsWhiteSpace(c) && !inQuotes)
+            if (skipSpaces && char.IsWhiteSpace(c) && !inQuotes)
             {
                 continue;
             }
 
-            skipLeadingSpaces = false;
+            skipSpaces = false;
 
             switch (c)
             {
                 case '"':
-                {
                     inQuotes = !inQuotes;
                     break;
-                }
+
                 case ',' when !inQuotes:
-                {
-                    result.Add(stringBuilder.ToString());
-                    stringBuilder.Clear();
-                    skipLeadingSpaces = true;
+                    result.Add(sb.ToString());
+                    sb.Clear();
+                    skipSpaces = true;
                     break;
-                }
+
                 default:
-                {
-                    stringBuilder.Append(c);
+                    sb.Append(c);
                     break;
-                }
             }
         }
 
-        if (stringBuilder.Length > 0)
+        if (sb.Length > 0)
         {
-            result.Add(stringBuilder.ToString());
+            result.Add(sb.ToString());
         }
 
         return result.ToArray();
     }
 
-    private void WaitIfPaused()
-    {
-        _pauseEvent.Wait();
-        if (_paused)
-        {
-            _pauseEvent.Reset();
-        }
-    }
-
     public event Action? Started;
-    public event Action? Paused;
-    public event Action? Resumed;
     public event Action? Finished;
     public event Action? Stopped;
     public event Action<string>? Error;

@@ -1,6 +1,6 @@
 ﻿namespace PipeScript;
 
-internal sealed class ScriptFrame
+public sealed class ScriptFrame
 {
     public string ScriptName;
     public string[] Lines;

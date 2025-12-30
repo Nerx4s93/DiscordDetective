@@ -11,6 +11,7 @@ namespace PipeScript.GUI;
 public sealed partial class ScriptForm : Form, IScriptHost
 {
     private PipeScriptEngine _pipeScriptEngine = null!;
+    private ScriptDebugger _debugger = null!;
     private string _scriptName = null!;
 
     private bool _isPaused;
@@ -33,7 +34,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
         _scriptName = scriptName;
 
-        _pipeScriptEngine = new PipeScriptEngine(scriptName)
+        _debugger = new ScriptDebugger();
+
+        _pipeScriptEngine = new PipeScriptEngine(scriptName, _debugger)
         {
             Context =
             {
@@ -41,9 +44,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
             }
         };
 
+        _debugger.AttachCallStack(_pipeScriptEngine.CallStack);
+
         _pipeScriptEngine.Started += OnStarted;
-        _pipeScriptEngine.Paused += OnPaused;
-        _pipeScriptEngine.Resumed += OnResumed;
         _pipeScriptEngine.Finished += OnFinished;
         _pipeScriptEngine.Stopped += OnStopped;
         _pipeScriptEngine.Error += OnError;
@@ -77,6 +80,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         buttonStop.Enabled = _pipeScriptEngine.IsRunning;
         buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
+        buttonStepOver.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
         richTextBoxCode.ReadOnly = _pipeScriptEngine.IsRunning;
     }
 
@@ -89,34 +93,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
         });
     }
 
-    private void OnPaused()
-    {
-        InvokeIfRequired(() =>
-        {
-            _isPaused = true;
-            buttonPauseResume.Text = "Возобновить";
-            UpdateButtons();
-            UpdateTitle("Paused");
-        });
-    }
-
-    private void OnResumed()
-    {
-        InvokeIfRequired(() =>
-        {
-            _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
-            UpdateButtons();
-            UpdateTitle("Running");
-        });
-    }
-
     private void OnFinished()
     {
         InvokeIfRequired(() =>
         {
             _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
             UpdateButtons();
             WriteLine("=== Script finished ===");
             UpdateTitle("Finished");
@@ -128,7 +109,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
+            buttonPauseResume.Text = "Возобновить";
             UpdateButtons();
             WriteLine("=== Script stopped ===");
             UpdateTitle("Stopped");
@@ -140,15 +121,13 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _isPaused = false;
-            buttonPauseResume.Text = "Пауза";
+            buttonPauseResume.Text = "Возобновить";
             UpdateButtons();
             WriteLine("=== ERROR ===");
             WriteLine(message);
-
             UpdateTitle("Error");
         });
     }
-
 
     #endregion
 
@@ -166,17 +145,30 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         if (_isPaused)
         {
-            _pipeScriptEngine.Resume();
+            _debugger.Resume();
+            _isPaused = false;
+            buttonPauseResume.Text = "Пауза";
+            UpdateTitle("Running");
         }
         else
         {
-            _pipeScriptEngine.Pause();
+            _debugger.Pause();
+            _isPaused = true;
+            buttonPauseResume.Text = "Возобновить";
+            UpdateTitle("Paused");
         }
+
+        UpdateButtons();
     }
 
     private void buttonStep_Click(object sender, EventArgs e)
     {
-        _pipeScriptEngine.Step();
+        _debugger.Step();
+    }
+
+    private void buttonStepOver_Click(object sender, EventArgs e)
+    {
+        _debugger.StepOver();
     }
 
     private void InvokeIfRequired(Action action)
