@@ -11,15 +11,12 @@ namespace PipeScript.Highlighter;
 internal class SyntaxHighlighter
 {
     private readonly RichTextBox _richTextBox;
-
     private readonly int _fontSizeFactor;
-
     private readonly string _fontName;
 
     private bool _isDuringHighlight;
 
     private List<StyleGroupPair>? _styleGroupPairs;
-
     private readonly List<PatternStyleMap> _patternStyles = [];
 
     private Regex? _lineBreakRegex;
@@ -60,9 +57,7 @@ internal class SyntaxHighlighter
             throw new ArgumentException("name must not be null or empty", nameof(name));
         }
 
-        var existingPatternStyle = FindPatternStyle(name);
-
-        if (existingPatternStyle != null)
+        if (FindPatternStyle(name) != null)
         {
             throw new ArgumentException("A pattern style pair with the same name already exists");
         }
@@ -72,27 +67,32 @@ internal class SyntaxHighlighter
 
     protected SyntaxStyle GetDefaultStyle()
     {
-        return new SyntaxStyle(_richTextBox.ForeColor, _richTextBox.Font.Bold, _richTextBox.Font.Italic);
+        return new SyntaxStyle(
+            _richTextBox.ForeColor,
+            _richTextBox.Font.Bold,
+            _richTextBox.Font.Italic
+        );
     }
 
     private PatternStyleMap? FindPatternStyle(string name)
     {
-        var patternStyle = _patternStyles
-            .FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.Ordinal));
-        return patternStyle;
+        return _patternStyles.FirstOrDefault(p =>
+            string.Equals(p.Name, name, StringComparison.Ordinal));
     }
 
     public void ReHighlight()
     {
-        if (!DisableHighlighting)
+        if (DisableHighlighting)
         {
-            if (_isDuringHighlight)
-            {
-                return;
-            }
-
-            _richTextBox.DisableThenDoThenEnable(HighlighTextBase);
+            return;
         }
+
+        if (_isDuringHighlight)
+        {
+            return;
+        }
+
+        _richTextBox.DisableThenDoThenEnable(HighlighTextBase);
     }
 
     private void RichTextBox_TextChanged(object sender, EventArgs e)
@@ -103,123 +103,132 @@ internal class SyntaxHighlighter
     internal IEnumerable<Expression> Parse(string text)
     {
         text = text.NormalizeLineBreaks("\n");
-        var parsedExpressions = new List<Expression> { new (text, ExpressionType.None, string.Empty) };
 
-        foreach (var patternStyleMap in _patternStyles)
+        var parsed = new List<Expression>
         {
-            parsedExpressions = ParsePattern(patternStyleMap, parsedExpressions);
+            new(text, ExpressionType.None, string.Empty)
+        };
+
+        foreach (var patternStyle in _patternStyles)
+        {
+            parsed = ParsePattern(patternStyle, parsed);
         }
 
-        parsedExpressions = ProcessLineBreaks(parsedExpressions);
-        return parsedExpressions;
+        parsed = ProcessLineBreaks(parsed);
+        return parsed;
     }
 
     private Regex GetLineBreakRegex()
     {
-        if (_lineBreakRegex == null)
-        {
-            _lineBreakRegex = new Regex(Regex.Escape("\n"), RegexOptions.Compiled);
-        }
-
+        _lineBreakRegex ??= new Regex(Regex.Escape("\n"), RegexOptions.Compiled);
         return _lineBreakRegex;
     }
 
     private List<Expression> ProcessLineBreaks(List<Expression> expressions)
     {
-        var parsedExpressions = new List<Expression>();
-
+        var result = new List<Expression>();
         var regex = GetLineBreakRegex();
 
-        foreach (var inputExpression in expressions)
+        foreach (var input in expressions)
         {
-            var lastProcessedIndex = -1;
+            var lastIndex = -1;
 
-            foreach (var match in regex.Matches(inputExpression.Content).OrderBy(m => m.Index))
+            foreach (Match match in regex.Matches(input.Content))
             {
-                if (match.Success)
+                if (match.Index > lastIndex + 1)
                 {
-                    if (match.Index > lastProcessedIndex + 1)
-                    {
-                        var nonMatchedContent = inputExpression.Content.Substring(lastProcessedIndex + 1,
-                            match.Index - lastProcessedIndex - 1);
-                        var nonMatchedExpression = new Expression(nonMatchedContent, inputExpression.Type, inputExpression.Group);
-                        parsedExpressions.Add(nonMatchedExpression);
-                    }
+                    var text = input.Content.Substring(
+                        lastIndex + 1,
+                        match.Index - lastIndex - 1
+                    );
 
-                    var matchedContent = inputExpression.Content.Substring(match.Index, match.Length);
-                    var matchedExpression = new Expression(matchedContent, ExpressionType.Newline, "line-break");
-                    parsedExpressions.Add(matchedExpression);
-                    lastProcessedIndex = match.Index + match.Length - 1;
+                    result.Add(new Expression(text, input.Type, input.Group));
                 }
+
+                result.Add(new Expression(
+                    match.Value,
+                    ExpressionType.Newline,
+                    "line-break"
+                ));
+
+                lastIndex = match.Index + match.Length - 1;
             }
 
-            if (lastProcessedIndex < inputExpression.Content.Length - 1)
+            if (lastIndex < input.Content.Length - 1)
             {
-                var nonMatchedContent = inputExpression.Content.Substring(
-                    lastProcessedIndex + 1,
-                    inputExpression.Content.Length - lastProcessedIndex - 1);
-                var nonMatchedExpression = new Expression(nonMatchedContent, inputExpression.Type, inputExpression.Group);
-                parsedExpressions.Add(nonMatchedExpression);
+                var text = input.Content.Substring(
+                    lastIndex + 1,
+                    input.Content.Length - lastIndex - 1
+                );
+
+                result.Add(new Expression(text, input.Type, input.Group));
             }
         }
 
-        return parsedExpressions;
+        return result;
     }
 
     private List<Expression> ParsePattern(PatternStyleMap patternStyleMap, List<Expression> expressions)
     {
-        var parsedExpressions = new List<Expression>();
+        var result = new List<Expression>();
+        var regex = patternStyleMap.PatternDefinition.Regex;
 
-        foreach (var inputExpression in expressions)
+        foreach (var input in expressions)
         {
-            if (inputExpression.Type != ExpressionType.None)
+            if (input.Type != ExpressionType.None)
             {
-                parsedExpressions.Add(inputExpression);
+                result.Add(input);
+                continue;
             }
-            else
+
+            var lastIndex = -1;
+
+            foreach (Match match in regex.Matches(input.Content))
             {
-                var regex = patternStyleMap.PatternDefinition.Regex;
-
-                var lastProcessedIndex = -1;
-
-                foreach (var match in regex.Matches(inputExpression.Content).Cast<Match>().OrderBy(m => m.Index))
+                if (match.Index > lastIndex + 1)
                 {
-                    if (match.Success)
-                    {
-                        if (match.Index > lastProcessedIndex + 1)
-                        {
-                            var nonMatchedContent = inputExpression.Content.Substring(lastProcessedIndex + 1, match.Index - lastProcessedIndex - 1);
-                            var nonMatchedExpression = new Expression(nonMatchedContent, ExpressionType.None, string.Empty);
-                            parsedExpressions.Add(nonMatchedExpression);
-                        }
+                    var text = input.Content.Substring(
+                        lastIndex + 1,
+                        match.Index - lastIndex - 1
+                    );
 
-                        var matchedContent = inputExpression.Content.Substring(match.Index, match.Length);
-                        var matchedExpression = new Expression(matchedContent, patternStyleMap.PatternDefinition.ExpressionType, patternStyleMap.Name);
-                        parsedExpressions.Add(matchedExpression);
-                        lastProcessedIndex = match.Index + match.Length - 1;
-                    }
+                    result.Add(new Expression(text, ExpressionType.None, string.Empty));
                 }
 
-                if (lastProcessedIndex < inputExpression.Content.Length - 1)
-                {
-                    var nonMatchedContent = inputExpression.Content.Substring(lastProcessedIndex + 1, inputExpression.Content.Length - lastProcessedIndex - 1);
-                    var nonMatchedExpression = new Expression(nonMatchedContent, ExpressionType.None, string.Empty);
-                    parsedExpressions.Add(nonMatchedExpression);
-                }
+                result.Add(new Expression(
+                    match.Value,
+                    patternStyleMap.PatternDefinition.ExpressionType,
+                    patternStyleMap.Name
+                ));
+
+                lastIndex = match.Index + match.Length - 1;
+            }
+
+            if (lastIndex < input.Content.Length - 1)
+            {
+                var text = input.Content.Substring(
+                    lastIndex + 1,
+                    input.Content.Length - lastIndex - 1
+                );
+
+                result.Add(new Expression(text, ExpressionType.None, string.Empty));
             }
         }
 
-        return parsedExpressions;
+        return result;
     }
 
     internal IEnumerable<StyleGroupPair> GetStyles()
     {
         yield return new StyleGroupPair(GetDefaultStyle(), string.Empty);
 
-        foreach (var patternStyle in _patternStyles)
+        foreach (var ps in _patternStyles)
         {
-            var style = patternStyle.SyntaxStyle;
-            yield return new StyleGroupPair(new SyntaxStyle(style.Color, style.Bold, style.Italic), patternStyle.Name);
+            var s = ps.SyntaxStyle;
+            yield return new StyleGroupPair(
+                new SyntaxStyle(s.Color, s.Bold, s.Italic),
+                ps.Name
+            );
         }
     }
 
@@ -230,14 +239,16 @@ internal class SyntaxHighlighter
 
     private List<StyleGroupPair> GetStyleGroupPairs()
     {
-        if (_styleGroupPairs == null)
+        if (_styleGroupPairs != null)
         {
-            _styleGroupPairs = GetStyles().ToList();
+            return _styleGroupPairs;
+        }
 
-            for (var i = 0; i < _styleGroupPairs.Count; i++)
-            {
-                _styleGroupPairs[i].Index = i + 1;
-            }
+        _styleGroupPairs = GetStyles().ToList();
+
+        for (var i = 0; i < _styleGroupPairs.Count; i++)
+        {
+            _styleGroupPairs[i].Index = i + 1;
         }
 
         return _styleGroupPairs;
@@ -251,61 +262,64 @@ internal class SyntaxHighlighter
 
         try
         {
-            var stringBuilder = new StringBuilder();
+            var sb = new StringBuilder();
 
-            stringBuilder.AppendLine(RTFHeader());
-            stringBuilder.AppendLine(RTFColorTable());
-            stringBuilder.Append(@"\viewkind4\uc1\pard\f0\fs").Append(_fontSizeFactor).Append(' ');
+            sb.Append(RTFHeader());
+            sb.Append(RTFColorTable());
+            sb.Append(@"\viewkind4\uc1\pard\f0\fs")
+              .Append(_fontSizeFactor)
+              .Append(' ');
 
             foreach (var exp in Parse(_richTextBox.Text))
             {
-                if (exp.Type == ExpressionType.Whitespace)
+                if (exp.Type == ExpressionType.Newline)
                 {
-                    stringBuilder.Append(exp.Content);
+                    sb.Append(@"\par ");
+                    continue;
                 }
-                else if (exp.Type == ExpressionType.Newline)
+
+                var content = EscapeRtf(exp.Content);
+
+                var styles = GetStyleGroupPairs();
+                var group = GetGroupName(exp);
+
+                var style = styles.FirstOrDefault(s =>
+                    string.Equals(s.GroupName, group, StringComparison.Ordinal));
+
+                if (style == null)
                 {
-                    stringBuilder.AppendLine(@"\par");
+                    sb.Append(@"\cf1 ").Append(content).Append(@"\cf0 ");
+                    continue;
                 }
-                else
+
+                var open = "";
+                var close = "";
+
+                if (style.SyntaxStyle.Bold)
                 {
-                    var content = exp.Content.Replace("\\", "\\\\").Replace("{", @"\{").Replace("}", @"\}");
-
-                    var styleGroups = GetStyleGroupPairs();
-
-                    var groupName = GetGroupName(exp);
-
-                    var style = styleGroups.FirstOrDefault(s => String.Equals(s.GroupName, groupName, StringComparison.Ordinal));
-                    
-                    if (style != null)
-                    {
-                        var opening = "";
-                        var closing = "";
-
-                        if (style.SyntaxStyle.Bold)
-                        {
-                            opening += @"\b";
-                            closing += @"\b0";
-                        }
-
-                        if (style.SyntaxStyle.Italic)
-                        {
-                            opening += @"\i";
-                            closing += @"\i0";
-                        }
-
-                        stringBuilder.AppendFormat(@"\cf{0}{2} {1}\cf0{3} ", style.Index, content, opening, closing);
-                    }
-                    else
-                    {
-                        stringBuilder.AppendFormat(@"\cf{0} {1}\cf0 ", 1, content);
-                    }
+                    open += @"\b";
+                    close += @"\b0";
                 }
+
+                if (style.SyntaxStyle.Italic)
+                {
+                    open += @"\i";
+                    close += @"\i0";
+                }
+
+                sb.Append(@"\cf")
+                  .Append(style.Index)
+                  .Append(open)
+                  .Append(' ')
+                  .Append(content)
+                  .Append(@"\cf0")
+                  .Append(close)
+                  .Append(' ');
             }
 
-            stringBuilder.Append(@"\par }");
+            sb.Append(@"\par }");
 
-            _richTextBox.Rtf = stringBuilder.ToString();
+            _richTextBox.Rtf = sb.ToString();
         }
         finally
         {
@@ -317,26 +331,60 @@ internal class SyntaxHighlighter
     {
         var styles = GetStyleGroupPairs();
 
-        if (styles.Count <= 0)
-        {
-            styles.Add(new StyleGroupPair(GetDefaultStyle(), ""));
-        }
-
-        var stringBuilder = new StringBuilder();
-        stringBuilder.Append(@"{\colortbl ;");
+        var sb = new StringBuilder();
+        sb.Append(@"{\colortbl ;");
 
         foreach (var style in styles)
         {
-            stringBuilder.Append($"{style.SyntaxStyle.Color.ToRtfEntry()};");
+            sb.Append(style.SyntaxStyle.Color.ToRtfEntry()).Append(';');
         }
 
-        stringBuilder.Append('}');
-        return stringBuilder.ToString();
+        sb.Append('}');
+        return sb.ToString();
     }
 
     private string RTFHeader()
     {
-        return string.Concat(@"{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 ", _fontName, @";}}");
+        return string.Concat(
+            @"{\rtf1\ansi\ansicpg65001\deff0\deflang1049",
+            @"{\fonttbl{\f0\fnil\fcharset204 ",
+            _fontName,
+            @";}}"
+        );
+    }
+
+    private static string EscapeRtf(string text)
+    {
+        var sb = new StringBuilder(text.Length);
+
+        foreach (var ch in text)
+        {
+            switch (ch)
+            {
+                case '\\': sb.Append(@"\\"); break;
+                case '{': sb.Append(@"\{"); break;
+                case '}': sb.Append(@"\}"); break;
+                case '\r': break;
+                case '\n': sb.Append(@"\par "); break;
+
+                default:
+                    {
+                        if (ch <= 0x7F)
+                        {
+                            sb.Append(ch);
+                        }
+                        else
+                        {
+                            sb.Append(@"\u")
+                              .Append((short)ch)
+                              .Append('?');
+                        }
+                        break;
+                    }
+            }
+        }
+
+        return sb.ToString();
     }
 
     #endregion
