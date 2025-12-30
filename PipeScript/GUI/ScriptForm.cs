@@ -27,6 +27,8 @@ public sealed partial class ScriptForm : Form, IScriptHost
         AdjustHighlighter(richTextBoxCode);
     }
 
+    #region Запуск
+
     private void AdjustScriptEngine(string scriptName, string code)
     {
         richTextBoxCode.Text = code;
@@ -73,6 +75,8 @@ public sealed partial class ScriptForm : Form, IScriptHost
         // операторы
         syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
     }
+
+    #endregion
 
     #region Событие движка
 
@@ -188,6 +192,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() => Text = $"{_scriptName} [{status}]");
     }
 
+    #region  IScriptHost
+
+
     public void WriteLine(string text)
     {
         Write(text + Environment.NewLine);
@@ -202,4 +209,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
             _richTextBoxNoSmoothScrollOutput.ScrollToCaret();
         });
     }
+
+    #endregion
 }

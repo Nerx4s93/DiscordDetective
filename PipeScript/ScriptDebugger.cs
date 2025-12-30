@@ -13,13 +13,6 @@ public sealed class ScriptDebugger : IExecutionObserver
 
     public bool IsPaused => !_event.IsSet;
 
-    private enum DebugMode
-    {
-        None,
-        StepInto,
-        StepOver
-    }
-
     public void AttachCallStack(Stack<ScriptFrame> callStack)
     {
         _callStack = callStack;
