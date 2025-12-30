@@ -71,7 +71,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
         syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
     }
 
-
     #region Событие движка
 
     private void UpdateButtons()
