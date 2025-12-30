@@ -12,6 +12,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
 {
     private PipeScriptEngine _pipeScriptEngine = null!;
     private ScriptDebugger _debugger = null!;
+    private SyntaxHighlighter _syntaxHighlighter = null!;
     private string _scriptName = null!;
 
     private bool _isPaused;
@@ -58,22 +59,22 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         var commands = new CommandRegistry().CommandNames;
 
-        var syntaxHighlighter = new SyntaxHighlighter(richTextBox);
+        _syntaxHighlighter = new SyntaxHighlighter(richTextBox);
 
         // команды
-        syntaxHighlighter.AddPattern(new PatternDefinition(commands), new SyntaxStyle(Color.DeepPink));
+        _syntaxHighlighter.AddPattern(new PatternDefinition(commands), new SyntaxStyle(Color.DeepPink));
 
         // комментарии
-        syntaxHighlighter.AddPattern(new PatternDefinition(new Regex(@";.*?$", RegexOptions.Multiline | RegexOptions.Compiled)), new SyntaxStyle(Color.DarkGray, false, true));
+        _syntaxHighlighter.AddPattern(new PatternDefinition(new Regex(@";.*?$", RegexOptions.Multiline | RegexOptions.Compiled)), new SyntaxStyle(Color.DarkGray, false, true));
 
         // переменные ($name)
-        syntaxHighlighter.AddPattern(new PatternDefinition(@"\$[a-zA-Z_]\w*"), new SyntaxStyle(Color.FromArgb(31, 55, 127)));
+        _syntaxHighlighter.AddPattern(new PatternDefinition(@"\$[a-zA-Z_]\w*"), new SyntaxStyle(Color.FromArgb(31, 55, 127)));
 
         // числа
-        syntaxHighlighter.AddPattern(new PatternDefinition(@"\d+\.\d+|\d+"), new SyntaxStyle(Color.Purple));
+        _syntaxHighlighter.AddPattern(new PatternDefinition(@"\d+\.\d+|\d+"), new SyntaxStyle(Color.Purple));
 
         // операторы
-        syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
+        _syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
     }
 
     #endregion
