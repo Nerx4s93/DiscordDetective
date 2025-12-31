@@ -73,6 +73,8 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
         // операторы
         _syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
+
+        _syntaxHighlighter.ReHighlight();
     }
 
     #endregion
