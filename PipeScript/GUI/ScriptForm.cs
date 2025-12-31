@@ -166,6 +166,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
             {
                 richTextBoxCode.Text = string.Join(Environment.NewLine, obj.Code.Lines);
                 _currentFrame = obj;
+
+                if (_debugger.IsPaused)
+                {
+                    HighlightCurrentLine();
+                }
             }
         });
     }
