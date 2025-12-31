@@ -15,8 +15,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private SyntaxHighlighter _syntaxHighlighter = null!;
     private string _scriptName = null!;
 
-    private bool _isPaused;
-
     public ScriptForm() : this("unnamed", "") { }
 
     public ScriptForm(string code) : this("unnamed", code) { }
@@ -83,9 +81,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
     private void UpdateButtons()
     {
+        buttonStop.Enabled = !_pipeScriptEngine.IsRunning;
         buttonStop.Enabled = _pipeScriptEngine.IsRunning;
-        buttonStep.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
-        buttonStepOver.Enabled = _pipeScriptEngine.IsRunning && _isPaused;
+        buttonPauseResume.Text = _debugger.IsPaused ? "Возобновить" : "Пауза";
+        buttonStep.Enabled = _pipeScriptEngine.IsRunning && _debugger.IsPaused;
+        buttonStepOver.Enabled = _pipeScriptEngine.IsRunning && _debugger.IsPaused;
         richTextBoxCode.ReadOnly = _pipeScriptEngine.IsRunning;
     }
 
@@ -94,6 +94,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             UpdateButtons();
+            WriteLine("=== Script start ===");
             UpdateTitle("Running");
         });
     }
@@ -102,7 +103,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            _isPaused = false;
+            _debugger.Resume();
             UpdateButtons();
             WriteLine("=== Script finished ===");
             UpdateTitle("Finished");
@@ -113,8 +114,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            _isPaused = false;
-            buttonPauseResume.Text = "Возобновить";
+            _debugger.Resume();
             UpdateButtons();
             WriteLine("=== Script stopped ===");
             UpdateTitle("Stopped");
@@ -125,8 +125,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            _isPaused = false;
-            buttonPauseResume.Text = "Возобновить";
+            _debugger.Resume();
             UpdateButtons();
             WriteLine("=== ERROR ===");
             WriteLine(message);
@@ -148,17 +147,15 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
     private void buttonPauseResume_Click(object sender, EventArgs e)
     {
-        if (_isPaused)
+        if (_debugger.IsPaused)
         {
             _debugger.Resume();
-            _isPaused = false;
             buttonPauseResume.Text = "Пауза";
             UpdateTitle("Running");
         }
         else
         {
             _debugger.Pause();
-            _isPaused = true;
             buttonPauseResume.Text = "Возобновить";
             UpdateTitle("Paused");
         }
