@@ -36,6 +36,10 @@ public sealed class PipeScriptEngine
             _scriptThread!.Join();
         }
 
+        lock (_callStack)
+        {
+            _callStack.Clear();
+        }
         Context.CurrentLineNumber = 0;
         Context.Variables.Clear();
         Context.ScriptTypeRegistry.Clear();
@@ -56,7 +60,7 @@ public sealed class PipeScriptEngine
             }
             catch (Exception ex)
             {
-                Error?.Invoke(ex.Message);
+                Error?.Invoke(ex.ToString());
             }
             finally
             {
