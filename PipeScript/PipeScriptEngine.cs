@@ -175,6 +175,7 @@ public sealed class PipeScriptEngine
             if (frame.LineIndex >= frame.Code.Lines.Length)
             {
                 _callStack.Pop();
+                RaiseFrameChanged();
                 return null;
             }
 

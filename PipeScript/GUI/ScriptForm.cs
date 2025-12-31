@@ -19,6 +19,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private bool _startFrameDetect;
     private ScriptFrame _startFrame;
     private ScriptFrame _currentFrame;
+    private int _prevLineIndex = -1;
 
     public ScriptForm() : this("unnamed", "") { }
 
@@ -101,6 +102,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
+            if (_debugger.IsPaused)
+            {
+                HighlightCurrentLine();
+            }
+
             richTextBoxOutput.Clear();
             UpdateButtons();
             WriteLine("=== Script start ===");
@@ -198,11 +204,13 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private void buttonStep_Click(object sender, EventArgs e)
     {
         _debugger.Step();
+        HighlightCurrentLine();
     }
 
     private void buttonStepOver_Click(object sender, EventArgs e)
     {
         _debugger.StepOver();
+        HighlightCurrentLine();
     }
 
     private void InvokeIfRequired(Action action)
@@ -220,6 +228,43 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private void UpdateTitle(string status)
     {
         InvokeIfRequired(() => Text = $"{_scriptName} [{status}]");
+    }
+
+    private void HighlightCurrentLine()
+    {
+        if (_currentFrame == null)
+        {
+            return;
+        }
+
+        InvokeIfRequired(() =>
+        {
+            _syntaxHighlighter.DisableHighlighting = true;
+
+            if (_prevLineIndex >= 0 && _prevLineIndex < richTextBoxCode.Lines.Length)
+            {
+                richTextBoxCode.Select(
+                    richTextBoxCode.GetFirstCharIndexFromLine(_prevLineIndex),
+                    richTextBoxCode.Lines[_prevLineIndex].Length);
+                richTextBoxCode.SelectionBackColor = Color.White;
+            }
+
+            var currentLine = _currentFrame.LineIndex - 1;
+            if (currentLine >= 0 && currentLine < richTextBoxCode.Lines.Length)
+            {
+                richTextBoxCode.Select(
+                    richTextBoxCode.GetFirstCharIndexFromLine(currentLine),
+                    richTextBoxCode.Lines[currentLine].Length);
+                richTextBoxCode.SelectionBackColor = Color.Red;
+
+                _prevLineIndex = currentLine;
+
+                richTextBoxCode.SelectionStart = richTextBoxCode.TextLength;
+                richTextBoxCode.ScrollToCaret();
+            }
+
+            _syntaxHighlighter.DisableHighlighting = false;
+        });
     }
 
     #region  IScriptHost
