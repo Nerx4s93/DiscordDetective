@@ -93,6 +93,7 @@ public sealed class PipeScriptEngine
         lock (_callStack)
         {
             _callStack.Push(new ScriptFrame(new ScriptCode(scriptName, script)));
+            RaiseFrameChanged();
 
             while (_callStack.Count > 0)
             {
@@ -244,8 +245,18 @@ public sealed class PipeScriptEngine
         return result.ToArray();
     }
 
+    private void RaiseFrameChanged()
+    {
+        var frame = _callStack.Count > 0 ? _callStack.Peek() : null;
+        if (frame != null)
+        {
+            FrameChanged?.Invoke(frame);
+        }
+    }
+
     public event Action? Started;
     public event Action? Finished;
     public event Action? Stopped;
     public event Action<string>? Error;
-}
+    public event Action<ScriptFrame>? FrameChanged;
+}   
