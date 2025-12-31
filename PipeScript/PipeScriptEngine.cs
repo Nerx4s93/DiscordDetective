@@ -26,7 +26,16 @@ public sealed class PipeScriptEngine
 
     public bool IsRunning => _scriptThread?.IsAlive == true;
 
-    public Stack<ScriptFrame> CallStack => _callStack;
+    public Stack<ScriptFrame> CallStack
+    {
+        get
+        {
+            lock (_callStack)
+            {
+                return _callStack;
+            }
+        }
+    }
 
     public void Start(string script)
     {
