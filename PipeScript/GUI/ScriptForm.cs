@@ -156,7 +156,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
                 _startFrameDetect = true;
             }
 
-            if (!ReferenceEquals(_currentFrame, obj))
+            if (!ReferenceEquals(_currentFrame.Code, obj.Code))
             {
                 richTextBoxCode.Text = string.Join(Environment.NewLine, obj.Code.Lines);
                 _currentFrame = obj;
