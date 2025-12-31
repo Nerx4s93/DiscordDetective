@@ -113,6 +113,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _debugger.Resume();
+            richTextBoxCode.Text = string.Join(Environment.NewLine, _startFrame.Code.Lines);
             UpdateButtons();
             WriteLine("=== Script finished ===");
             UpdateTitle("Finished");
