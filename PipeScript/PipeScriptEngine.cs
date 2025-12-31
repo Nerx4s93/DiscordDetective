@@ -123,6 +123,8 @@ public sealed class PipeScriptEngine
 
     private void ExecuteLine(string line, CancellationToken token)
     {
+        Context.Host.WriteLine(line);
+
         var firstSpace = line.IndexOf(' ');
         if (firstSpace < 0)
         {
@@ -172,27 +174,17 @@ public sealed class PipeScriptEngine
                 return null;
             }
 
-            if (frame.LineIndex >= frame.Code.Lines.Length)
+            if (frame.LineIndex >= frame.Code.CleanLines.Length)
             {
                 _callStack.Pop();
                 RaiseFrameChanged();
                 return null;
             }
 
-            Context.CurrentLineNumber = frame.LineIndex + 1;
+            Context.CurrentLineNumber = frame.Code.SourceLineMap[frame.LineIndex] + 1;
 
-            var rawLine = frame.Code.Lines[frame.LineIndex].Trim();
+            var line = frame.Code.CleanLines[frame.LineIndex];
             frame.LineIndex++;
-
-            if (rawLine.Length == 0)
-            {
-                return null;
-            }
-
-            var semicolonIndex = rawLine.IndexOf(';');
-            var line = semicolonIndex >= 0
-                ? rawLine[..semicolonIndex].Trim()
-                : rawLine;
 
             return line.Length == 0 ? null : line;
         }

@@ -166,11 +166,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
             {
                 richTextBoxCode.Text = string.Join(Environment.NewLine, obj.Code.Lines);
                 _currentFrame = obj;
+            }
 
-                if (_debugger.IsPaused)
-                {
-                    HighlightCurrentLine();
-                }
+            if (_debugger.IsPaused)
+            {
+                HighlightCurrentLine();
             }
         });
     }
@@ -237,7 +237,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
     private void HighlightCurrentLine()
     {
-        if (_currentFrame == null)
+        if (_currentFrame == null || _currentFrame.Code == null)
         {
             return;
         }
@@ -245,27 +245,33 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _syntaxHighlighter.DisableHighlighting = true;
-
+              
             if (_prevLineIndex >= 0 && _prevLineIndex < richTextBoxCode.Lines.Length)
             {
-                richTextBoxCode.Select(
-                    richTextBoxCode.GetFirstCharIndexFromLine(_prevLineIndex),
-                    richTextBoxCode.Lines[_prevLineIndex].Length);
+                var start = richTextBoxCode.GetFirstCharIndexFromLine(_prevLineIndex);
+                var length = richTextBoxCode.Lines[_prevLineIndex].Length;
+                richTextBoxCode.Select(start, length);
                 richTextBoxCode.SelectionBackColor = Color.White;
             }
 
-            var currentLine = _currentFrame.LineIndex - 1;
-            if (currentLine >= 0 && currentLine < richTextBoxCode.Lines.Length)
+            var currentCleanIndex = _currentFrame.LineIndex - 1;
+            if (currentCleanIndex >= 0 && currentCleanIndex < _currentFrame.Code.CleanLines.Length)
             {
-                richTextBoxCode.Select(
-                    richTextBoxCode.GetFirstCharIndexFromLine(currentLine),
-                    richTextBoxCode.Lines[currentLine].Length);
-                richTextBoxCode.SelectionBackColor = Color.Red;
+                var sourceLine = _currentFrame.Code.SourceLineMap[currentCleanIndex];
 
-                _prevLineIndex = currentLine;
+                if (sourceLine >= 0 && sourceLine < richTextBoxCode.Lines.Length)
+                {
+                    var start = richTextBoxCode.GetFirstCharIndexFromLine(sourceLine);
+                    var length = richTextBoxCode.Lines[sourceLine].Length;
 
-                richTextBoxCode.SelectionStart = richTextBoxCode.TextLength;
-                richTextBoxCode.ScrollToCaret();
+                    richTextBoxCode.Select(start, length);
+                    richTextBoxCode.SelectionBackColor = Color.Red;
+
+                    _prevLineIndex = sourceLine;
+
+                    richTextBoxCode.SelectionStart = richTextBoxCode.TextLength;
+                    richTextBoxCode.ScrollToCaret();
+                }
             }
 
             _syntaxHighlighter.DisableHighlighting = false;
