@@ -85,9 +85,14 @@ public sealed class PipeScriptEngine
 
     private void Execute(string script, CancellationToken token)
     {
+        Execute(Context.ScriptName, script, token);
+    }
+
+    private void Execute(string scriptName, string script, CancellationToken token)
+    {
         lock (_callStack)
         {
-            _callStack.Push(new ScriptFrame(new ScriptCode(Context.ScriptName, script)));
+            _callStack.Push(new ScriptFrame(new ScriptCode(scriptName, script)));
 
             while (_callStack.Count > 0)
             {
@@ -139,7 +144,7 @@ public sealed class PipeScriptEngine
                 return;
 
             case IncludeResult include:
-                Execute(include.Code, token);
+                Execute(include.ScriptName, include.Code,  token);
                 return;
 
             default:

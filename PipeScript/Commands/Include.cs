@@ -22,9 +22,10 @@ internal sealed class Include : PipeCommand
             throw new FileNotFoundException($"File not found: {path}", path);
         }
 
+        var fileName = Path.GetFileNameWithoutExtension(path);
         var code = File.ReadAllText(path);
 
-        return new IncludeResult(code);
+        return new IncludeResult(fileName, code);
     }
 
     public override bool ValidateArgs(string[] args) => args.Length == 1;
