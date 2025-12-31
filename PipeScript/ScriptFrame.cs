@@ -1,8 +1,7 @@
 ﻿namespace PipeScript;
 
-public sealed class ScriptFrame
+public sealed class ScriptFrame(ScriptCode code)
 {
-    public string ScriptName;
-    public string[] Lines;
-    public int LineIndex;
+    public ScriptCode Code { get; } = code;
+    public int LineIndex { get; set; } = 0;
 }

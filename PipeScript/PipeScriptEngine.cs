@@ -85,16 +85,9 @@ public sealed class PipeScriptEngine
 
     private void Execute(string script, CancellationToken token)
     {
-        var lines = script.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
-
         lock (_callStack)
         {
-            _callStack.Push(new ScriptFrame
-            {
-                ScriptName = Context.ScriptName,
-                Lines = lines,
-                LineIndex = 0
-            });
+            _callStack.Push(new ScriptFrame(new ScriptCode(Context.ScriptName, script)));
 
             while (_callStack.Count > 0)
             {
@@ -164,7 +157,7 @@ public sealed class PipeScriptEngine
                 return null;
             }
 
-            if (frame.LineIndex >= frame.Lines.Length)
+            if (frame.LineIndex >= frame.Code.Lines.Length)
             {
                 _callStack.Pop();
                 return null;
@@ -172,7 +165,7 @@ public sealed class PipeScriptEngine
 
             Context.CurrentLineNumber = frame.LineIndex + 1;
 
-            var rawLine = frame.Lines[frame.LineIndex].Trim();
+            var rawLine = frame.Code.Lines[frame.LineIndex].Trim();
             frame.LineIndex++;
 
             if (rawLine.Length == 0)
