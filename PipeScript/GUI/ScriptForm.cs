@@ -93,6 +93,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
+            richTextBoxOutput.Clear();
             UpdateButtons();
             WriteLine("=== Script start ===");
             UpdateTitle("Running");
@@ -201,9 +202,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            _richTextBoxNoSmoothScrollOutput.AppendText(text);
-            _richTextBoxNoSmoothScrollOutput.SelectionStart = _richTextBoxNoSmoothScrollOutput.TextLength;
-            _richTextBoxNoSmoothScrollOutput.ScrollToCaret();
+            richTextBoxOutput.AppendText(text);
+            richTextBoxOutput.SelectionStart = richTextBoxOutput.TextLength;
+            richTextBoxOutput.ScrollToCaret();
         });
     }
 

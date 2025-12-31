@@ -30,7 +30,7 @@ sealed partial class ScriptForm
     /// </summary>
     private void InitializeComponent()
     {
-        _richTextBoxNoSmoothScrollOutput = new RichTextBoxNoSmoothScroll();
+        richTextBoxOutput = new RichTextBoxNoSmoothScroll();
         label1 = new System.Windows.Forms.Label();
         buttonStop = new System.Windows.Forms.Button();
         buttonStart = new System.Windows.Forms.Button();
@@ -41,14 +41,15 @@ sealed partial class ScriptForm
         buttonStepOver = new System.Windows.Forms.Button();
         SuspendLayout();
         // 
-        // _richTextBoxNoSmoothScrollOutput
+        // richTextBoxOutput
         // 
-        _richTextBoxNoSmoothScrollOutput.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        _richTextBoxNoSmoothScrollOutput.Location = new System.Drawing.Point(12, 35);
-        _richTextBoxNoSmoothScrollOutput.Name = "_richTextBoxNoSmoothScrollOutput";
-        _richTextBoxNoSmoothScrollOutput.Size = new System.Drawing.Size(801, 600);
-        _richTextBoxNoSmoothScrollOutput.TabIndex = 0;
-        _richTextBoxNoSmoothScrollOutput.Text = "";
+        richTextBoxOutput.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        richTextBoxOutput.Location = new System.Drawing.Point(12, 35);
+        richTextBoxOutput.Name = "richTextBoxOutput";
+        richTextBoxOutput.ReadOnly = true;
+        richTextBoxOutput.Size = new System.Drawing.Size(801, 600);
+        richTextBoxOutput.TabIndex = 0;
+        richTextBoxOutput.Text = "";
         // 
         // label1
         // 
@@ -150,7 +151,7 @@ sealed partial class ScriptForm
         Controls.Add(buttonStart);
         Controls.Add(buttonStop);
         Controls.Add(label1);
-        Controls.Add(_richTextBoxNoSmoothScrollOutput);
+        Controls.Add(richTextBoxOutput);
         Font = new System.Drawing.Font("Arial", 10F);
         Name = "ScriptForm";
         Text = "Form1";
@@ -160,7 +161,7 @@ sealed partial class ScriptForm
 
     #endregion
 
-    private RichTextBoxNoSmoothScroll _richTextBoxNoSmoothScrollOutput;
+    private RichTextBoxNoSmoothScroll richTextBoxOutput;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button buttonStop;
     private System.Windows.Forms.Button buttonStart;
