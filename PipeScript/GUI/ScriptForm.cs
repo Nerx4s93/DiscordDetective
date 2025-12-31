@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -14,6 +15,10 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private ScriptDebugger _debugger = null!;
     private SyntaxHighlighter _syntaxHighlighter = null!;
     private string _scriptName = null!;
+
+    private bool _startFrameDetect;
+    private ScriptFrame _startFrame;
+    private ScriptFrame _currentFrame;
 
     public ScriptForm() : this("unnamed", "") { }
 
@@ -51,6 +56,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         _pipeScriptEngine.Finished += OnFinished;
         _pipeScriptEngine.Stopped += OnStopped;
         _pipeScriptEngine.Error += OnError;
+        _pipeScriptEngine.FrameChanged += FrameChanged;
     }
 
     private void AdjustHighlighter(RichTextBox richTextBox)
@@ -118,6 +124,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _debugger.Resume();
+            richTextBoxCode.Text = string.Join(Environment.NewLine, _startFrame.Code.Lines);
             UpdateButtons();
             WriteLine("=== Script stopped ===");
             UpdateTitle("Stopped");
@@ -129,6 +136,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _debugger.Resume();
+            richTextBoxCode.Text = string.Join(Environment.NewLine, _startFrame.Code.Lines);
             UpdateButtons();
             WriteLine("=== ERROR ===");
             WriteLine(message);
@@ -136,10 +144,30 @@ public sealed partial class ScriptForm : Form, IScriptHost
         });
     }
 
+    private void FrameChanged(ScriptFrame obj)
+    {
+        InvokeIfRequired(() =>
+        {
+            if (!_startFrameDetect)
+            {
+                _startFrame = obj;
+                _currentFrame = obj;
+                _startFrameDetect = true;
+            }
+
+            if (!ReferenceEquals(_currentFrame, obj))
+            {
+                richTextBoxCode.Text = string.Join(Environment.NewLine, obj.Code.Lines);
+                _currentFrame = obj;
+            }
+        });
+    }
+
     #endregion
 
     private void buttonStart_Click(object sender, EventArgs e)
     {
+        _startFrameDetect = false;
         _pipeScriptEngine.Start(richTextBoxCode.Text);
     }
 
