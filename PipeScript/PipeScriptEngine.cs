@@ -156,7 +156,13 @@ public sealed class PipeScriptEngine
                 return;
 
             case IncludeResult include:
-                Execute(include.ScriptName, include.Code,  token);
+                lock (_callStack)
+                {
+                    _callStack.Push(new ScriptFrame(
+                        new ScriptCode(include.ScriptName, include.Code)
+                    ));
+                    RaiseFrameChanged();
+                }
                 return;
 
             default:
