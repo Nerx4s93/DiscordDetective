@@ -50,6 +50,15 @@ public sealed class ScriptDebugger : IExecutionObserver
 
     public void BeforeExecute(ScriptFrame frame)
     {
+        if (_mode == DebugMode.StepOver && _callStack != null)
+        {
+            if (_callStack.Count <= _targetDepth)
+            {
+                _mode = DebugMode.None;
+                _event.Reset();
+            }
+        }
+
         _event.Wait();
     }
 
@@ -60,14 +69,5 @@ public sealed class ScriptDebugger : IExecutionObserver
             _mode = DebugMode.None;
             _event.Reset();
         }
-        else if (_mode == DebugMode.StepOver && _callStack != null)
-        {
-            if (_callStack.Count <= _targetDepth)
-            {
-                _mode = DebugMode.None;
-                _event.Reset();
-            }
-        }
     }
-
 }
