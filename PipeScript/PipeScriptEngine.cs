@@ -124,8 +124,6 @@ public sealed class PipeScriptEngine
 
     private void ExecuteLine(string line, CancellationToken token)
     {
-        Context.Host.WriteLine(line);
-
         var firstSpace = line.IndexOf(' ');
         if (firstSpace < 0)
         {
