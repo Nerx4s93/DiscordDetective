@@ -16,8 +16,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private SyntaxHighlighter _syntaxHighlighter = null!;
     private string _scriptName = null!;
 
-    private bool _startFrameDetect;
-    private ScriptFrame _startFrame;
     private ScriptFrame _currentFrame;
     private int _prevLineIndex = -1;
 
@@ -102,11 +100,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
     {
         InvokeIfRequired(() =>
         {
-            if (_debugger.IsPaused)
-            {
-                HighlightCurrentLine();
-            }
-
             richTextBoxOutput.Clear();
             UpdateButtons();
             WriteLine("=== Script start ===");
@@ -119,7 +112,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _debugger.Resume();
-            richTextBoxCode.Text = string.Join(Environment.NewLine, _startFrame.Code.Lines);
             UpdateButtons();
             WriteLine("=== Script finished ===");
             UpdateTitle("Finished");
@@ -131,7 +123,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _debugger.Resume();
-            richTextBoxCode.Text = string.Join(Environment.NewLine, _startFrame.Code.Lines);
             UpdateButtons();
             WriteLine("=== Script stopped ===");
             UpdateTitle("Stopped");
@@ -143,7 +134,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() =>
         {
             _debugger.Resume();
-            richTextBoxCode.Text = string.Join(Environment.NewLine, _startFrame.Code.Lines);
             UpdateButtons();
             WriteLine("=== ERROR ===");
             WriteLine(message);
@@ -151,27 +141,18 @@ public sealed partial class ScriptForm : Form, IScriptHost
         });
     }
 
-    private void FrameChanged(ScriptFrame obj)
+    private void FrameChanged(ScriptFrame frame)
     {
         InvokeIfRequired(() =>
         {
-            if (!_startFrameDetect)
+            if (!ReferenceEquals(_currentFrame?.Code, frame.Code))
             {
-                _startFrame = obj;
-                _currentFrame = obj;
-                _startFrameDetect = true;
+                richTextBoxCode.Text = string.Join(Environment.NewLine, frame.Code.Lines);
+                _prevLineIndex = -1;
             }
 
-            if (!ReferenceEquals(_currentFrame.Code, obj.Code))
-            {
-                richTextBoxCode.Text = string.Join(Environment.NewLine, obj.Code.Lines);
-                _currentFrame = obj;
-            }
-
-            if (_debugger.IsPaused)
-            {
-                HighlightCurrentLine();
-            }
+            _currentFrame = frame;
+            HighlightNextLine();
         });
     }
 
@@ -179,7 +160,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
     private void buttonStart_Click(object sender, EventArgs e)
     {
-        _startFrameDetect = false;
         _pipeScriptEngine.Start(richTextBoxCode.Text);
     }
 
@@ -209,13 +189,11 @@ public sealed partial class ScriptForm : Form, IScriptHost
     private void buttonStep_Click(object sender, EventArgs e)
     {
         _debugger.Step();
-        HighlightCurrentLine();
     }
 
     private void buttonStepOver_Click(object sender, EventArgs e)
     {
         _debugger.StepOver();
-        HighlightCurrentLine();
     }
 
     private void InvokeIfRequired(Action action)
@@ -235,48 +213,38 @@ public sealed partial class ScriptForm : Form, IScriptHost
         InvokeIfRequired(() => Text = $"{_scriptName} [{status}]");
     }
 
-    private void HighlightCurrentLine()
+    private void HighlightNextLine()
     {
-        if (_currentFrame == null || _currentFrame.Code == null)
+        if (_currentFrame?.Code == null)
         {
             return;
         }
 
-        InvokeIfRequired(() =>
+        _syntaxHighlighter.DisableHighlighting = true;
+
+        if (_prevLineIndex >= 0 && _prevLineIndex < richTextBoxCode.Lines.Length)
         {
-            _syntaxHighlighter.DisableHighlighting = true;
-              
-            if (_prevLineIndex >= 0 && _prevLineIndex < richTextBoxCode.Lines.Length)
-            {
-                var start = richTextBoxCode.GetFirstCharIndexFromLine(_prevLineIndex);
-                var length = richTextBoxCode.Lines[_prevLineIndex].Length;
-                richTextBoxCode.Select(start, length);
-                richTextBoxCode.SelectionBackColor = Color.White;
-            }
+            var start = richTextBoxCode.GetFirstCharIndexFromLine(_prevLineIndex);
+            richTextBoxCode.Select(start, richTextBoxCode.Lines[_prevLineIndex].Length);
+            richTextBoxCode.SelectionBackColor = Color.White;
+        }
 
-            var currentCleanIndex = _currentFrame.LineIndex - 1;
-            if (currentCleanIndex >= 0 && currentCleanIndex < _currentFrame.Code.CleanLines.Length)
-            {
-                var sourceLine = _currentFrame.Code.SourceLineMap[currentCleanIndex];
+        var cleanIndex = _currentFrame.LineIndex - 1;
+        if (cleanIndex >= 0 && cleanIndex < _currentFrame.Code.CleanLines.Length)
+        {
+            var sourceLine = _currentFrame.Code.SourceLineMap[cleanIndex];
 
-                if (sourceLine >= 0 && sourceLine < richTextBoxCode.Lines.Length)
-                {
-                    var start = richTextBoxCode.GetFirstCharIndexFromLine(sourceLine);
-                    var length = richTextBoxCode.Lines[sourceLine].Length;
+            var start = richTextBoxCode.GetFirstCharIndexFromLine(sourceLine);
+            richTextBoxCode.Select(start, richTextBoxCode.Lines[sourceLine].Length);
+            richTextBoxCode.SelectionBackColor = Color.Red;
 
-                    richTextBoxCode.Select(start, length);
-                    richTextBoxCode.SelectionBackColor = Color.Red;
+            _prevLineIndex = sourceLine;
+            richTextBoxCode.ScrollToCaret();
+        }
 
-                    _prevLineIndex = sourceLine;
-
-                    richTextBoxCode.SelectionStart = richTextBoxCode.TextLength;
-                    richTextBoxCode.ScrollToCaret();
-                }
-            }
-
-            _syntaxHighlighter.DisableHighlighting = false;
-        });
+        _syntaxHighlighter.DisableHighlighting = false;
     }
+
 
     #region  IScriptHost
 

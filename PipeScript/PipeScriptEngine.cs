@@ -117,6 +117,7 @@ public sealed class PipeScriptEngine
                 _observer?.BeforeExecute(frame);
                 ExecuteLine(line, token);
                 _observer?.AfterExecute(frame);
+                RaiseFrameChanged();
             }
         }
     }
