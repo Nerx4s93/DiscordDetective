@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace PipeScript;
 
-public class ScriptTypeRegistry
+public sealed class ScriptTypeRegistry
 {
     private readonly Dictionary<string, Type> _types = new(StringComparer.OrdinalIgnoreCase);
 
@@ -22,37 +20,96 @@ public class ScriptTypeRegistry
             throw new Exception($"Type '{alias}' already registered");
         }
 
-        var type = Type.GetType(clrTypeName, throwOnError: false) ??
-                   AppDomain.CurrentDomain.GetAssemblies()
-                       .Select(a => a.GetType(clrTypeName, false))
-                       .FirstOrDefault(t => t != null);
-
-        if (type == null)
-        {
-            var exeDir = AppDomain.CurrentDomain.BaseDirectory;
-            foreach (var dll in Directory.GetFiles(exeDir, "*.dll"))
-            {
-                try
-                {
-                    var asm = Assembly.LoadFrom(dll);
-                    type = asm.GetType(clrTypeName, false);
-                    if (type != null) break;
-                }
-                catch { /* ignore */ }
-            }
-        }
-
+        var type = FindType(clrTypeName);
         _types[alias] = type ?? throw new Exception($"CLR type not found: {clrTypeName}");
     }
 
-    public Type Resolve(string aliasOrFullName)
+    public void Clear() => _types.Clear();
+
+    public bool IsRegistered(string alias) => _types.ContainsKey(alias);
+
+    public Type Resolve(string typeExpression)
     {
-        if (_types.TryGetValue(aliasOrFullName, out var type))
+        typeExpression = typeExpression.Trim();
+
+        var genericStart = typeExpression.IndexOf('<');
+        if (genericStart >= 0)
         {
-            return type;
+            return ResolveGeneric(typeExpression);
         }
 
-        type = Type.GetType(aliasOrFullName);
+        if (_types.TryGetValue(typeExpression, out var aliasType))
+        {
+            return aliasType;
+        }
+
+        var clrType = FindType(typeExpression);
+        if (clrType != null)
+        {
+            return clrType;
+        }
+
+        throw new Exception($"Type not registered or not found: {typeExpression}");
+    }
+
+    private Type ResolveGeneric(string expr)
+    {
+        var nameEnd = expr.IndexOf('<');
+        var typeName = expr[..nameEnd].Trim();
+        var argsPart = expr[(nameEnd + 1)..^1];
+
+        var genericArgs = SplitGenericArguments(argsPart).Select(Resolve).ToArray();
+        var baseType = Resolve(typeName);
+
+        if (baseType is { IsGenericTypeDefinition: false, IsGenericType: true })
+        {
+            baseType = baseType.GetGenericTypeDefinition();
+        }
+
+        if (!baseType.IsGenericTypeDefinition)
+        {
+            throw new Exception($"Type '{typeName}' is not generic");
+        }
+
+        if (baseType.GetGenericArguments().Length != genericArgs.Length)
+        {
+            throw new Exception(
+                $"Generic argument count mismatch for '{typeName}': expected {baseType.GetGenericArguments().Length}, got {genericArgs.Length}"
+            );
+        }
+
+        return baseType.MakeGenericType(genericArgs);
+    }
+    private static List<string> SplitGenericArguments(string input)
+    {
+        var result = new List<string>();
+        var depth = 0;
+        var start = 0;
+
+        for (var i = 0; i < input.Length; i++)
+        {
+            switch (input[i])
+            {
+                case '<':
+                    depth++;
+                    break;
+                case '>':
+                    depth--;
+                    break;
+                case ',' when depth == 0:
+                    result.Add(input[start..i].Trim());
+                    start = i + 1;
+                    break;
+            }
+        }
+
+        result.Add(input[start..].Trim());
+        return result;
+    }
+
+    private static Type? FindType(string clrName)
+    {
+        var type = Type.GetType(clrName, false);
         if (type != null)
         {
             return type;
@@ -60,17 +117,36 @@ public class ScriptTypeRegistry
 
         foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
         {
-            type = asm.GetType(aliasOrFullName);
+            type = asm.GetType(clrName, false);
             if (type != null)
             {
                 return type;
             }
         }
 
-        throw new Exception($"Type not registered or not found: {aliasOrFullName}");
+        foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            var types = asm.GetTypes();
+            foreach (var t in types)
+            {
+                if (!t.IsGenericTypeDefinition)
+                {
+                    continue;
+                }
+
+                if (t.FullName == null)
+                {
+                    continue;
+                }
+
+                var shortName = t.FullName.Split('`')[0];
+                if (shortName == clrName)
+                {
+                    return t;
+                }
+            }
+        }
+
+        return null;
     }
-
-    public void Clear() => _types.Clear();
-
-    public bool IsRegistered(string alias) => _types.ContainsKey(alias);
 }
