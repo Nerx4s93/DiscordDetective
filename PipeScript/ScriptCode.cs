@@ -157,57 +157,64 @@ public sealed class ScriptCode
     private static string[] ParseArgs(string argString)
     {
         var result = new List<string>();
-        var stringBuilder = new StringBuilder();
+        var sb = new StringBuilder();
 
         var inQuotes = false;
-        var skipSpaces = true;
         var escape = false;
+        var angleDepth = 0;   // для <>
+        var bracketDepth = 0; // для []
 
         foreach (var c in argString)
         {
             if (escape)
             {
-                stringBuilder.Append(c);
+                sb.Append(c);
                 escape = false;
                 continue;
             }
 
-            if (c == '\\')
-            {
-                escape = true;
-                continue;
-            }
-
-            if (skipSpaces && char.IsWhiteSpace(c) && !inQuotes)
-            {
-                continue;
-            }
-
-            skipSpaces = false;
-
             switch (c)
             {
+                case '\\':
+                    escape = true;
+                    continue;
                 case '"':
                     inQuotes = !inQuotes;
-                    break;
-
-                case ',' when !inQuotes:
-                    result.Add(stringBuilder.ToString());
-                    stringBuilder.Clear();
-                    skipSpaces = true;
-                    break;
-
-                default:
-                    stringBuilder.Append(c);
-                    break;
+                    continue;
             }
+
+            if (!inQuotes)
+            {
+                switch (c)
+                {
+                    case '<':
+                        angleDepth++;
+                        break;
+                    case '>':
+                        angleDepth--;
+                        break;
+                    case '[':
+                        bracketDepth++;
+                        break;
+                    case ']':
+                        bracketDepth--;
+                        break;
+                    case ',' when angleDepth == 0 && bracketDepth == 0:
+                        result.Add(sb.ToString().Trim());
+                        sb.Clear();
+                        continue;
+                }
+            }
+
+            sb.Append(c);
         }
 
-        if (stringBuilder.Length > 0)
+        if (sb.Length > 0)
         {
-            result.Add(stringBuilder.ToString());
+            result.Add(sb.ToString().Trim());
         }
 
         return result.ToArray();
     }
+
 }
