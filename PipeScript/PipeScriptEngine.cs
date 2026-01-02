@@ -175,7 +175,7 @@ public sealed class PipeScriptEngine
                     {
                         var newFrame = new ScriptFrame(frame.Code)
                         {
-                            LineIndex = targetIndex - 1
+                            LineIndex = targetIndex
                         };
                         _callStack.Push(newFrame);
                     }
@@ -184,8 +184,18 @@ public sealed class PipeScriptEngine
                         frame.LineIndex = targetIndex - 1;
                     }
 
-                    frame.LineIndex = targetIndex - 1;
                     RaiseFrameChanged();
+                }
+                return;
+
+            case ReturnResult:
+                lock (_callStack)
+                {
+                    if (_callStack.Count > 0)
+                    {
+                        _callStack.Pop();
+                        RaiseFrameChanged();
+                    }
                 }
                 return;
 
