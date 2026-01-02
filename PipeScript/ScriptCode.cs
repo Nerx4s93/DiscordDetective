@@ -6,6 +6,7 @@ namespace PipeScript;
 
 public sealed class ScriptCode
 {
+    public Guid ScriptId { get; } = Guid.NewGuid();
     public string Name { get; }
     public string[] Lines { get; }
     public ScriptLine[] Compiled { get; }

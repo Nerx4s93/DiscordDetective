@@ -99,9 +99,12 @@ public sealed class PipeScriptEngine
 
     private void Execute(string scriptName, string script, CancellationToken token)
     {
+        var scriptCode = new ScriptCode(scriptName, script);
+        Context.LoadedScripts.Add(scriptCode);
+
         lock (_callStack)
         {
-            _callStack.Push(new ScriptFrame(new ScriptCode(scriptName, script)));
+            _callStack.Push(new ScriptFrame(scriptCode));
             RaiseFrameChanged();
 
             while (_callStack.Count > 0)
@@ -156,8 +159,7 @@ public sealed class PipeScriptEngine
             case IncludeResult includeResult:
                 lock (_callStack)
                 {
-                    var code = GetOrLoadScript(includeResult.ScriptName, includeResult.Code);
-                    _callStack.Push(new ScriptFrame(code));
+                    _callStack.Push(new ScriptFrame(includeResult.Code) { LineIndex = includeResult.StartIndex });
                     RaiseFrameChanged();
                 }
                 return;
@@ -228,23 +230,12 @@ public sealed class PipeScriptEngine
         }
     }
 
-    private ScriptCode GetOrLoadScript(string scriptName, string script)
-    {
-        if (Context.LoadedScripts.TryGetValue(scriptName, out var loaded))
-        {
-            return loaded;
-        }
-
-        var newScript = new ScriptCode(scriptName, script);
-        Context.LoadedScripts[scriptName] = newScript;
-        return newScript;
-    }
-
     private void RaiseFrameChanged()
     {
         var frame = _callStack.Count > 0 ? _callStack.Peek() : null;
         if (frame != null)
         {
+            Context.CurrentScript = frame.Code.ScriptId;
             FrameChanged?.Invoke(frame);
         }
     }

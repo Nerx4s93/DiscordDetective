@@ -25,7 +25,9 @@ internal sealed class Include : PipeCommand
         var fileName = Path.GetFileNameWithoutExtension(path);
         var code = File.ReadAllText(path);
 
-        return new IncludeResult(fileName, code);
+        var scriptCode = new ScriptCode(fileName, code);
+        ctx.LoadedScripts.Add(scriptCode);
+        return new IncludeResult(scriptCode, 0);
     }
 
     public override bool ValidateArgs(string[] args) => args.Length == 1;
