@@ -9,6 +9,7 @@ public sealed class ScriptCode
     public string Name { get; }
     public string[] Lines { get; }
     public ScriptLine[] Compiled { get; }
+    public IReadOnlyDictionary<string, int> Labels { get; }
 
     public ScriptCode(string name, string source)
     {
@@ -16,6 +17,7 @@ public sealed class ScriptCode
         Lines = source.Split(["\r\n", "\n"], StringSplitOptions.None);
 
         var cleanedCode = CleanCode(Lines);
+        Labels = CollectLabels(cleanedCode.cleanLines);
         Compiled = CompileCode(cleanedCode.cleanLines, cleanedCode.sourceLineMap);
     }
 
@@ -30,6 +32,13 @@ public sealed class ScriptCode
 
             if (line.Length == 0)
             {
+                continue;
+            }
+
+            if (CheckForLabel(line))
+            {
+                clean.Add(line);
+                map.Add(i);
                 continue;
             }
 
@@ -67,24 +76,69 @@ public sealed class ScriptCode
         return (clean.ToArray(), map.ToArray());
     }
 
+    private static bool CheckForLabel(string line)
+    {
+        if (!line.EndsWith(':'))
+        {
+            return false;
+        }
+
+        for (var i = 0; i < line.Length - 1; i++)
+        {
+            if (!char.IsLetterOrDigit(line[i]) && line[i] != '_')
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static Dictionary<string, int> CollectLabels(string[] cleanLines)
+    {
+        var labels = new Dictionary<string, int>();
+        var instructionIndex = 0;
+
+        foreach (var line in cleanLines)
+        {
+            if (CheckForLabel(line))
+            {
+                var name = line[..^1];
+                if (!labels.TryAdd(name, instructionIndex))
+                {
+                    throw new Exception($"Duplicate label '{name}'");
+                }
+
+                continue;
+            }
+
+            instructionIndex++;
+        }
+
+        return labels;
+    }
+
     private static ScriptLine[] CompileCode(string[] cleanLines, int[] sourceLineMap)
     {
-        var compiledCode = new ScriptLine[cleanLines.Length];
+        var compiledCode = new List<ScriptLine>();
 
         for (var i = 0; i < cleanLines.Length; i++)
         {
-            var source = sourceLineMap[i];
             var line = cleanLines[i];
+
+            if (CheckForLabel(line))
+            {
+                continue;
+            }
 
             var commandName = GetCommandName(line);
             var argsString = GetArgs(line);
             var parsedArgs = argsString.Length == 0 ? [] : ParseArgs(argsString);
 
-            var scriptCode = new ScriptLine(source, commandName, parsedArgs);
-            compiledCode[i] = scriptCode;
+            compiledCode.Add(new ScriptLine(sourceLineMap[i], commandName, parsedArgs));
         }
 
-        return compiledCode;
+        return compiledCode.ToArray();
     }
 
     private static string GetCommandName(string line)
