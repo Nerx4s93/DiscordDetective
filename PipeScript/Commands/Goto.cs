@@ -17,7 +17,7 @@ internal sealed class Goto : PipeCommand
 
         var labelName = args[0];
 
-        return new JumpResult(labelName);
+        return new JumpResult(labelName, false);
     }
 
     public override bool ValidateArgs(string[] args) => args.Length == 1;
