@@ -33,10 +33,7 @@ internal sealed class If : PipeCommand
             value = literal;
         }
 
-        if (value is not bool condition)
-        {
-            throw new Exception($"Condition value must be bool, got '{value?.GetType().Name}'");
-        }
+        var condition = value is bool and true;
 
         if (condition)
         {
