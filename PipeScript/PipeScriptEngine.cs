@@ -121,6 +121,7 @@ public sealed class PipeScriptEngine
 
                 _observer?.BeforeExecute(frame);
                 ExecuteLine(line, token);
+                frame.LineIndex++;
                 _observer?.AfterExecute(frame);
                 RaiseFrameChanged();
 
@@ -170,7 +171,7 @@ public sealed class PipeScriptEngine
                         throw new Exception($"Label '{gotoResult.LabelName}' not found");
                     }
 
-                    frame.LineIndex = targetIndex;
+                    frame.LineIndex = targetIndex - 1;
                     RaiseFrameChanged();
                 }
                 return;
@@ -199,8 +200,6 @@ public sealed class PipeScriptEngine
             }
 
             var line = frame.Code.Compiled[frame.LineIndex];
-            frame.LineIndex++;
-
             return line;
         }
     }

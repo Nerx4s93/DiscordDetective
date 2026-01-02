@@ -228,7 +228,7 @@ public sealed partial class ScriptForm : Form, IScriptHost
             richTextBoxCode.SelectionBackColor = Color.White;
         }
 
-        var cleanIndex = _currentFrame.LineIndex - 1;
+        var cleanIndex = _currentFrame.LineIndex;
         if (cleanIndex >= 0 && cleanIndex < _currentFrame.Code.Compiled.Length)
         {
             var sourceLine = _currentFrame.Code.Compiled[cleanIndex].SourceLine;
@@ -243,7 +243,6 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
         _syntaxHighlighter.DisableHighlighting = false;
     }
-
 
     #region  IScriptHost
 
