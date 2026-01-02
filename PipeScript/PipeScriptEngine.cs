@@ -156,7 +156,8 @@ public sealed class PipeScriptEngine
             case IncludeResult includeResult:
                 lock (_callStack)
                 {
-                    _callStack.Push(new ScriptFrame(new ScriptCode(includeResult.ScriptName, includeResult.Code)));
+                    var code = GetOrLoadScript(includeResult.ScriptName, includeResult.Code);
+                    _callStack.Push(new ScriptFrame(code));
                     RaiseFrameChanged();
                 }
                 return;
@@ -225,6 +226,18 @@ public sealed class PipeScriptEngine
             var line = frame.Code.Compiled[frame.LineIndex];
             return line;
         }
+    }
+
+    private ScriptCode GetOrLoadScript(string scriptName, string script)
+    {
+        if (Context.LoadedScripts.TryGetValue(scriptName, out var loaded))
+        {
+            return loaded;
+        }
+
+        var newScript = new ScriptCode(scriptName, script);
+        Context.LoadedScripts[scriptName] = newScript;
+        return newScript;
     }
 
     private void RaiseFrameChanged()

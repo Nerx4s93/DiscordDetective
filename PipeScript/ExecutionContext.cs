@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using PipeScript.API;
 
@@ -13,5 +14,7 @@ public class ExecutionContext
     public int CurrentLineNumber { get; set; } = 0;
 
     public ScriptTypeRegistry ScriptTypeRegistry { get; } = new();
-    public Variables Variables { get; } = new Variables();
+    public Variables Variables { get; } = new();
+
+    public Dictionary<string, ScriptCode> LoadedScripts { get; } = new();
 }
