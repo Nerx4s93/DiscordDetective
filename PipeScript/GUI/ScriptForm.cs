@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-
+using Windows.Media.Streaming.Adaptive;
 using PipeScript.API;
 using PipeScript.Highlighter;
 
@@ -77,6 +77,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
 
         // операторы
         _syntaxHighlighter.AddPattern(new PatternDefinition("(", ")", "*", "/", "+", "-", ">", "<", "&", "|"), new SyntaxStyle(Color.Brown));
+
+        // метки
+        _syntaxHighlighter.AddPattern(new PatternDefinition(@"\b[a-zA-Z_]\w*:"), new SyntaxStyle(Color.DarkGreen));
 
         _syntaxHighlighter.ReHighlight();
     }
