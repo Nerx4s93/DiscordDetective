@@ -5,7 +5,7 @@ namespace PipeScript;
 
 internal static class ScriptUtils
 {
-    public static object ResolveArg(string arg, Variables vars)
+    public static object? ResolveArg(string arg, Variables vars)
     {
         if (!arg.StartsWith('$'))
         {
@@ -20,8 +20,8 @@ internal static class ScriptUtils
             throw new Exception($"Variable '{path[0]}' not found");
         }
 
-        object currentValue = variable.Value;
-        for (int i = 1; i < path.Length; i++)
+        var currentValue = variable.Value;
+        for (var i = 1; i < path.Length; i++)
         {
             if (currentValue == null)
             {
