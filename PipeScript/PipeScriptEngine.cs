@@ -161,14 +161,27 @@ public sealed class PipeScriptEngine
                 }
                 return;
 
-            case GotoResult gotoResult:
+            case JumpResult jumpResult:
                 lock (_callStack)
                 {
                     var frame = _callStack.Peek();
 
-                    if (!frame.Code.Labels.TryGetValue(gotoResult.LabelName, out var targetIndex))
+                    if (!frame.Code.Labels.TryGetValue(jumpResult.LabelName, out var targetIndex))
                     {
-                        throw new Exception($"Label '{gotoResult.LabelName}' not found");
+                        throw new Exception($"Label '{jumpResult.LabelName}' not found");
+                    }
+
+                    if (jumpResult.PushNewFrame)
+                    {
+                        var newFrame = new ScriptFrame(frame.Code)
+                        {
+                            LineIndex = targetIndex - 1
+                        };
+                        _callStack.Push(newFrame);
+                    }
+                    else
+                    {
+                        frame.LineIndex = targetIndex - 1;
                     }
 
                     frame.LineIndex = targetIndex - 1;
