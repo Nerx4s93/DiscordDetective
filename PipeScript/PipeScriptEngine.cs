@@ -150,10 +150,25 @@ public sealed class PipeScriptEngine
             case ContinueResult:
                 return;
 
-            case IncludeResult include:
+            case IncludeResult includeResult:
                 lock (_callStack)
                 {
-                    _callStack.Push(new ScriptFrame(new ScriptCode(include.ScriptName, include.Code)));
+                    _callStack.Push(new ScriptFrame(new ScriptCode(includeResult.ScriptName, includeResult.Code)));
+                    RaiseFrameChanged();
+                }
+                return;
+
+            case GotoResult gotoResult:
+                lock (_callStack)
+                {
+                    var frame = _callStack.Peek();
+
+                    if (!frame.Code.Labels.TryGetValue(gotoResult.LabelName, out var targetIndex))
+                    {
+                        throw new Exception($"Label '{gotoResult.LabelName}' not found");
+                    }
+
+                    frame.LineIndex = targetIndex;
                     RaiseFrameChanged();
                 }
                 return;
