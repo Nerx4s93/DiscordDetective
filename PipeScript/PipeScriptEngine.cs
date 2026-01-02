@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 using PipeScript.CommandResults;
@@ -49,6 +48,7 @@ public sealed class PipeScriptEngine
         {
             _callStack.Clear();
         }
+
         Context.CurrentLineNumber = 0;
         Context.Variables.Clear();
         Context.ScriptTypeRegistry.Clear();
@@ -108,9 +108,14 @@ public sealed class PipeScriptEngine
             {
                 token.ThrowIfCancellationRequested();
 
-                var line = GetCodeLine(out var frame);
+                var line = GetNextLine(out var frame);
                 if (line == null || frame == null)
                 {
+                    if (_callStack.Count == 0)
+                    {
+                        return;
+                    }
+
                     continue;
                 }
 
@@ -122,28 +127,19 @@ public sealed class PipeScriptEngine
         }
     }
 
-    private void ExecuteLine(string line, CancellationToken token)
+    private void ExecuteLine(ScriptLine line, CancellationToken token)
     {
-        var firstSpace = line.IndexOf(' ');
-        if (firstSpace < 0)
+        Context.CurrentLineNumber = line.SourceLine + 1;
+
+        var command = _commandRegistry.GetCommand(line.Command)
+                      ?? throw new Exception($"Unknown command '{line.Command}' at line {Context.CurrentLineNumber}");
+
+        if (!command.ValidateArgs(line.Args))
         {
-            throw new Exception($"Invalid syntax at line {Context.CurrentLineNumber}");
+            throw new Exception($"Invalid arguments for '{line.Command}' at line {Context.CurrentLineNumber}");
         }
 
-        var commandName = line[..firstSpace];
-        var argString = line[(firstSpace + 1)..];
-
-        var command = _commandRegistry.GetCommand(commandName)
-            ?? throw new Exception($"Unknown command '{commandName}' at line {Context.CurrentLineNumber}");
-
-        var args = ParseArgs(argString);
-
-        if (!command.ValidateArgs(args))
-        {
-            throw new Exception($"Invalid arguments for '{commandName}' at line {Context.CurrentLineNumber}");
-        }
-
-        var result = command.Execute(args, Context);
+        var result = command.Execute(line.Args, Context);
         ProcessCommandResult(result, token);
     }
 
@@ -157,9 +153,7 @@ public sealed class PipeScriptEngine
             case IncludeResult include:
                 lock (_callStack)
                 {
-                    _callStack.Push(new ScriptFrame(
-                        new ScriptCode(include.ScriptName, include.Code)
-                    ));
+                    _callStack.Push(new ScriptFrame(new ScriptCode(include.ScriptName, include.Code)));
                     RaiseFrameChanged();
                 }
                 return;
@@ -169,87 +163,29 @@ public sealed class PipeScriptEngine
         }
     }
 
-    private string? GetCodeLine(out ScriptFrame? frame)
+    private ScriptLine? GetNextLine(out ScriptFrame? frame)
     {
         lock (_callStack)
         {
             frame = _callStack.Count > 0 ? _callStack.Peek() : null;
+
             if (frame == null)
             {
                 return null;
             }
 
-            if (frame.LineIndex >= frame.Code.CleanLines.Length)
+            if (frame.LineIndex >= frame.Code.Compiled.Length)
             {
                 _callStack.Pop();
                 RaiseFrameChanged();
                 return null;
             }
 
-            Context.CurrentLineNumber = frame.Code.SourceLineMap[frame.LineIndex] + 1;
-
-            var line = frame.Code.CleanLines[frame.LineIndex];
+            var line = frame.Code.Compiled[frame.LineIndex];
             frame.LineIndex++;
 
-            return line.Length == 0 ? null : line;
+            return line;
         }
-    }
-
-    private static string[] ParseArgs(string argString)
-    {
-        var result = new List<string>();
-        var sb = new StringBuilder();
-
-        var inQuotes = false;
-        var skipSpaces = true;
-        var escape = false;
-
-        foreach (var c in argString)
-        {
-            if (escape)
-            {
-                sb.Append(c);
-                escape = false;
-                continue;
-            }
-
-            if (c == '\\')
-            {
-                escape = true;
-                continue;
-            }
-
-            if (skipSpaces && char.IsWhiteSpace(c) && !inQuotes)
-            {
-                continue;
-            }
-
-            skipSpaces = false;
-
-            switch (c)
-            {
-                case '"':
-                    inQuotes = !inQuotes;
-                    break;
-
-                case ',' when !inQuotes:
-                    result.Add(sb.ToString());
-                    sb.Clear();
-                    skipSpaces = true;
-                    break;
-
-                default:
-                    sb.Append(c);
-                    break;
-            }
-        }
-
-        if (sb.Length > 0)
-        {
-            result.Add(sb.ToString());
-        }
-
-        return result.ToArray();
     }
 
     private void RaiseFrameChanged()

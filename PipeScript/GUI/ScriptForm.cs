@@ -230,9 +230,9 @@ public sealed partial class ScriptForm : Form, IScriptHost
         }
 
         var cleanIndex = _currentFrame.LineIndex - 1;
-        if (cleanIndex >= 0 && cleanIndex < _currentFrame.Code.CleanLines.Length)
+        if (cleanIndex >= 0 && cleanIndex < _currentFrame.Code.Compiled.Length)
         {
-            var sourceLine = _currentFrame.Code.SourceLineMap[cleanIndex];
+            var sourceLine = _currentFrame.Code.Compiled[cleanIndex].SourceLine;
 
             var start = richTextBoxCode.GetFirstCharIndexFromLine(sourceLine);
             richTextBoxCode.Select(start, richTextBoxCode.Lines[sourceLine].Length);
