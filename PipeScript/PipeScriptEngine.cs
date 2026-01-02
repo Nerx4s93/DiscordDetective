@@ -123,6 +123,8 @@ public sealed class PipeScriptEngine
                 ExecuteLine(line, token);
                 _observer?.AfterExecute(frame);
                 RaiseFrameChanged();
+
+                Thread.Sleep(1);
             }
         }
     }
