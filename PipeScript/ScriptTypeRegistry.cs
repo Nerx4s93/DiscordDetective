@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace PipeScript;
 
@@ -20,9 +22,25 @@ public class ScriptTypeRegistry
             throw new Exception($"Type '{alias}' already registered");
         }
 
-        var type = Type.GetType(clrTypeName, throwOnError: false) ?? AppDomain.CurrentDomain.GetAssemblies()
-            .Select(a => a.GetType(clrTypeName))
-            .FirstOrDefault(t => t != null);
+        var type = Type.GetType(clrTypeName, throwOnError: false) ??
+                   AppDomain.CurrentDomain.GetAssemblies()
+                       .Select(a => a.GetType(clrTypeName, false))
+                       .FirstOrDefault(t => t != null);
+
+        if (type == null)
+        {
+            var exeDir = AppDomain.CurrentDomain.BaseDirectory;
+            foreach (var dll in Directory.GetFiles(exeDir, "*.dll"))
+            {
+                try
+                {
+                    var asm = Assembly.LoadFrom(dll);
+                    type = asm.GetType(clrTypeName, false);
+                    if (type != null) break;
+                }
+                catch { /* ignore */ }
+            }
+        }
 
         _types[alias] = type ?? throw new Exception($"CLR type not found: {clrTypeName}");
     }
