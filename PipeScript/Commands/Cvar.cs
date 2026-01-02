@@ -10,7 +10,7 @@ internal sealed class Cvar : PipeCommand
 
     public override ContinueResult Execute(string[] args, ExecutionContext ctx)
     {
-        if (args.Length < 3)
+        if (args.Length < 2)
         {
             throw new ArgumentException("Usage: cvar <name>, <type>, <value>[, ...]");
         }
@@ -27,8 +27,29 @@ internal sealed class Cvar : PipeCommand
         return ContinueResult.Instance;
     }
 
-    private static object CreateValue(Type type, string[] args, Variables vars)
+    private static object? CreateValue(Type type, string[] args, Variables vars)
     {
+        if (args.Length == 0)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+
+            var defaultCtor = type.GetConstructor(Type.EmptyTypes);
+            if (defaultCtor != null)
+            {
+                return defaultCtor.Invoke([]);
+            }
+
+            return null;
+        }
+
+        if (args is ["null"])
+        {
+            return null;
+        }
+
         if (type == typeof(string) || type.IsPrimitive)
         {
             if (args.Length != 1)
@@ -61,6 +82,6 @@ internal sealed class Cvar : PipeCommand
 
     public override bool ValidateArgs(string[] args)
     {
-        return args.Length >= 3;
+        return args.Length >= 2;
     }
 }
