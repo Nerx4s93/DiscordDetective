@@ -27,14 +27,29 @@ public class ScriptTypeRegistry
         _types[alias] = type ?? throw new Exception($"CLR type not found: {clrTypeName}");
     }
 
-    public Type Resolve(string alias)
+    public Type Resolve(string aliasOrFullName)
     {
-        if (_types.TryGetValue(alias, out var type))
+        if (_types.TryGetValue(aliasOrFullName, out var type))
         {
             return type;
         }
 
-        throw new Exception($"Type not registered: {alias}");
+        type = Type.GetType(aliasOrFullName);
+        if (type != null)
+        {
+            return type;
+        }
+
+        foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            type = asm.GetType(aliasOrFullName);
+            if (type != null)
+            {
+                return type;
+            }
+        }
+
+        throw new Exception($"Type not registered or not found: {aliasOrFullName}");
     }
 
     public void Clear() => _types.Clear();
