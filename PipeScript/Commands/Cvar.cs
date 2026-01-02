@@ -24,7 +24,7 @@ internal sealed class Cvar : PipeCommand
         var valueArgs = args.Skip(valueStart).ToArray();
 
         var type = ctx.ScriptTypeRegistry.Resolve(typeExpr);
-        var value = CreateValue(type, valueArgs, ctx.Variables);
+        var value = CreateValue(typeExpr, type, valueArgs, ctx.Variables);
 
         ctx.Variables.Set(name, new Variable(type, value));
 
@@ -34,7 +34,8 @@ internal sealed class Cvar : PipeCommand
     private static (string TypeExpr, int NextIndex) ParseType(string[] args, int startIndex)
     {
         var parts = new List<string>();
-        var depth = 0;
+        var genericDepth = 0;
+        var arrayDepth = 0;
         var index = startIndex;
 
         for (; index < args.Length; index++)
@@ -42,10 +43,13 @@ internal sealed class Cvar : PipeCommand
             var part = args[index].Trim();
             parts.Add(part);
 
-            depth += part.Count(c => c == '<');
-            depth -= part.Count(c => c == '>');
+            genericDepth += part.Count(c => c == '<');
+            genericDepth -= part.Count(c => c == '>');
 
-            if (depth == 0)
+            arrayDepth += part.Count(c => c == '[');
+            arrayDepth -= part.Count(c => c == ']');
+
+            if (genericDepth == 0 && arrayDepth == 0)
             {
                 index++;
                 break;
@@ -56,11 +60,16 @@ internal sealed class Cvar : PipeCommand
         return (typeExpr, index);
     }
 
-    private static object? CreateValue(Type type, string[] args, Variables vars)
+    private static object? CreateValue(string typeExpr, Type type, string[] args, Variables vars)
     {
         if (args is ["null"])
         {
             return null;
+        }
+
+        if (TryCreateSizedArray(typeExpr, type, out var array))
+        {
+            return array;
         }
 
         if (args.Length == 0)
@@ -115,6 +124,30 @@ internal sealed class Cvar : PipeCommand
         }
 
         throw new Exception($"Type {type.Name} has no suitable constructor for {args.Length} arguments");
+    }
+
+    private static bool TryCreateSizedArray(string typeExpr, Type arrayType, out object array)
+    {
+        array = null!;
+
+        if (!arrayType.IsArray)
+        {
+            return false;
+        }
+
+        var start = typeExpr.IndexOf('[');
+        var end = typeExpr.LastIndexOf(']');
+        if (start < 0 || end < start)
+        {
+            return false;
+        }
+
+        var inside = typeExpr.Substring(start + 1, end - start - 1);
+        var sizes = inside.Split(',').Select(s => int.Parse(s.Trim())).ToArray();
+
+        var elementType = arrayType.GetElementType()!;
+        array = Array.CreateInstance(elementType, sizes);
+        return true;
     }
 
     private static bool IsGenericCollection(Type type)

@@ -28,28 +28,60 @@ public sealed class ScriptTypeRegistry
 
     public bool IsRegistered(string alias) => _types.ContainsKey(alias);
 
-    public Type Resolve(string typeExpression)
+    public Type Resolve(string aliasOrFullName)
     {
-        typeExpression = typeExpression.Trim();
+        aliasOrFullName = aliasOrFullName.Trim();
 
-        var genericStart = typeExpression.IndexOf('<');
-        if (genericStart >= 0)
+        if (TryResolveSizedArray(aliasOrFullName, out var arrayType, out _))
         {
-            return ResolveGeneric(typeExpression);
+            return arrayType;
         }
 
-        if (_types.TryGetValue(typeExpression, out var aliasType))
+        if (aliasOrFullName.Contains('<'))
+        {
+            return ResolveGeneric(aliasOrFullName);
+        }
+
+        if (_types.TryGetValue(aliasOrFullName, out var aliasType))
         {
             return aliasType;
         }
 
-        var clrType = FindType(typeExpression);
+        var clrType = FindType(aliasOrFullName);
         if (clrType != null)
         {
             return clrType;
         }
 
-        throw new Exception($"Type not registered or not found: {typeExpression}");
+        throw new Exception($"Type not registered or not found: {aliasOrFullName}");
+    }
+
+    private bool TryResolveSizedArray(string expr, out Type type, out int[] sizes)
+    {
+        type = null!;
+        sizes = [];
+
+        var bracketStart = expr.IndexOf('[');
+        var bracketEnd = expr.LastIndexOf(']');
+        if (bracketStart < 0 || bracketEnd < bracketStart)
+        {
+            return false;
+        }
+
+        var inside = expr.Substring(bracketStart + 1, bracketEnd - bracketStart - 1);
+        var elementExpr = expr.Substring(0, bracketStart).Trim();
+
+        if (string.IsNullOrWhiteSpace(inside))
+        {
+            return false;
+        }
+
+        var sizeParts = inside.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        sizes = sizeParts.Select(p => int.Parse(p.Trim())).ToArray();
+
+        var elementType = Resolve(elementExpr);
+        type = elementType.MakeArrayType(sizes.Length);
+        return true;
     }
 
     private Type ResolveGeneric(string expr)
@@ -80,6 +112,7 @@ public sealed class ScriptTypeRegistry
 
         return baseType.MakeGenericType(genericArgs);
     }
+    
     private static List<string> SplitGenericArguments(string input)
     {
         var result = new List<string>();
