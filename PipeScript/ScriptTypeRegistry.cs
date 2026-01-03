@@ -31,22 +31,26 @@ public sealed class ScriptTypeRegistry
     public Type Resolve(string aliasOrFullName)
     {
         aliasOrFullName = aliasOrFullName.Trim();
-
+        
+        // Массив
         if (TryResolveSizedArray(aliasOrFullName, out var arrayType, out _))
         {
             return arrayType;
         }
 
+        // Generic тип
         if (aliasOrFullName.Contains('<'))
         {
             return ResolveGeneric(aliasOrFullName);
         }
 
+        // Получение типа из словаря
         if (_types.TryGetValue(aliasOrFullName, out var aliasType))
         {
             return aliasType;
         }
 
+        // Поиск типа
         var clrType = FindType(aliasOrFullName);
         if (clrType != null)
         {
@@ -56,6 +60,7 @@ public sealed class ScriptTypeRegistry
         throw new Exception($"Type not registered or not found: {aliasOrFullName}");
     }
 
+    // Массив
     private bool TryResolveSizedArray(string expr, out Type type, out int[] sizes)
     {
         type = null!;
@@ -84,6 +89,7 @@ public sealed class ScriptTypeRegistry
         return true;
     }
 
+    // Generic тип
     private Type ResolveGeneric(string expr)
     {
         var nameEnd = expr.IndexOf('<');
