@@ -40,20 +40,6 @@ internal sealed class Cvar : PipeCommand
             return Convert.ChangeType(raw, type);
         }
 
-        if (type.IsArray)
-        {
-            var elementType = type.GetElementType()!;
-            var array = Array.CreateInstance(elementType, args.Length);
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                var val = ScriptUtils.ResolveArg(args[i], vars);
-                array.SetValue(Convert.ChangeType(val, elementType), i);
-            }
-
-            return array;
-        }
-
         var constructors = type.GetConstructors();
         foreach (var ctor in constructors)
         {

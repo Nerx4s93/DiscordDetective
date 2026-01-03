@@ -31,12 +31,6 @@ public sealed class ScriptTypeRegistry
     public Type Resolve(string aliasOrFullName)
     {
         aliasOrFullName = aliasOrFullName.Trim();
-        
-        // Массив
-        if (TryResolveSizedArray(aliasOrFullName, out var arrayType, out _))
-        {
-            return arrayType;
-        }
 
         // Generic тип
         if (aliasOrFullName.Contains('<'))
@@ -58,35 +52,6 @@ public sealed class ScriptTypeRegistry
         }
 
         throw new Exception($"Type not registered or not found: {aliasOrFullName}");
-    }
-
-    // Массив
-    private bool TryResolveSizedArray(string expr, out Type type, out int[] sizes)
-    {
-        type = null!;
-        sizes = [];
-
-        var bracketStart = expr.IndexOf('[');
-        var bracketEnd = expr.LastIndexOf(']');
-        if (bracketStart < 0 || bracketEnd < bracketStart)
-        {
-            return false;
-        }
-
-        var inside = expr.Substring(bracketStart + 1, bracketEnd - bracketStart - 1);
-        var elementExpr = expr.Substring(0, bracketStart).Trim();
-
-        if (string.IsNullOrWhiteSpace(inside))
-        {
-            return false;
-        }
-
-        var sizeParts = inside.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        sizes = sizeParts.Select(p => int.Parse(p.Trim())).ToArray();
-
-        var elementType = Resolve(elementExpr);
-        type = elementType.MakeArrayType(sizes.Length);
-        return true;
     }
 
     // Generic тип
