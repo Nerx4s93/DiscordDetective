@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace PipeScript;
 
@@ -131,6 +133,55 @@ public sealed class ScriptTypeRegistry
         foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
         {
             var types = asm.GetTypes();
+            foreach (var t in types)
+            {
+                if (!t.IsGenericTypeDefinition)
+                {
+                    continue;
+                }
+
+                if (t.FullName == null)
+                {
+                    continue;
+                }
+
+                var shortName = t.FullName.Split('`')[0];
+                if (shortName == clrName)
+                {
+                    return t;
+                }
+            }
+        }
+
+        var baseDir = AppContext.BaseDirectory;
+        foreach (var dll in Directory.EnumerateFiles(baseDir, "*.dll"))
+        {
+            Assembly asm;
+            try
+            {
+                asm = Assembly.LoadFrom(dll);
+            }
+            catch
+            {
+                continue;
+            }
+
+            type = asm.GetType(clrName, false);
+            if (type != null)
+            {
+                return type;
+            }
+
+            Type[] types;
+            try
+            {
+                types = asm.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types.Where(t => t != null).ToArray()!;
+            }
+
             foreach (var t in types)
             {
                 if (!t.IsGenericTypeDefinition)
