@@ -11,6 +11,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
     public async Task ExecuteTask(PipelineTask task, RedisTaskQueue queue, RedisEventBus events)
     {
         IsBusy = true;
+        await events.PublishEvent(task, PipelineTaskProgress.InProgress);
+
         try
         {
             PipelineTask[] result = null!;
@@ -32,6 +34,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         }
         finally
         {
+            await events.PublishEvent(task, PipelineTaskProgress.End);
             IsBusy = false;
         }
     }
