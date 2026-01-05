@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ using DiscordApi.Models;
 
 namespace DiscordApi;
 
-public class DiscordClient(string token) : IDisposable
+public class DiscordClient(string token, ProxyInfo? proxy) : IDisposable
 {
     private readonly string _token = token ?? throw new ArgumentNullException(nameof(token));
-    private readonly HttpClient _httpClient = new();
+    private readonly HttpClient _httpClient = CreateHttpClient(proxy, token);
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -23,6 +24,8 @@ public class DiscordClient(string token) : IDisposable
     private const string BaseUrl = "https://discord.com/api/v9";
 
     private UserApiDTO? _userApiDTO;
+
+    public DiscordClient(string token) : this(token, proxy: null) { }
 
     #region Информация о боте
 
@@ -107,19 +110,47 @@ public class DiscordClient(string token) : IDisposable
     private async Task<HttpResponseMessage> MakeRequestAsync(string url)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Add("Authorization", $"{_token}");
-
         var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
-
         return response;
     }
 
+
     #endregion
+
+    private static HttpClient CreateHttpClient(ProxyInfo? proxy, string token)
+    {
+        var handler = new HttpClientHandler();
+
+        if (proxy != null)
+        {
+            var webProxy = new WebProxy(proxy.Host, proxy.Port);
+
+            if (proxy.HasCredentials)
+            {
+                webProxy.Credentials = new NetworkCredential(proxy.Username, proxy.Password);
+            }
+
+            handler.Proxy = webProxy;
+            handler.UseProxy = true;
+        }
+
+        var httpClient = new HttpClient(handler, disposeHandler: true)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(token);
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "DiscordDetective/1.0 (api-client)");
+
+        return httpClient;
+    }
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _httpClient.Dispose();
         GC.SuppressFinalize(this);
     }
 }
