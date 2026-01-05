@@ -65,6 +65,31 @@ public class DiscordClient(string token) : IDisposable
         return await MakeRequestAsync<IReadOnlyList<ChannelApiDTO>>($"guilds/{guildId}/channels");
     }
 
+    public async Task<IReadOnlyList<MessageApiDTO>> GetChannelMessagesAsync(
+        string channelId, 
+        int limit = 100, 
+        string? beforeMessageId = null)
+    {
+        if (string.IsNullOrWhiteSpace(channelId))
+        {
+            throw new ArgumentNullException(nameof(channelId));
+        }
+
+        if (limit is <= 0 or > 100)
+        {
+            throw new ArgumentOutOfRangeException(nameof(limit), "Limit must be between 1 and 100");
+        }
+
+        var query = QueryParametersBuilder.Create()
+            .AddParameter("limit", limit)
+            .AddParameterIf(!string.IsNullOrEmpty(beforeMessageId), "before", beforeMessageId)
+            .Build();
+        var endpoint = $"channels/{channelId}/messages{query}";
+
+        var messages = await MakeRequestAsync<IReadOnlyList<MessageApiDTO>>(endpoint);
+        return messages;
+    }
+
     #endregion
 
     #region Формирвание запроса
