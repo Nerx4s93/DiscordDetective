@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -53,6 +54,16 @@ public class DiscordClient(string token) : IDisposable
     public async Task<IReadOnlyList<GuildApiDTO>> GetGuildsAsync()
     {
         return await MakeRequestAsync<IReadOnlyList<GuildApiDTO>>("users/@me/guilds");
+    }
+
+    public async Task<IReadOnlyList<ChannelApiDTO>> GetGuildChannelsAsync(string guildId)
+    {
+        if (string.IsNullOrWhiteSpace(guildId))
+        {
+            throw new ArgumentNullException(nameof(guildId));
+        }
+
+        return await MakeRequestAsync<IReadOnlyList<ChannelApiDTO>>($"guilds/{guildId}/channels");
     }
 
     #endregion

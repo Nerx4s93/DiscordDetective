@@ -2,7 +2,7 @@
 
 namespace DiscordApi.Models;
 
-public class GuildApiDTO
+public sealed class GuildApiDTO
 {
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
