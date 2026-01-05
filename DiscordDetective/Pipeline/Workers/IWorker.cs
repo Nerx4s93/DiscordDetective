@@ -5,5 +5,5 @@ namespace DiscordDetective.Pipeline.Workers;
 public interface IWorker
 {
     bool IsBusy { get; }
-    Task ExecuteTask(PipelineTask task, RedisTaskQueue queue);
+    Task ExecuteTask(PipelineTask task, RedisTaskQueue queue, RedisEventBus events);
 }

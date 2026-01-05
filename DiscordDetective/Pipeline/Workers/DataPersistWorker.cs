@@ -6,7 +6,7 @@ public sealed class DataPersistWorker : IWorker
 {
     public bool IsBusy { get; private set; }
 
-    public async Task ExecuteTask(PipelineTask task, RedisTaskQueue queue)
+    public async Task ExecuteTask(PipelineTask task, RedisTaskQueue queue, RedisEventBus events)
     {
         IsBusy = true;
         try

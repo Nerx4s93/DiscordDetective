@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiscordDetective.Pipeline;
 
-public sealed class RedisTaskQueue(IDatabase db)
+public sealed class RedisTaskQueue(IDatabase database)
 {
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
@@ -18,13 +18,13 @@ public sealed class RedisTaskQueue(IDatabase db)
     public async Task EnqueueAsync(PipelineTask task)
     {
         var json = JsonSerializer.Serialize(task);
-        await db.ListRightPushAsync(GetKey(task.Type), json);
+        await database.ListRightPushAsync(GetKey(task.Type), json);
     }
 
     public async Task<PipelineTask?> DequeueAsync(PipelineTaskType type)
     {
         var key = GetKey(type);
-        var redisValue = await db.ListLeftPopAsync(key);
+        var redisValue = await database.ListLeftPopAsync(key);
         if (redisValue.IsNullOrEmpty)
         {
             return null;
@@ -35,5 +35,5 @@ public sealed class RedisTaskQueue(IDatabase db)
         return task;
     }
 
-    public async Task<long> CountAsync(PipelineTaskType type) => await db.ListLengthAsync(GetKey(type));
+    public async Task<long> CountAsync(PipelineTaskType type) => await database.ListLengthAsync(GetKey(type));
 }
