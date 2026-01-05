@@ -1,19 +1,25 @@
-﻿using DiscordDetective.Database.Models;
-using DiscordDetective.DTOExtensions;
-using DiscordDetective.Logging;
-using DiscordApi;
-using Px6Api;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using DiscordApi;
+
+using DiscordDetective.Database.Models;
+using DiscordDetective.DTOExtensions;
+using DiscordDetective.Logging;
+using DiscordDetective.Pipeline;
+using DiscordDetective.Pipeline.Workers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+
+using Px6Api;
+
+using StackExchange.Redis;
 
 namespace DiscordDetective.GUI;
 
@@ -378,6 +384,50 @@ public partial class FormMain : Form
         {
             await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
         }
+    }
+
+    #endregion
+
+    #region Страница "Выкачивание"
+
+    private async void button5_Click(object sender, EventArgs e)
+    {
+        var options = new ConfigurationOptions
+        {
+            EndPoints = { "127.0.0.1:6367" },
+            AbortOnConnectFail = false,
+            ConnectTimeout = 2000,
+            ConnectRetry = 2
+        };
+
+        var redis = await ConnectionMultiplexer.ConnectAsync(options);
+        var db = redis.GetDatabase();
+        var queue = new RedisTaskQueue(db);
+
+        Console.WriteLine("Подключение к бд выполнено.");
+
+        var databaseContext = new DatabaseContext();
+        var bots = await databaseContext.Bots.ToListAsync();
+
+        var discordWorkers = new List<IWorker>();
+        foreach (var bot in bots)
+        {
+            try
+            {
+                var client = new DiscordClient(bot.Token);
+                await client.GetMe();
+                discordWorkers.Add(new DiscordWorker(client));
+            }
+            catch { /* игнорируем */ }
+        }
+
+        Console.WriteLine("Клиенты ботов созданы.");
+
+        var aiWorkers = new List<IWorker> { new AiWorker() };
+        var dataWorkers = new List<IWorker> { new DataPersistWorker() };
+
+        var pipelineManager = new PipelineManager(queue, discordWorkers, aiWorkers, dataWorkers);
+        _ = pipelineManager.RunAsync(CancellationToken.None);
     }
 
     #endregion

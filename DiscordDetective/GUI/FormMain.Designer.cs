@@ -43,16 +43,20 @@ partial class FormMain
         UpdateListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         UpdateBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        tabPage1 = new System.Windows.Forms.TabPage();
+        button5 = new System.Windows.Forms.Button();
         tabControlMain.SuspendLayout();
         tabPageProxy.SuspendLayout();
         TabPageBots.SuspendLayout();
         ContextMenuStripBots.SuspendLayout();
+        tabPage1.SuspendLayout();
         SuspendLayout();
         // 
         // tabControlMain
         // 
         tabControlMain.Controls.Add(tabPageProxy);
         tabControlMain.Controls.Add(TabPageBots);
+        tabControlMain.Controls.Add(tabPage1);
         tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
         tabControlMain.Location = new System.Drawing.Point(0, 0);
         tabControlMain.Name = "tabControlMain";
@@ -79,7 +83,7 @@ partial class FormMain
         // 
         button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         button4.Enabled = false;
-        button4.Location = new System.Drawing.Point(1242, 634);
+        button4.Location = new System.Drawing.Point(1242, 636);
         button4.Name = "button4";
         button4.Size = new System.Drawing.Size(194, 52);
         button4.TabIndex = 4;
@@ -127,16 +131,16 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 694);
+        proxyListView.Size = new System.Drawing.Size(1236, 696);
         proxyListView.TabIndex = 0;
         // 
         // TabPageBots
         // 
         TabPageBots.Controls.Add(listViewBots);
-        TabPageBots.Location = new System.Drawing.Point(4, 34);
+        TabPageBots.Location = new System.Drawing.Point(4, 32);
         TabPageBots.Name = "TabPageBots";
         TabPageBots.Padding = new System.Windows.Forms.Padding(3);
-        TabPageBots.Size = new System.Drawing.Size(1448, 688);
+        TabPageBots.Size = new System.Drawing.Size(1448, 690);
         TabPageBots.TabIndex = 0;
         TabPageBots.Text = "Боты";
         TabPageBots.UseVisualStyleBackColor = true;
@@ -147,7 +151,7 @@ partial class FormMain
         listViewBots.Dock = System.Windows.Forms.DockStyle.Fill;
         listViewBots.Location = new System.Drawing.Point(3, 3);
         listViewBots.Name = "listViewBots";
-        listViewBots.Size = new System.Drawing.Size(1442, 682);
+        listViewBots.Size = new System.Drawing.Size(1442, 684);
         listViewBots.TabIndex = 0;
         listViewBots.UseCompatibleStateImageBehavior = false;
         listViewBots.SelectedIndexChanged += listViewBots_SelectedIndexChanged;
@@ -190,6 +194,26 @@ partial class FormMain
         DeleteBotToolStripMenuItem.Text = "Удалить";
         DeleteBotToolStripMenuItem.Click += DeleteBotToolStripMenuItem_Click;
         // 
+        // tabPage1
+        // 
+        tabPage1.Controls.Add(button5);
+        tabPage1.Location = new System.Drawing.Point(4, 32);
+        tabPage1.Name = "tabPage1";
+        tabPage1.Size = new System.Drawing.Size(1448, 690);
+        tabPage1.TabIndex = 2;
+        tabPage1.Text = "Выкачивание";
+        tabPage1.UseVisualStyleBackColor = true;
+        // 
+        // button5
+        // 
+        button5.Location = new System.Drawing.Point(395, 142);
+        button5.Name = "button5";
+        button5.Size = new System.Drawing.Size(112, 34);
+        button5.TabIndex = 0;
+        button5.Text = "Start";
+        button5.UseVisualStyleBackColor = true;
+        button5.Click += button5_Click;
+        // 
         // FormMain
         // 
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -202,6 +226,7 @@ partial class FormMain
         tabPageProxy.ResumeLayout(false);
         TabPageBots.ResumeLayout(false);
         ContextMenuStripBots.ResumeLayout(false);
+        tabPage1.ResumeLayout(false);
         ResumeLayout(false);
     }
 
@@ -221,4 +246,6 @@ partial class FormMain
     private System.Windows.Forms.Button button3;
     private System.Windows.Forms.Button button2;
     private System.Windows.Forms.Button button1;
+    private System.Windows.Forms.TabPage tabPage1;
+    private System.Windows.Forms.Button button5;
 }
