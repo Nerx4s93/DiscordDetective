@@ -392,17 +392,8 @@ public partial class FormMain : Form
 
     private async void button5_Click(object sender, EventArgs e)
     {
-        var options = new ConfigurationOptions
-        {
-            EndPoints = { "127.0.0.1:6367" },
-            AbortOnConnectFail = false,
-            ConnectTimeout = 2000,
-            ConnectRetry = 2
-        };
-
-        var redis = await ConnectionMultiplexer.ConnectAsync(options);
-        var db = redis.GetDatabase();
-        var queue = new RedisTaskQueue(db);
+        var database = await RedisDatabaseFactory.Create();
+        var queue = new RedisTaskQueue(database);
 
         Console.WriteLine("Подключение к бд выполнено.");
 
