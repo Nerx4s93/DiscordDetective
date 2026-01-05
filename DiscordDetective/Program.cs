@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-
 using DiscordDetective.GUI;
 
 namespace DiscordDetective;
@@ -16,9 +15,7 @@ internal static class Program
 
         Console.Write($"\x1b[8;{12};{80}t");
         ApplicationConfiguration.Initialize();
-
-        var code = File.ReadAllText(@"Resources\PipeScripts\Types\BasicTypes.psc");
-        Application.Run(new PipeScript.GUI.ScriptForm("MyScript", code));
+        Application.Run(new FormMain());
     }
 
     private static void CheckFile(string path, string message)
