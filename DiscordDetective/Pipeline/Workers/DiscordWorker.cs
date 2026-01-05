@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using DiscordApi;
 
@@ -39,16 +38,12 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
     private async Task<PipelineTask[]> DiscoverChannels(string payloadJson)
     {
-        Console.WriteLine("Начало загрузки чатов...");
-
         var guildId = payloadJson;
         var channels = await client.GetGuildChannelsAsync(guildId);
 
         var result = new PipelineTask[channels.Count];
         for (var i = 0; i < channels.Count; i++)
         {
-            Console.WriteLine(channels[i].Id + " " + channels[i].Name);
-
             result[i] = new PipelineTask()
             {
                 Type = PipelineTaskType.DownloadChannelMessages,

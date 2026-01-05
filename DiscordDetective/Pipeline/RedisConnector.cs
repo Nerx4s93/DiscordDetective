@@ -17,10 +17,4 @@ internal static class RedisConnector
     {
         return await ConnectionMultiplexer.ConnectAsync(_options);
     }
-
-    public static async Task<IDatabase> GetDatabaseAsync()
-    {
-        var multiplexer = await ConnectAsync();
-        return multiplexer.GetDatabase();
-    }
 }

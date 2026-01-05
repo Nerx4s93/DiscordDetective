@@ -392,8 +392,10 @@ public partial class FormMain : Form
 
     private async void button5_Click(object sender, EventArgs e)
     {
-        var database = await RedisDatabaseFactory.Create();
+        var connection = await RedisConnector.ConnectAsync();
+        var database = connection.GetDatabase();
         var queue = new RedisTaskQueue(database);
+        var events = new RedisEventBus(connection);
 
         Console.WriteLine("Подключение к бд выполнено.");
 
@@ -417,7 +419,7 @@ public partial class FormMain : Form
         var aiWorkers = new List<IWorker> { new AiWorker() };
         var dataWorkers = new List<IWorker> { new DataPersistWorker() };
 
-        var pipelineManager = new PipelineManager(queue, discordWorkers, aiWorkers, dataWorkers);
+        var pipelineManager = new PipelineManager(queue, events, discordWorkers, aiWorkers, dataWorkers);
         _ = pipelineManager.RunAsync(CancellationToken.None);
     }
 
