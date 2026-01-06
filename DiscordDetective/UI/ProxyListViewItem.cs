@@ -63,7 +63,7 @@ public partial class ProxyListViewItem : UserControl
         var dateTimeEnd = DateTime.Parse(_proxy.DateEnd);
         var daysLeft = dateTimeEnd - DateTime.Now;
         labelDateEnd.Text = dateTimeEnd.ToString("dd:MM:yy, HH:mm");
-        labelDaysEnd.Text = daysLeft.Days.ToString() + "д";
+        labelDaysEnd.Text = daysLeft.Days + "д";
     }
 
     private void checkBoxItemSelected_CheckedChanged(object sender, EventArgs e)
