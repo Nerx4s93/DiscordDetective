@@ -30,6 +30,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             foreach (var newTask in result)
             {
                 await queue.EnqueueAsync(newTask);
+                await events.PublishEvent(newTask, PipelineTaskProgress.New);
             }
         }
         finally

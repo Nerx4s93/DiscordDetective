@@ -45,6 +45,7 @@ partial class FormMain
         UpdateBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabPage1 = new System.Windows.Forms.TabPage();
+        buttonAddServerTask = new System.Windows.Forms.Button();
         label4 = new System.Windows.Forms.Label();
         listView4 = new System.Windows.Forms.ListView();
         label3 = new System.Windows.Forms.Label();
@@ -53,7 +54,7 @@ partial class FormMain
         label2 = new System.Windows.Forms.Label();
         label1 = new System.Windows.Forms.Label();
         listView1 = new System.Windows.Forms.ListView();
-        button5 = new System.Windows.Forms.Button();
+        buttonStartPipeline = new System.Windows.Forms.Button();
         contextMenuStripProlong = new System.Windows.Forms.ContextMenuStrip(components);
         buttonProlong3Days = new System.Windows.Forms.ToolStripMenuItem();
         buttonProlongWeek = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,7 +105,7 @@ partial class FormMain
         // buttonUpdateProxyList
         // 
         buttonUpdateProxyList.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 578);
+        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 588);
         buttonUpdateProxyList.Name = "buttonUpdateProxyList";
         buttonUpdateProxyList.Size = new System.Drawing.Size(194, 52);
         buttonUpdateProxyList.TabIndex = 6;
@@ -115,7 +116,7 @@ partial class FormMain
         // buttonBuy
         // 
         buttonBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonBuy.Location = new System.Drawing.Point(1242, 636);
+        buttonBuy.Location = new System.Drawing.Point(1242, 646);
         buttonBuy.Name = "buttonBuy";
         buttonBuy.Size = new System.Drawing.Size(194, 52);
         buttonBuy.TabIndex = 5;
@@ -127,7 +128,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 520);
+        buttonDelete.Location = new System.Drawing.Point(1242, 530);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -168,7 +169,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 730);
+        proxyListView.Size = new System.Drawing.Size(1236, 740);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -234,6 +235,7 @@ partial class FormMain
         // 
         // tabPage1
         // 
+        tabPage1.Controls.Add(buttonAddServerTask);
         tabPage1.Controls.Add(label4);
         tabPage1.Controls.Add(listView4);
         tabPage1.Controls.Add(label3);
@@ -242,13 +244,24 @@ partial class FormMain
         tabPage1.Controls.Add(label2);
         tabPage1.Controls.Add(label1);
         tabPage1.Controls.Add(listView1);
-        tabPage1.Controls.Add(button5);
-        tabPage1.Location = new System.Drawing.Point(4, 34);
+        tabPage1.Controls.Add(buttonStartPipeline);
+        tabPage1.Location = new System.Drawing.Point(4, 32);
         tabPage1.Name = "tabPage1";
-        tabPage1.Size = new System.Drawing.Size(1448, 688);
+        tabPage1.Size = new System.Drawing.Size(1448, 690);
         tabPage1.TabIndex = 2;
         tabPage1.Text = "Выкачивание";
         tabPage1.UseVisualStyleBackColor = true;
+        // 
+        // buttonAddServerTask
+        // 
+        buttonAddServerTask.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonAddServerTask.Location = new System.Drawing.Point(8, 633);
+        buttonAddServerTask.Name = "buttonAddServerTask";
+        buttonAddServerTask.Size = new System.Drawing.Size(221, 51);
+        buttonAddServerTask.TabIndex = 9;
+        buttonAddServerTask.Text = "Добавить";
+        buttonAddServerTask.UseVisualStyleBackColor = true;
+        buttonAddServerTask.Click += buttonAddServerTask_Click;
         // 
         // label4
         // 
@@ -265,7 +278,7 @@ partial class FormMain
         listView4.FullRowSelect = true;
         listView4.Location = new System.Drawing.Point(931, 35);
         listView4.Name = "listView4";
-        listView4.Size = new System.Drawing.Size(377, 647);
+        listView4.Size = new System.Drawing.Size(377, 655);
         listView4.TabIndex = 7;
         listView4.UseCompatibleStateImageBehavior = false;
         listView4.View = System.Windows.Forms.View.List;
@@ -285,7 +298,7 @@ partial class FormMain
         listView3.FullRowSelect = true;
         listView3.Location = new System.Drawing.Point(546, 35);
         listView3.Name = "listView3";
-        listView3.Size = new System.Drawing.Size(377, 647);
+        listView3.Size = new System.Drawing.Size(377, 655);
         listView3.TabIndex = 5;
         listView3.UseCompatibleStateImageBehavior = false;
         listView3.View = System.Windows.Forms.View.List;
@@ -296,7 +309,7 @@ partial class FormMain
         listView2.FullRowSelect = true;
         listView2.Location = new System.Drawing.Point(235, 35);
         listView2.Name = "listView2";
-        listView2.Size = new System.Drawing.Size(305, 647);
+        listView2.Size = new System.Drawing.Size(305, 655);
         listView2.TabIndex = 4;
         listView2.UseCompatibleStateImageBehavior = false;
         listView2.View = System.Windows.Forms.View.List;
@@ -325,20 +338,20 @@ partial class FormMain
         listView1.FullRowSelect = true;
         listView1.Location = new System.Drawing.Point(8, 35);
         listView1.Name = "listView1";
-        listView1.Size = new System.Drawing.Size(221, 647);
+        listView1.Size = new System.Drawing.Size(221, 594);
         listView1.TabIndex = 1;
         listView1.UseCompatibleStateImageBehavior = false;
         listView1.View = System.Windows.Forms.View.List;
         // 
-        // button5
+        // buttonStartPipeline
         // 
-        button5.Location = new System.Drawing.Point(1314, 35);
-        button5.Name = "button5";
-        button5.Size = new System.Drawing.Size(126, 34);
-        button5.TabIndex = 0;
-        button5.Text = "Start";
-        button5.UseVisualStyleBackColor = true;
-        button5.Click += button5_Click;
+        buttonStartPipeline.Location = new System.Drawing.Point(1314, 35);
+        buttonStartPipeline.Name = "buttonStartPipeline";
+        buttonStartPipeline.Size = new System.Drawing.Size(126, 34);
+        buttonStartPipeline.TabIndex = 0;
+        buttonStartPipeline.Text = "Старт";
+        buttonStartPipeline.UseVisualStyleBackColor = true;
+        buttonStartPipeline.Click += buttonStartPipeline_Click;
         // 
         // contextMenuStripProlong
         // 
@@ -447,7 +460,7 @@ partial class FormMain
     private System.Windows.Forms.Button buttonChangeType;
     private System.Windows.Forms.Button buttonProlong;
     private System.Windows.Forms.TabPage tabPage1;
-    private System.Windows.Forms.Button button5;
+    private System.Windows.Forms.Button buttonStartPipeline;
     private System.Windows.Forms.ListView listView1;
     private System.Windows.Forms.ListView listView2;
     private System.Windows.Forms.Label label2;
@@ -468,4 +481,5 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem buttonProlong2Month;
     private System.Windows.Forms.ToolStripMenuItem buttonProlong3Month;
     private System.Windows.Forms.Button buttonUpdateProxyList;
+    private System.Windows.Forms.Button buttonAddServerTask;
 }

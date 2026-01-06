@@ -18,17 +18,49 @@ public sealed class RedisEventBus(IConnectionMultiplexer multiplexer)
     {
         var message = new PipelineEvent(task.Type, task.Id, progress);
         var json = JsonSerializer.Serialize(message, _jsonOptions);
-        await _subscriber.PublishAsync("pipeline:events", json);
+        
+        var channel = $"pipeline:events:{task.Type.ToString()}";
+        await _subscriber.PublishAsync(channel, json);
+        
+        await _subscriber.PublishAsync("pipeline:events:all", json);
     }
 
     public void Subscribe(PipelineTaskType type, Action<PipelineEvent> handler)
     {
-        _subscriber.Subscribe("pipeline:event", (redisChannel, value) =>
+        var channel = $"pipeline:events:{type.ToString()}";
+
+        _subscriber.Subscribe(channel, (redisChannel, value) =>
         {
-            var task = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
-            if (task != null)
+            try
             {
-                handler(task);
+                var task = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
+                if (task != null)
+                {
+                    handler(task);
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error deserializing event: {ex.Message}");
+            }
+        });
+    }
+
+    public void Subscribe(Action<PipelineEvent> handler)
+    {
+        _subscriber.Subscribe("pipeline:events:all", (redisChannel, value) =>
+        {
+            try
+            {
+                var task = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
+                if (task != null)
+                {
+                    handler(task);
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error deserializing event: {ex.Message}");
             }
         });
     }

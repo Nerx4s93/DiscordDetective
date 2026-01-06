@@ -2,6 +2,7 @@
 
 public enum PipelineTaskProgress
 {
+    New,
     InProgress,
     End
 }

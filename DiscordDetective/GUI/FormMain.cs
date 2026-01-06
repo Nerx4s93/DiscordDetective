@@ -20,6 +20,8 @@ using Microsoft.VisualBasic;
 
 using Px6Api;
 
+using StackExchange.Redis;
+
 namespace DiscordDetective.GUI;
 
 public partial class FormMain : Form
@@ -39,6 +41,7 @@ public partial class FormMain : Form
 
         _ = LoadProxyPageAsync();
         _ = LoadBotsAsync();
+        _ = LoadTasksAsync();
     }
 
     #region Страница "Прокси"
@@ -576,14 +579,58 @@ public partial class FormMain : Form
 
     #region Страница "Выкачивание"
 
-    private async void button5_Click(object sender, EventArgs e)
-    {
-        var connection = await RedisConnector.ConnectAsync();
-        var database = connection.GetDatabase();
-        var queue = new RedisTaskQueue(database);
-        var events = new RedisEventBus(connection);
+    private IConnectionMultiplexer _connection = null!;
+    private IDatabase _database = null!;
+    private RedisTaskQueue _redisTaskQueue = null!;
+    private RedisEventBus _redisEventBus = null!;
 
-        Console.WriteLine("Подключение к бд выполнено.");
+    private async Task LoadTasksAsync()
+    {
+        try
+        {
+            _connection = await RedisConnector.ConnectAsync();
+            _database = _connection.GetDatabase();
+            _redisTaskQueue = new RedisTaskQueue(_database);
+            _redisEventBus = new RedisEventBus(_connection);
+        }
+        catch (Exception ex)
+        {
+            await _loggerService.LogAsync("Database", $"Ошибка при загрузке ботов: {ex}", LogLevel.Error);
+        }
+    }
+
+    private async void buttonAddServerTask_Click(object sender, EventArgs e)
+    {
+        if (!_connection.IsConnected)
+        {
+            return;
+        }
+
+        var text = Interaction.InputBox(
+            "Введите id сервера",
+            "Новый задача",
+            ""
+        );
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        var task = new PipelineTask()
+        {
+            Type = PipelineTaskType.DiscoverGuildChannels,
+            Payload = text
+        };
+        await _redisTaskQueue.EnqueueAsync(task);
+    }
+
+    private async void buttonStartPipeline_Click(object sender, EventArgs e)
+    {
+        _redisEventBus.Subscribe((PipelineEvent) =>
+        {
+            Console.WriteLine(PipelineEvent.Type + " " + PipelineEvent.TaskId + " " + PipelineEvent.Progress);
+        });
 
         var databaseContext = new DatabaseContext();
         var bots = await databaseContext.Bots.ToListAsync();
@@ -605,7 +652,7 @@ public partial class FormMain : Form
         var aiWorkers = new List<IWorker> { new AiWorker() };
         var dataWorkers = new List<IWorker> { new DataPersistWorker() };
 
-        var pipelineManager = new PipelineManager(queue, events, discordWorkers, aiWorkers, dataWorkers);
+        var pipelineManager = new PipelineManager(_redisTaskQueue, _redisEventBus, discordWorkers, aiWorkers, dataWorkers);
         _ = pipelineManager.RunAsync(CancellationToken.None);
     }
 
