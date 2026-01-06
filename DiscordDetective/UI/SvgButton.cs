@@ -11,6 +11,7 @@ public class SvgButton : Button
     private string _iconName = string.Empty;
     private int _iconPadding = 0;
     private Point _iconOffset = Point.Empty;
+    private Color _iconColor = Color.Black;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string IconName
@@ -24,7 +25,7 @@ public class SvgButton : Button
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public new int IconPadding
+    public int IconPadding
     {
         get => _iconPadding;
         set
@@ -63,6 +64,17 @@ public class SvgButton : Button
         set
         {
             _iconOffset = new Point(_iconOffset.X, value);
+            Invalidate();
+        }
+    }
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    public Color IconColor
+    {
+        get => _iconColor;
+        set
+        {
+            _iconColor = value;
             Invalidate();
         }
     }
@@ -111,7 +123,7 @@ public class SvgButton : Button
 
         var width = Width - _iconPadding * 2;
         var height = Height - _iconPadding * 2;
-        using var svgImage = SvgRenderer.SvgToBitmap(svgCode, width, height);
+        using var svgImage = SvgRenderer.SvgToBitmap(svgCode, width, height, _iconColor);
 
         var x = _iconPadding + OffsetX;
         var y = _iconPadding + OffsetY;
