@@ -61,7 +61,7 @@ public partial class ProxyListViewItem : UserControl
 
         var dateTimeStart = DateTime.Parse(_proxy.Date);
         var dateTimeEnd = DateTime.Parse(_proxy.DateEnd);
-        var daysLeft = dateTimeEnd - dateTimeStart;
+        var daysLeft = dateTimeEnd - DateTime.Now;
         labelDateEnd.Text = dateTimeEnd.ToString("dd:MM:yy, HH:mm");
         labelDaysEnd.Text = daysLeft.Days.ToString() + "д";
     }

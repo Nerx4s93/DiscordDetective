@@ -19,8 +19,6 @@ using Microsoft.VisualBasic;
 
 using Px6Api;
 
-using StackExchange.Redis;
-
 namespace DiscordDetective.GUI;
 
 public partial class FormMain : Form
