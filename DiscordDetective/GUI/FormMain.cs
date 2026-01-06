@@ -38,9 +38,39 @@ public partial class FormMain : Form
 
         listViewBots.LargeImageList = _botsImageList;
 
-        _ = LoadBotsAsync();
         _ = LoadProxyAsync();
+        _ = LoadBotsAsync();
     }
+
+    #region Страница "Прокси"
+
+    private async Task LoadProxyAsync()
+    {
+        try
+        {
+            await _loggerService.ClearAsync();
+
+            await _loggerService.LogAsync("Px6Api", $"Создание api клиента...", LogLevel.Info);
+            var token = await File.ReadAllTextAsync("px6key.txt");
+            _px6Client = new Px6Client(token);
+            proxyListView.Px6Client = _px6Client;
+
+            await _loggerService.LogAsync("Px6Api", $"Получение списка прокси...", LogLevel.Info);
+            var proxies = (await _px6Client.GetProxiesAsync()).proxies;
+            foreach (var proxy in proxies)
+            {
+                proxyListView.AddProxy(proxy.Value);
+            }
+
+            await _loggerService.LogAsync("Px6Api", $"Загрузка завершена", LogLevel.Info);
+        }
+        catch (Exception ex)
+        {
+            await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
+        }
+    }
+
+    #endregion
 
     #region Страница "Боты"
 
@@ -354,36 +384,6 @@ public partial class FormMain : Form
         finally
         {
             DeleteBotToolStripMenuItem.Enabled = true;
-        }
-    }
-
-    #endregion
-
-    #region Страница "Прокси"
-
-    private async Task LoadProxyAsync()
-    {
-        try
-        {
-            await _loggerService.ClearAsync();
-
-            await _loggerService.LogAsync("Px6Api", $"Создание api клиента...", LogLevel.Info);
-            var token = await File.ReadAllTextAsync("px6key.txt");
-            _px6Client = new Px6Client(token);
-            proxyListView.Px6Client = _px6Client;
-
-            await _loggerService.LogAsync("Px6Api", $"Получение списка прокси...", LogLevel.Info);
-            var proxies = (await _px6Client.GetProxiesAsync()).proxies;
-            foreach (var proxy in proxies)
-            {
-                proxyListView.AddProxy(proxy.Value);
-            }
-
-            await _loggerService.LogAsync("Px6Api", $"Загрузка завершена", LogLevel.Info);
-        }
-        catch (Exception ex)
-        {
-            await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
         }
     }
 

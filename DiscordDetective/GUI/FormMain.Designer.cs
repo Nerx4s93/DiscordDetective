@@ -91,7 +91,7 @@ partial class FormMain
         // 
         button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         button4.Enabled = false;
-        button4.Location = new System.Drawing.Point(1242, 640);
+        button4.Location = new System.Drawing.Point(1242, 630);
         button4.Name = "button4";
         button4.Size = new System.Drawing.Size(194, 52);
         button4.TabIndex = 4;
@@ -139,16 +139,16 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 700);
+        proxyListView.Size = new System.Drawing.Size(1236, 702);
         proxyListView.TabIndex = 0;
         // 
         // TabPageBots
         // 
         TabPageBots.Controls.Add(listViewBots);
-        TabPageBots.Location = new System.Drawing.Point(4, 32);
+        TabPageBots.Location = new System.Drawing.Point(4, 34);
         TabPageBots.Name = "TabPageBots";
         TabPageBots.Padding = new System.Windows.Forms.Padding(3);
-        TabPageBots.Size = new System.Drawing.Size(1448, 690);
+        TabPageBots.Size = new System.Drawing.Size(1448, 688);
         TabPageBots.TabIndex = 0;
         TabPageBots.Text = "Боты";
         TabPageBots.UseVisualStyleBackColor = true;
@@ -159,7 +159,7 @@ partial class FormMain
         listViewBots.Dock = System.Windows.Forms.DockStyle.Fill;
         listViewBots.Location = new System.Drawing.Point(3, 3);
         listViewBots.Name = "listViewBots";
-        listViewBots.Size = new System.Drawing.Size(1442, 684);
+        listViewBots.Size = new System.Drawing.Size(1442, 682);
         listViewBots.TabIndex = 0;
         listViewBots.UseCompatibleStateImageBehavior = false;
         listViewBots.SelectedIndexChanged += listViewBots_SelectedIndexChanged;
