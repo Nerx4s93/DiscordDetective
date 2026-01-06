@@ -31,6 +31,7 @@ partial class FormMain
         components = new System.ComponentModel.Container();
         tabControlMain = new System.Windows.Forms.TabControl();
         tabPageProxy = new System.Windows.Forms.TabPage();
+        buttonUpdateProxyList = new System.Windows.Forms.Button();
         buttonBuy = new System.Windows.Forms.Button();
         buttonDelete = new System.Windows.Forms.Button();
         buttonChangeType = new System.Windows.Forms.Button();
@@ -87,6 +88,7 @@ partial class FormMain
         // 
         // tabPageProxy
         // 
+        tabPageProxy.Controls.Add(buttonUpdateProxyList);
         tabPageProxy.Controls.Add(buttonBuy);
         tabPageProxy.Controls.Add(buttonDelete);
         tabPageProxy.Controls.Add(buttonChangeType);
@@ -99,10 +101,21 @@ partial class FormMain
         tabPageProxy.Text = "Прокси";
         tabPageProxy.UseVisualStyleBackColor = true;
         // 
+        // buttonUpdateProxyList
+        // 
+        buttonUpdateProxyList.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 578);
+        buttonUpdateProxyList.Name = "buttonUpdateProxyList";
+        buttonUpdateProxyList.Size = new System.Drawing.Size(194, 52);
+        buttonUpdateProxyList.TabIndex = 6;
+        buttonUpdateProxyList.Text = "Обновить список";
+        buttonUpdateProxyList.UseVisualStyleBackColor = true;
+        buttonUpdateProxyList.Click += buttonUpdateProxyList_Click;
+        // 
         // buttonBuy
         // 
         buttonBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonBuy.Location = new System.Drawing.Point(1242, 632);
+        buttonBuy.Location = new System.Drawing.Point(1242, 636);
         buttonBuy.Name = "buttonBuy";
         buttonBuy.Size = new System.Drawing.Size(194, 52);
         buttonBuy.TabIndex = 5;
@@ -114,7 +127,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 574);
+        buttonDelete.Location = new System.Drawing.Point(1242, 520);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -155,7 +168,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 726);
+        proxyListView.Size = new System.Drawing.Size(1236, 730);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -454,4 +467,5 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem buttonProlongMonth;
     private System.Windows.Forms.ToolStripMenuItem buttonProlong2Month;
     private System.Windows.Forms.ToolStripMenuItem buttonProlong3Month;
+    private System.Windows.Forms.Button buttonUpdateProxyList;
 }

@@ -20,8 +20,6 @@ using Microsoft.VisualBasic;
 
 using Px6Api;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace DiscordDetective.GUI;
 
 public partial class FormMain : Form
@@ -58,15 +56,21 @@ public partial class FormMain : Form
             _px6Client = new Px6Client(token);
             proxyListView.Px6Client = _px6Client;
 
-            var proxies = (await _px6Client.GetProxiesAsync()).proxies;
-            foreach (var proxy in proxies)
-            {
-                proxyListView.AddProxy(proxy.Value);
-            }
+            await LoadProxyAsync(_px6Client);
         }
         catch (Exception ex)
         {
             await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
+        }
+    }
+
+    private async Task LoadProxyAsync(Px6Client px6Client)
+    {
+        proxyListView.Clear();
+        var proxies = (await px6Client.GetProxiesAsync()).proxies;
+        foreach (var proxy in proxies)
+        {
+            proxyListView.AddProxy(proxy.Value);
         }
     }
 
@@ -194,6 +198,8 @@ public partial class FormMain : Form
     }
 
     #endregion
+
+    private void buttonUpdateProxyList_Click(object sender, EventArgs e) => _ = LoadProxyAsync(_px6Client);
 
     private async void buttonDelete_Click(object sender, EventArgs e)
     {
