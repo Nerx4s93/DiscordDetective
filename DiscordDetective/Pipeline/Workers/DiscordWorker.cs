@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using DiscordApi;
 
@@ -15,17 +16,12 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
         try
         {
-            PipelineTask[] result = null!;
-
-            switch (task.Type)
+            var result = task.Type switch
             {
-                case PipelineTaskType.DiscoverGuildChannels:
-                    result = await DiscoverChannels(task.Payload);
-                    break;
-                case PipelineTaskType.DownloadChannelMessages:
-                    result = await DownloadMessages(task.Payload);
-                    break;
-            }
+                PipelineTaskType.DiscoverGuildChannels => await DiscoverChannels(task.Payload),
+                PipelineTaskType.DownloadChannelMessages => await DownloadMessages(task.Payload),
+                _ => null!
+            };
 
             foreach (var newTask in result)
             {
@@ -48,8 +44,9 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var result = new PipelineTask[channels.Count];
         for (var i = 0; i < channels.Count; i++)
         {
-            result[i] = new PipelineTask()
+            result[i] = new PipelineTask
             {
+                Id = Guid.NewGuid(),
                 Type = PipelineTaskType.DownloadChannelMessages,
                 Payload = channels[i].Id
             };

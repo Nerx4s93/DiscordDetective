@@ -6,20 +6,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DiscordApi;
-
 using DiscordDetective.Database.Models;
 using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
 using DiscordDetective.Pipeline;
 using DiscordDetective.Pipeline.Workers;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
-
 using Px6Api;
-
 using StackExchange.Redis;
 
 namespace DiscordDetective.GUI;
@@ -592,6 +587,7 @@ public partial class FormMain : Form
             _database = _connection.GetDatabase();
             _redisTaskQueue = new RedisTaskQueue(_database);
             _redisEventBus = new RedisEventBus(_connection);
+            _redisEventBus.Subscribe(RedisEventHandler);
         }
         catch (Exception ex)
         {
@@ -617,44 +613,144 @@ public partial class FormMain : Form
             return;
         }
 
-        var task = new PipelineTask()
+        var task = new PipelineTask
         {
+            Id = Guid.NewGuid(),
             Type = PipelineTaskType.DiscoverGuildChannels,
             Payload = text
         };
+
         await _redisTaskQueue.EnqueueAsync(task);
+        await _redisEventBus.PublishEvent(task, PipelineTaskProgress.New);
     }
 
     private async void buttonStartPipeline_Click(object sender, EventArgs e)
     {
-        _redisEventBus.Subscribe((PipelineEvent) =>
-        {
-            Console.WriteLine(PipelineEvent.Type + " " + PipelineEvent.TaskId + " " + PipelineEvent.Progress);
-        });
+        await _loggerService.LogAsync("Pipeline", "Подготовка");
 
-        var databaseContext = new DatabaseContext();
-        var bots = await databaseContext.Bots.ToListAsync();
+        var discordWorkers = await GetDiscordWorkers();
 
-        var discordWorkers = new List<IWorker>();
-        foreach (var bot in bots)
+        if (discordWorkers.Count == 0)
         {
-            try
-            {
-                var client = new DiscordClient(bot.Token);
-                await client.GetMe();
-                discordWorkers.Add(new DiscordWorker(client));
-            }
-            catch { /* игнорируем */ }
+            return;
         }
 
-        Console.WriteLine("Клиенты ботов созданы.");
-
+        await _loggerService.LogAsync("Pipeline", $"Создан {discordWorkers.Count} DiscordWorker");
         var aiWorkers = new List<IWorker> { new AiWorker() };
+        await _loggerService.LogAsync("Pipeline", $"Создан {aiWorkers.Count} AiWorker");
         var dataWorkers = new List<IWorker> { new DataPersistWorker() };
+        await _loggerService.LogAsync("Pipeline", $"Создан {dataWorkers.Count} DataPersistWorker");
 
         var pipelineManager = new PipelineManager(_redisTaskQueue, _redisEventBus, discordWorkers, aiWorkers, dataWorkers);
         _ = pipelineManager.RunAsync(CancellationToken.None);
     }
+
+    private async Task<List<IWorker>> GetDiscordWorkers()
+    {
+        var databaseContext = new DatabaseContext();
+
+        var bots = await databaseContext.Bots.ToListAsync();
+        var proxies = (await _px6Client.GetProxiesAsync()).proxies;
+
+        var result = new List<IWorker>();
+        foreach (var bot in bots)
+        {
+            var proxy = proxies.FirstOrDefault(p => p.Value.Description == bot.UserId).Value;
+
+            if (proxy == null)
+            {
+                continue;
+            }
+
+            var proxyInfo = new ProxyInfo()
+            {
+                Host = proxy.Ip,
+                Port = int.Parse(proxy.Port),
+                Username = proxy.User,
+                Password = proxy.Password
+            };
+
+            var client = new DiscordClient(bot.Token, proxyInfo);
+            try
+            {
+                await client.GetMe();
+                result.Add(new DiscordWorker(client));
+            }
+            catch (Exception exception)
+            {
+                await _loggerService.LogAsync("Pipeline", $"Ошибка при загрузке бота: {exception}", LogLevel.Error);
+                throw;
+            }
+        }
+
+        return result;
+    }
+
+    #region События Pipeline
+
+    private readonly Dictionary<Guid, ListViewItem> _items = new();
+
+    private void RedisEventHandler(PipelineEvent pipelineEvent)
+    {
+        switch (pipelineEvent.Progress)
+        {
+            case PipelineTaskProgress.New:
+                AddPipelineTask(pipelineEvent);
+                return;
+            case PipelineTaskProgress.InProgress:
+                MakeInProgressPipelineTask(pipelineEvent);
+                return;
+            case PipelineTaskProgress.End:
+                DeletePipelineTask(pipelineEvent);
+                return;
+        }
+    }
+
+    private void AddPipelineTask(PipelineEvent pipelineEvent)
+    {
+        var listView = GetListView(pipelineEvent.Type);
+        var item = new ListViewItem(pipelineEvent.TaskId.ToString())
+        {
+            Tag = pipelineEvent.TaskId
+        };
+
+        _items[pipelineEvent.TaskId] = item;
+        listView.Invoke(() =>
+        {
+            listView.Items.Add(item);
+        });
+    }
+
+    private void MakeInProgressPipelineTask(PipelineEvent pipelineEvent)
+    {
+        if (_items.TryGetValue(pipelineEvent.TaskId, out var item))
+        {
+            item.ForeColor = Color.DodgerBlue;
+        }
+    }
+
+    private void DeletePipelineTask(PipelineEvent pipelineEvent)
+    {
+        var listView = GetListView(pipelineEvent.Type);
+        if (_items.Remove(pipelineEvent.TaskId, out var item))
+        {
+            listView.Items.Remove(item);
+        }
+    }
+
+    private ListView GetListView(PipelineTaskType pipelineTaskType)
+    {
+        return pipelineTaskType switch
+        {
+            PipelineTaskType.DiscoverGuildChannels => listViewPipelineDiscoverGuildChannels,
+            PipelineTaskType.DownloadChannelMessages => listViewPipelineDownloadChannelMessages,
+            PipelineTaskType.ProcessMessagesWithAi => listViewPipelineProcessMessagesWithAi,
+            PipelineTaskType.PersistStructuredData => listViewPipelinePersistStructuredData,
+            _ => throw new ArgumentOutOfRangeException(nameof(pipelineTaskType), pipelineTaskType, null)
+        };
+    }
+
+    #endregion
 
     #endregion
 

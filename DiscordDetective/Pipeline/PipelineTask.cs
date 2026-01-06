@@ -4,7 +4,7 @@ namespace DiscordDetective.Pipeline;
 
 public sealed class PipelineTask
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.Empty;
 
     public PipelineTaskType Type { get; init; }
 
