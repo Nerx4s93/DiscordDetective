@@ -199,9 +199,44 @@ public partial class FormMain : Form
 
     #endregion
 
-    private void buttonDelete_Click(object sender, EventArgs e)
+    private async void buttonDelete_Click(object sender, EventArgs e)
     {
-        
+        var selectedProxies = proxyListView.SelectedProxies;
+
+        var result = MessageBox.Show(
+            $"Вы уверены в удалении {selectedProxies.Count} серверов",
+            "Удаление прокси",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (result != DialogResult.Yes)
+        {
+            return;
+        }
+
+        try
+        {
+            buttonDelete.Enabled = false;
+
+            var ids = selectedProxies.Select(p => p.Id).ToList();
+            await _px6Client.DeleteProxyAsync(ids);
+
+            MessageBox.Show(
+                $"Удалено {selectedProxies.Count} серверов",
+                "Удаление прокси",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            proxyListView.RemoveSelected();
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(exception.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        finally
+        {
+            buttonDelete.Enabled = true;
+        }
     }
 
     private void buttonBuy_Click(object sender, EventArgs e)
