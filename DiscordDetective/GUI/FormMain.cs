@@ -111,35 +111,17 @@ public partial class FormMain : Form
 
     #region contextMenuStripProlong
 
-    private void buttonProlong3Days_Click(object sender, EventArgs e)
-    {
-        ProlongProxy(3);
-    }
+    private void buttonProlong3Days_Click(object sender, EventArgs e) => ProlongProxy(3);
 
-    private void buttonProlongWeek_Click(object sender, EventArgs e)
-    {
-        ProlongProxy(7);
-    }
+    private void buttonProlongWeek_Click(object sender, EventArgs e) => ProlongProxy(7);
 
-    private void buttonProlong2Weeks_Click(object sender, EventArgs e)
-    {
-        ProlongProxy(14);
-    }
+    private void buttonProlong2Weeks_Click(object sender, EventArgs e) => ProlongProxy(14);
 
-    private void buttonProlongMonth_Click(object sender, EventArgs e)
-    {
-        ProlongProxy(30);
-    }
+    private void buttonProlongMonth_Click(object sender, EventArgs e) => ProlongProxy(30);
 
-    private void buttonProlong2Month_Click(object sender, EventArgs e)
-    {
-        ProlongProxy(60);
-    }
+    private void buttonProlong2Month_Click(object sender, EventArgs e) => ProlongProxy(60);
 
-    private void buttonProlong3Month_Click(object sender, EventArgs e)
-    {
-        ProlongProxy(90);
-    }
+    private void buttonProlong3Month_Click(object sender, EventArgs e) => ProlongProxy(90);
 
     private async void ProlongProxy(int days)
     {
