@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
+using Px6Api;
 using Px6Api.DTOModels;
 
 namespace DiscordDetective.UI;
@@ -10,17 +12,10 @@ namespace DiscordDetective.UI;
 public partial class ProxyListView : UserControl
 {
     private List<ProxyListViewItem> _items = [];
-
-    // TODO
-    public event EventHandler<ProxyInfo> SelectionChanged = null!;
-    public event EventHandler<ProxyInfo> ItemClicked = null!;
-    public event EventHandler<ProxyInfo> CopyClicked = null!;
-    public event EventHandler<ProxyInfo> CheckClicked = null!;
-    public event EventHandler<ProxyInfo> DeleteClicked = null!;
-    public event EventHandler<ProxyInfo> CommentClicked = null!;
+    private Px6Client? _px6Client;
 
     public List<ProxyInfo> SelectedProxies => _items
-        .Where(i => i is { Selected: true, Proxy: not null })
+        .Where(i => i is { IsSelected: true, Proxy: not null })
         .Select(i => i.Proxy!).ToList();
 
     public ProxyListView()
@@ -28,12 +23,26 @@ public partial class ProxyListView : UserControl
         InitializeComponent();
     }
 
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Px6Client? Px6Client
+    {
+        get => _px6Client;
+        set
+        {
+            _px6Client = value;
+            _items.ForEach(item => item.Px6Client = value);
+        }
+    }
+
     public void AddProxy(ProxyInfo proxy)
     {
         var item = new ProxyListViewItem
         {
-            Proxy = proxy
+            Proxy = proxy,
+            Px6Client = _px6Client
         };
+        item.Selected += Item_Selected;
+        item.Deleted += Item_Deleted;
 
         container.Controls.Add(item);
         _items.Add(item);
@@ -74,7 +83,7 @@ public partial class ProxyListView : UserControl
 
     public void RemoveSelected()
     {
-        var selected = _items.Where(i => i.Selected).ToList();
+        var selected = _items.Where(i => i.IsSelected).ToList();
         foreach (var item in selected)
         {
             RemoveItem(item);
@@ -100,7 +109,7 @@ public partial class ProxyListView : UserControl
     {
         foreach (var item in _items)
         {
-            item.Selected = select;
+            item.IsSelected = select;
         }
     }
 
@@ -149,4 +158,27 @@ public partial class ProxyListView : UserControl
         _items.Remove(item);
         item.Dispose();
     }
+
+    #region События
+
+    private void checkBoxItemSelected_CheckedChanged(object sender, EventArgs e)
+    {
+        var value = checkBoxItemSelected.Checked;
+        _items.ForEach(item => item.IsSelected = value);
+    }
+
+    private void Item_Selected(object? sender, EventArgs e)
+    {
+        SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Item_Deleted(object? sender, EventArgs e)
+    {
+        var item = sender as ProxyListViewItem;
+        RemoveItem(item!);
+    }
+
+    #endregion
+
+    public event EventHandler? SelectedIndexChanged;
 }

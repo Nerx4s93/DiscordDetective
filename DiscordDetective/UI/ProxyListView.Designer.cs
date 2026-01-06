@@ -29,11 +29,11 @@ partial class ProxyListView
     private void InitializeComponent()
     {
         titlePanel = new System.Windows.Forms.Panel();
-        container = new System.Windows.Forms.FlowLayoutPanel();
-        checkBoxItemSelected = new System.Windows.Forms.CheckBox();
-        label2 = new System.Windows.Forms.Label();
-        label1 = new System.Windows.Forms.Label();
         label3 = new System.Windows.Forms.Label();
+        label1 = new System.Windows.Forms.Label();
+        label2 = new System.Windows.Forms.Label();
+        checkBoxItemSelected = new System.Windows.Forms.CheckBox();
+        container = new System.Windows.Forms.FlowLayoutPanel();
         titlePanel.SuspendLayout();
         SuspendLayout();
         // 
@@ -50,35 +50,15 @@ partial class ProxyListView
         titlePanel.Size = new System.Drawing.Size(1232, 60);
         titlePanel.TabIndex = 0;
         // 
-        // container
+        // label3
         // 
-        container.AutoScroll = true;
-        container.Dock = System.Windows.Forms.DockStyle.Fill;
-        container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-        container.Location = new System.Drawing.Point(1, 61);
-        container.Name = "container";
-        container.Size = new System.Drawing.Size(1232, 738);
-        container.TabIndex = 1;
-        container.WrapContents = false;
-        // 
-        // checkBoxItemSelected
-        // 
-        checkBoxItemSelected.Location = new System.Drawing.Point(12, 18);
-        checkBoxItemSelected.Name = "checkBoxItemSelected";
-        checkBoxItemSelected.Size = new System.Drawing.Size(26, 25);
-        checkBoxItemSelected.TabIndex = 1;
-        checkBoxItemSelected.Text = "checkBox1";
-        checkBoxItemSelected.UseVisualStyleBackColor = true;
-        // 
-        // label2
-        // 
-        label2.AutoSize = true;
-        label2.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 204);
-        label2.Location = new System.Drawing.Point(129, 18);
-        label2.Name = "label2";
-        label2.Size = new System.Drawing.Size(87, 24);
-        label2.TabIndex = 2;
-        label2.Text = "Данные";
+        label3.AutoSize = true;
+        label3.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 204);
+        label3.Location = new System.Drawing.Point(868, 19);
+        label3.Name = "label3";
+        label3.Size = new System.Drawing.Size(143, 24);
+        label3.TabIndex = 4;
+        label3.Text = "Комментарий";
         // 
         // label1
         // 
@@ -90,15 +70,36 @@ partial class ProxyListView
         label1.TabIndex = 3;
         label1.Text = "Дата окончания";
         // 
-        // label3
+        // label2
         // 
-        label3.AutoSize = true;
-        label3.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 204);
-        label3.Location = new System.Drawing.Point(868, 19);
-        label3.Name = "label3";
-        label3.Size = new System.Drawing.Size(143, 24);
-        label3.TabIndex = 4;
-        label3.Text = "Комментарий";
+        label2.AutoSize = true;
+        label2.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 204);
+        label2.Location = new System.Drawing.Point(129, 18);
+        label2.Name = "label2";
+        label2.Size = new System.Drawing.Size(87, 24);
+        label2.TabIndex = 2;
+        label2.Text = "Данные";
+        // 
+        // checkBoxItemSelected
+        // 
+        checkBoxItemSelected.Location = new System.Drawing.Point(12, 18);
+        checkBoxItemSelected.Name = "checkBoxItemSelected";
+        checkBoxItemSelected.Size = new System.Drawing.Size(26, 25);
+        checkBoxItemSelected.TabIndex = 1;
+        checkBoxItemSelected.Text = "checkBox1";
+        checkBoxItemSelected.UseVisualStyleBackColor = true;
+        checkBoxItemSelected.CheckedChanged += checkBoxItemSelected_CheckedChanged;
+        // 
+        // container
+        // 
+        container.AutoScroll = true;
+        container.Dock = System.Windows.Forms.DockStyle.Fill;
+        container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+        container.Location = new System.Drawing.Point(1, 61);
+        container.Name = "container";
+        container.Size = new System.Drawing.Size(1232, 738);
+        container.TabIndex = 1;
+        container.WrapContents = false;
         // 
         // ProxyListView
         // 

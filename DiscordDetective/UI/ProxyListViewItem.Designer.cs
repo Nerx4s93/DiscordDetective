@@ -49,7 +49,7 @@ partial class ProxyListViewItem
         label6 = new System.Windows.Forms.Label();
         panel5 = new System.Windows.Forms.Panel();
         svgButtonComment = new SvgButton();
-        textBox1 = new System.Windows.Forms.TextBox();
+        textBoxDescription = new System.Windows.Forms.TextBox();
         panel6 = new System.Windows.Forms.Panel();
         svgButtonDelete = new SvgButton();
         svgButtonCheck = new SvgButton();
@@ -252,7 +252,7 @@ partial class ProxyListViewItem
         // panel5
         // 
         panel5.Controls.Add(svgButtonComment);
-        panel5.Controls.Add(textBox1);
+        panel5.Controls.Add(textBoxDescription);
         panel5.Location = new System.Drawing.Point(866, 0);
         panel5.Name = "panel5";
         panel5.Size = new System.Drawing.Size(286, 150);
@@ -260,6 +260,7 @@ partial class ProxyListViewItem
         // 
         // svgButtonComment
         // 
+        svgButtonComment.IconColor = System.Drawing.Color.FromArgb(51, 51, 51);
         svgButtonComment.IconName = "Comment";
         svgButtonComment.IconOffset = new System.Drawing.Point(0, 0);
         svgButtonComment.IconPadding = 5;
@@ -268,15 +269,16 @@ partial class ProxyListViewItem
         svgButtonComment.Size = new System.Drawing.Size(40, 40);
         svgButtonComment.TabIndex = 2;
         svgButtonComment.UseVisualStyleBackColor = true;
+        svgButtonComment.Click += svgButtonComment_Click;
         // 
-        // textBox1
+        // textBoxDescription
         // 
-        textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        textBox1.Location = new System.Drawing.Point(6, 17);
-        textBox1.Name = "textBox1";
-        textBox1.ReadOnly = true;
-        textBox1.Size = new System.Drawing.Size(272, 30);
-        textBox1.TabIndex = 0;
+        textBoxDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+        textBoxDescription.Location = new System.Drawing.Point(6, 17);
+        textBoxDescription.Name = "textBoxDescription";
+        textBoxDescription.ReadOnly = true;
+        textBoxDescription.Size = new System.Drawing.Size(272, 30);
+        textBoxDescription.TabIndex = 0;
         // 
         // panel6
         // 
@@ -290,6 +292,7 @@ partial class ProxyListViewItem
         // 
         // svgButtonDelete
         // 
+        svgButtonDelete.IconColor = System.Drawing.Color.FromArgb(51, 51, 51);
         svgButtonDelete.IconName = "Delete";
         svgButtonDelete.IconOffset = new System.Drawing.Point(3, 3);
         svgButtonDelete.IconPadding = 5;
@@ -300,9 +303,11 @@ partial class ProxyListViewItem
         svgButtonDelete.Size = new System.Drawing.Size(40, 40);
         svgButtonDelete.TabIndex = 3;
         svgButtonDelete.UseVisualStyleBackColor = true;
+        svgButtonDelete.Click += svgButtonDelete_Click;
         // 
         // svgButtonCheck
         // 
+        svgButtonCheck.IconColor = System.Drawing.Color.FromArgb(51, 51, 51);
         svgButtonCheck.IconName = "Check";
         svgButtonCheck.IconOffset = new System.Drawing.Point(0, 4);
         svgButtonCheck.IconPadding = 5;
@@ -312,9 +317,11 @@ partial class ProxyListViewItem
         svgButtonCheck.Size = new System.Drawing.Size(40, 40);
         svgButtonCheck.TabIndex = 2;
         svgButtonCheck.UseVisualStyleBackColor = true;
+        svgButtonCheck.Click += svgButtonCheck_Click;
         // 
         // svgButtonCopy
         // 
+        svgButtonCopy.IconColor = System.Drawing.Color.FromArgb(51, 51, 51);
         svgButtonCopy.IconName = "Copy";
         svgButtonCopy.IconOffset = new System.Drawing.Point(0, 0);
         svgButtonCopy.IconPadding = 5;
@@ -323,6 +330,7 @@ partial class ProxyListViewItem
         svgButtonCopy.Size = new System.Drawing.Size(40, 40);
         svgButtonCopy.TabIndex = 1;
         svgButtonCopy.UseVisualStyleBackColor = true;
+        svgButtonCopy.Click += svgButtonCopy_Click;
         // 
         // ProxyListViewItem
         // 
@@ -375,7 +383,7 @@ partial class ProxyListViewItem
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.Label labelDaysEnd;
     private System.Windows.Forms.Label labelDateEnd;
-    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.TextBox textBoxDescription;
     private SvgButton svgButtonCopy;
     private SvgButton svgButtonDelete;
     private SvgButton svgButtonCheck;

@@ -5,7 +5,7 @@ namespace Px6Api.DTOModels;
 public class ProxyInfo
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; } = string.Empty;
+    public int Id { get; set; }
     
     [JsonPropertyName("ip")]
     public string Ip { get; set; } = string.Empty;

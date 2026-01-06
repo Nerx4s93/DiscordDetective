@@ -14,6 +14,8 @@ using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
 using DiscordDetective.Pipeline;
 using DiscordDetective.Pipeline.Workers;
+using DiscordDetective.UI;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
@@ -368,6 +370,7 @@ public partial class FormMain : Form
             await _loggerService.LogAsync("Px6Api", $"Создание api клиента...", LogLevel.Info);
             var token = await File.ReadAllTextAsync("px6key.txt");
             _px6Client = new Px6Client(token);
+            proxyListView.Px6Client = _px6Client;
 
             await _loggerService.LogAsync("Px6Api", $"Получение списка прокси...", LogLevel.Info);
             var proxies = (await _px6Client.GetProxiesAsync()).proxies;
