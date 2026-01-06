@@ -32,14 +32,18 @@ public sealed class PipelineManager(
             {
                 var task = await queue.DequeueAsync(PipelineTaskType.ProcessMessagesWithAi);
                 if (task != null)
+                {
                     _ = worker.ExecuteTask(task, queue, events);
+                }
             }
 
             foreach (var worker in dataWorkers.Where(worker => !worker.IsBusy))
             {
                 var task = await queue.DequeueAsync(PipelineTaskType.PersistStructuredData);
                 if (task != null)
+                {
                     _ = worker.ExecuteTask(task, queue, events);
+                }
             }
 
             await Task.Delay(200, token);
