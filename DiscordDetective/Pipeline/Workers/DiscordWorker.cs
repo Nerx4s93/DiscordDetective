@@ -20,10 +20,10 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             switch (task.Type)
             {
                 case PipelineTaskType.DiscoverGuildChannels:
-                    result = await DiscoverChannels(task.PayloadJson);
+                    result = await DiscoverChannels(task.Payload);
                     break;
                 case PipelineTaskType.DownloadChannelMessages:
-                    result = await DownloadMessages(task.PayloadJson);
+                    result = await DownloadMessages(task.Payload);
                     break;
             }
 
@@ -50,7 +50,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             result[i] = new PipelineTask()
             {
                 Type = PipelineTaskType.DownloadChannelMessages,
-                PayloadJson = channels[i].Id
+                Payload = channels[i].Id
             };
         }
 
@@ -59,6 +59,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
     private async Task<PipelineTask[]> DownloadMessages(string payloadJson)
     {
+        await Task.Delay(1000);
         return [];
         //var channelId = ulong.Parse(payloadJson);
         //var channel = client.GetChannel(channelId) as IMessageChannel;

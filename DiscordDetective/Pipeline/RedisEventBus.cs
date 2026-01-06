@@ -18,14 +18,12 @@ public sealed class RedisEventBus(IConnectionMultiplexer multiplexer)
     {
         var message = new PipelineEvent(task.Type, task.Id, progress);
         var json = JsonSerializer.Serialize(message, _jsonOptions);
-        var channel = $"pipeline:events:{task.Type}";
-        await _subscriber.PublishAsync(channel, json);
+        await _subscriber.PublishAsync("pipeline:events", json);
     }
 
     public void Subscribe(PipelineTaskType type, Action<PipelineEvent> handler)
     {
-        var channel = $"pipeline:events:{type}";
-        _subscriber.Subscribe(channel, (redisChannel, value) =>
+        _subscriber.Subscribe("pipeline:event", (redisChannel, value) =>
         {
             var task = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
             if (task != null)

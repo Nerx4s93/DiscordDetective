@@ -8,5 +8,5 @@ public sealed class PipelineTask
 
     public PipelineTaskType Type { get; init; }
 
-    public string PayloadJson { get; init; } = null!;
+    public string Payload { get; init; } = null!;
 }
