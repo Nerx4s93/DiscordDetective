@@ -14,7 +14,6 @@ using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
 using DiscordDetective.Pipeline;
 using DiscordDetective.Pipeline.Workers;
-using DiscordDetective.UI;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -123,9 +122,97 @@ public partial class FormMain : Form
         );
     }
 
-    private void buttonDelete_Click(object sender, EventArgs e)
+    #region contextMenuStripProlong
+
+    private void buttonProlong3Days_Click(object sender, EventArgs e)
     {
 
+    }
+
+    private void buttonProlongWeek_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void buttonProlong2Weeks_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void buttonProlongMonth_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void buttonProlong2Month_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void buttonProlong3Month_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    #endregion
+
+    #region contextMenuStripAutoProlong
+
+    private void buttonAutoProlongEnable_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void buttonAutoProlongDisable_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    #endregion
+
+    #region contextMenuStripChangeType
+
+    private void buttonTypeSocks5_Click(object sender, EventArgs e) => ChangeProxyType(ProxyProtocol.Socks);
+
+    private void buttonTypeHttp_Click(object sender, EventArgs e) => ChangeProxyType(ProxyProtocol.Http);
+
+    private async void ChangeProxyType(ProxyProtocol proxyProtocol)
+    {
+        try
+        {
+            buttonChangeType.Enabled = false;
+
+            var selectedItems = proxyListView.SelectedItems;
+            var selectedProxies = proxyListView.SelectedProxies;
+
+            var ids = selectedProxies.Select(p => p.Id).ToList();
+            await _px6Client.SetProxyTypeAsync(ids, proxyProtocol);
+
+            foreach (var proxy in selectedProxies)
+            {
+                proxy.Type = proxyProtocol.ToString().ToLower();
+            }
+
+            foreach (var item in selectedItems)
+            {
+                item.UpdateUI();
+            }
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(exception.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        finally
+        {
+            buttonChangeType.Enabled = true;
+        }
+    }
+
+    #endregion
+
+    private void buttonDelete_Click(object sender, EventArgs e)
+    {
+        
     }
 
     private void buttonBuy_Click(object sender, EventArgs e)

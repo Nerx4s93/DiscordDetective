@@ -55,18 +55,18 @@ partial class FormMain
         listView1 = new System.Windows.Forms.ListView();
         button5 = new System.Windows.Forms.Button();
         contextMenuStripProlong = new System.Windows.Forms.ContextMenuStrip(components);
-        дняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        неделяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        неделиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        месяцToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        месяцаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        месяцаToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+        buttonProlong3Days = new System.Windows.Forms.ToolStripMenuItem();
+        buttonProlongWeek = new System.Windows.Forms.ToolStripMenuItem();
+        buttonProlong2Weeks = new System.Windows.Forms.ToolStripMenuItem();
+        buttonProlongMonth = new System.Windows.Forms.ToolStripMenuItem();
+        buttonProlong2Month = new System.Windows.Forms.ToolStripMenuItem();
+        buttonProlong3Month = new System.Windows.Forms.ToolStripMenuItem();
         contextMenuStripAutoProlong = new System.Windows.Forms.ContextMenuStrip(components);
-        включитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        выключитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        buttonAutoProlongEnable = new System.Windows.Forms.ToolStripMenuItem();
+        buttonAutoProlongDisable = new System.Windows.Forms.ToolStripMenuItem();
         contextMenuStripChangeType = new System.Windows.Forms.ContextMenuStrip(components);
-        sOCKS5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        hTTPsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        buttonTypeSocks5 = new System.Windows.Forms.ToolStripMenuItem();
+        buttonTypeHttp = new System.Windows.Forms.ToolStripMenuItem();
         tabControlMain.SuspendLayout();
         tabPageProxy.SuspendLayout();
         TabPageBots.SuspendLayout();
@@ -108,7 +108,7 @@ partial class FormMain
         // buttonBuy
         // 
         buttonBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonBuy.Location = new System.Drawing.Point(1242, 642);
+        buttonBuy.Location = new System.Drawing.Point(1242, 630);
         buttonBuy.Name = "buttonBuy";
         buttonBuy.Size = new System.Drawing.Size(194, 52);
         buttonBuy.TabIndex = 5;
@@ -120,7 +120,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 584);
+        buttonDelete.Location = new System.Drawing.Point(1242, 572);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -172,7 +172,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 718);
+        proxyListView.Size = new System.Drawing.Size(1236, 724);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -348,85 +348,95 @@ partial class FormMain
         // 
         contextMenuStripProlong.Font = new System.Drawing.Font("Arial", 12F);
         contextMenuStripProlong.ImageScalingSize = new System.Drawing.Size(24, 24);
-        contextMenuStripProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { дняToolStripMenuItem, неделяToolStripMenuItem, неделиToolStripMenuItem, месяцToolStripMenuItem, месяцаToolStripMenuItem, месяцаToolStripMenuItem1 });
+        contextMenuStripProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { buttonProlong3Days, buttonProlongWeek, buttonProlong2Weeks, buttonProlongMonth, buttonProlong2Month, buttonProlong3Month });
         contextMenuStripProlong.Name = "contextMenuStripProlong";
         contextMenuStripProlong.Size = new System.Drawing.Size(187, 208);
         // 
-        // дняToolStripMenuItem
+        // buttonProlong3Days
         // 
-        дняToolStripMenuItem.Name = "дняToolStripMenuItem";
-        дняToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
-        дняToolStripMenuItem.Text = "3 дня";
+        buttonProlong3Days.Name = "buttonProlong3Days";
+        buttonProlong3Days.Size = new System.Drawing.Size(186, 34);
+        buttonProlong3Days.Text = "3 дня";
+        buttonProlong3Days.Click += buttonProlong3Days_Click;
         // 
-        // неделяToolStripMenuItem
+        // buttonProlongWeek
         // 
-        неделяToolStripMenuItem.Name = "неделяToolStripMenuItem";
-        неделяToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
-        неделяToolStripMenuItem.Text = "1 неделя";
+        buttonProlongWeek.Name = "buttonProlongWeek";
+        buttonProlongWeek.Size = new System.Drawing.Size(186, 34);
+        buttonProlongWeek.Text = "1 неделя";
+        buttonProlongWeek.Click += buttonProlongWeek_Click;
         // 
-        // неделиToolStripMenuItem
+        // buttonProlong2Weeks
         // 
-        неделиToolStripMenuItem.Name = "неделиToolStripMenuItem";
-        неделиToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
-        неделиToolStripMenuItem.Text = "2 недели";
+        buttonProlong2Weeks.Name = "buttonProlong2Weeks";
+        buttonProlong2Weeks.Size = new System.Drawing.Size(186, 34);
+        buttonProlong2Weeks.Text = "2 недели";
+        buttonProlong2Weeks.Click += buttonProlong2Weeks_Click;
         // 
-        // месяцToolStripMenuItem
+        // buttonProlongMonth
         // 
-        месяцToolStripMenuItem.Name = "месяцToolStripMenuItem";
-        месяцToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
-        месяцToolStripMenuItem.Text = "1 месяц";
+        buttonProlongMonth.Name = "buttonProlongMonth";
+        buttonProlongMonth.Size = new System.Drawing.Size(186, 34);
+        buttonProlongMonth.Text = "1 месяц";
+        buttonProlongMonth.Click += buttonProlongMonth_Click;
         // 
-        // месяцаToolStripMenuItem
+        // buttonProlong2Month
         // 
-        месяцаToolStripMenuItem.Name = "месяцаToolStripMenuItem";
-        месяцаToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
-        месяцаToolStripMenuItem.Text = "2 месяца";
+        buttonProlong2Month.Name = "buttonProlong2Month";
+        buttonProlong2Month.Size = new System.Drawing.Size(186, 34);
+        buttonProlong2Month.Text = "2 месяца";
+        buttonProlong2Month.Click += buttonProlong2Month_Click;
         // 
-        // месяцаToolStripMenuItem1
+        // buttonProlong3Month
         // 
-        месяцаToolStripMenuItem1.Name = "месяцаToolStripMenuItem1";
-        месяцаToolStripMenuItem1.Size = new System.Drawing.Size(240, 34);
-        месяцаToolStripMenuItem1.Text = "3 месяца";
+        buttonProlong3Month.Name = "buttonProlong3Month";
+        buttonProlong3Month.Size = new System.Drawing.Size(186, 34);
+        buttonProlong3Month.Text = "3 месяца";
+        buttonProlong3Month.Click += buttonProlong3Month_Click;
         // 
         // contextMenuStripAutoProlong
         // 
         contextMenuStripAutoProlong.Font = new System.Drawing.Font("Arial", 12F);
         contextMenuStripAutoProlong.ImageScalingSize = new System.Drawing.Size(24, 24);
-        contextMenuStripAutoProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { включитьToolStripMenuItem, выключитьToolStripMenuItem });
+        contextMenuStripAutoProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { buttonAutoProlongEnable, buttonAutoProlongDisable });
         contextMenuStripAutoProlong.Name = "contextMenuStripAutoProlong";
         contextMenuStripAutoProlong.Size = new System.Drawing.Size(210, 72);
         // 
-        // включитьToolStripMenuItem
+        // buttonAutoProlongEnable
         // 
-        включитьToolStripMenuItem.Name = "включитьToolStripMenuItem";
-        включитьToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
-        включитьToolStripMenuItem.Text = "Включить";
+        buttonAutoProlongEnable.Name = "buttonAutoProlongEnable";
+        buttonAutoProlongEnable.Size = new System.Drawing.Size(209, 34);
+        buttonAutoProlongEnable.Text = "Включить";
+        buttonAutoProlongEnable.Click += buttonAutoProlongEnable_Click;
         // 
-        // выключитьToolStripMenuItem
+        // buttonAutoProlongDisable
         // 
-        выключитьToolStripMenuItem.Name = "выключитьToolStripMenuItem";
-        выключитьToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
-        выключитьToolStripMenuItem.Text = "Выключить";
+        buttonAutoProlongDisable.Name = "buttonAutoProlongDisable";
+        buttonAutoProlongDisable.Size = new System.Drawing.Size(209, 34);
+        buttonAutoProlongDisable.Text = "Выключить";
+        buttonAutoProlongDisable.Click += buttonAutoProlongDisable_Click;
         // 
         // contextMenuStripChangeType
         // 
         contextMenuStripChangeType.Font = new System.Drawing.Font("Arial", 12F);
         contextMenuStripChangeType.ImageScalingSize = new System.Drawing.Size(24, 24);
-        contextMenuStripChangeType.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { sOCKS5ToolStripMenuItem, hTTPsToolStripMenuItem });
+        contextMenuStripChangeType.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { buttonTypeSocks5, buttonTypeHttp });
         contextMenuStripChangeType.Name = "contextMenuStrip1";
-        contextMenuStripChangeType.Size = new System.Drawing.Size(241, 105);
+        contextMenuStripChangeType.Size = new System.Drawing.Size(182, 72);
         // 
-        // sOCKS5ToolStripMenuItem
+        // buttonTypeSocks5
         // 
-        sOCKS5ToolStripMenuItem.Name = "sOCKS5ToolStripMenuItem";
-        sOCKS5ToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
-        sOCKS5ToolStripMenuItem.Text = "SOCKS5";
+        buttonTypeSocks5.Name = "buttonTypeSocks5";
+        buttonTypeSocks5.Size = new System.Drawing.Size(181, 34);
+        buttonTypeSocks5.Text = "SOCKS5";
+        buttonTypeSocks5.Click += buttonTypeSocks5_Click;
         // 
-        // hTTPsToolStripMenuItem
+        // buttonTypeHttp
         // 
-        hTTPsToolStripMenuItem.Name = "hTTPsToolStripMenuItem";
-        hTTPsToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
-        hTTPsToolStripMenuItem.Text = "HTTP(s)";
+        buttonTypeHttp.Name = "buttonTypeHttp";
+        buttonTypeHttp.Size = new System.Drawing.Size(181, 34);
+        buttonTypeHttp.Text = "HTTP(s)";
+        buttonTypeHttp.Click += buttonTypeHttp_Click;
         // 
         // FormMain
         // 
@@ -478,14 +488,14 @@ partial class FormMain
     private System.Windows.Forms.ContextMenuStrip contextMenuStripProlong;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripAutoProlong;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripChangeType;
-    private System.Windows.Forms.ToolStripMenuItem sOCKS5ToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem hTTPsToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem дняToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem неделяToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem неделиToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem месяцToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem месяцаToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem месяцаToolStripMenuItem1;
-    private System.Windows.Forms.ToolStripMenuItem включитьToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem выключитьToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem buttonTypeSocks5;
+    private System.Windows.Forms.ToolStripMenuItem buttonTypeHttp;
+    private System.Windows.Forms.ToolStripMenuItem buttonProlong3Days;
+    private System.Windows.Forms.ToolStripMenuItem buttonProlongWeek;
+    private System.Windows.Forms.ToolStripMenuItem buttonProlong2Weeks;
+    private System.Windows.Forms.ToolStripMenuItem buttonProlongMonth;
+    private System.Windows.Forms.ToolStripMenuItem buttonProlong2Month;
+    private System.Windows.Forms.ToolStripMenuItem buttonProlong3Month;
+    private System.Windows.Forms.ToolStripMenuItem buttonAutoProlongEnable;
+    private System.Windows.Forms.ToolStripMenuItem buttonAutoProlongDisable;
 }

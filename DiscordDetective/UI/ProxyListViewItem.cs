@@ -46,7 +46,7 @@ public partial class ProxyListViewItem : UserControl
         InitializeComponent();
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         if (_proxy == null)
         {

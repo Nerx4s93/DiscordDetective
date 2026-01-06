@@ -14,9 +14,11 @@ public partial class ProxyListView : UserControl
     private List<ProxyListViewItem> _items = [];
     private Px6Client? _px6Client;
 
-    public List<ProxyInfo> SelectedProxies => _items
-        .Where(i => i is { IsSelected: true, Proxy: not null })
+    public List<ProxyInfo> SelectedProxies => SelectedItems
         .Select(i => i.Proxy!).ToList();
+
+    public List<ProxyListViewItem> SelectedItems => _items
+        .Where(i => i is { IsSelected: true, Proxy: not null }).ToList();
 
     public ProxyListView()
     {
