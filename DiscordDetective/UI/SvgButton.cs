@@ -100,16 +100,12 @@ public class SvgButton : Button
     {
         base.Text = string.Empty;
 
-        try
-        {
-            base.OnPaint(e);
+        base.OnPaint(e);
 
-            if (!string.IsNullOrEmpty(IconName))
-            {
-                DrawSvgImage(e.Graphics);
-            }
+        if (!string.IsNullOrEmpty(IconName))
+        {
+            DrawSvgImage(e.Graphics);
         }
-        catch { /* ignore */ }
     }
 
     private void DrawSvgImage(Graphics graphics)

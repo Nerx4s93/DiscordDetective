@@ -31,10 +31,11 @@ partial class FormMain
         components = new System.ComponentModel.Container();
         tabControlMain = new System.Windows.Forms.TabControl();
         tabPageProxy = new System.Windows.Forms.TabPage();
-        button4 = new System.Windows.Forms.Button();
-        button3 = new System.Windows.Forms.Button();
-        button2 = new System.Windows.Forms.Button();
-        button1 = new System.Windows.Forms.Button();
+        buttonBuy = new System.Windows.Forms.Button();
+        buttonDelete = new System.Windows.Forms.Button();
+        buttonChangeType = new System.Windows.Forms.Button();
+        buttonAutoProlong = new System.Windows.Forms.Button();
+        buttonProlong = new System.Windows.Forms.Button();
         proxyListView = new DiscordDetective.UI.ProxyListView();
         TabPageBots = new System.Windows.Forms.TabPage();
         listViewBots = new System.Windows.Forms.ListView();
@@ -53,11 +54,27 @@ partial class FormMain
         label1 = new System.Windows.Forms.Label();
         listView1 = new System.Windows.Forms.ListView();
         button5 = new System.Windows.Forms.Button();
+        contextMenuStripProlong = new System.Windows.Forms.ContextMenuStrip(components);
+        дняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        неделяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        неделиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        месяцToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        месяцаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        месяцаToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+        contextMenuStripAutoProlong = new System.Windows.Forms.ContextMenuStrip(components);
+        включитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        выключитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        contextMenuStripChangeType = new System.Windows.Forms.ContextMenuStrip(components);
+        sOCKS5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        hTTPsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabControlMain.SuspendLayout();
         tabPageProxy.SuspendLayout();
         TabPageBots.SuspendLayout();
         ContextMenuStripBots.SuspendLayout();
         tabPage1.SuspendLayout();
+        contextMenuStripProlong.SuspendLayout();
+        contextMenuStripAutoProlong.SuspendLayout();
+        contextMenuStripChangeType.SuspendLayout();
         SuspendLayout();
         // 
         // tabControlMain
@@ -75,10 +92,11 @@ partial class FormMain
         // 
         // tabPageProxy
         // 
-        tabPageProxy.Controls.Add(button4);
-        tabPageProxy.Controls.Add(button3);
-        tabPageProxy.Controls.Add(button2);
-        tabPageProxy.Controls.Add(button1);
+        tabPageProxy.Controls.Add(buttonBuy);
+        tabPageProxy.Controls.Add(buttonDelete);
+        tabPageProxy.Controls.Add(buttonChangeType);
+        tabPageProxy.Controls.Add(buttonAutoProlong);
+        tabPageProxy.Controls.Add(buttonProlong);
         tabPageProxy.Controls.Add(proxyListView);
         tabPageProxy.Location = new System.Drawing.Point(4, 32);
         tabPageProxy.Name = "tabPageProxy";
@@ -87,46 +105,61 @@ partial class FormMain
         tabPageProxy.Text = "Прокси";
         tabPageProxy.UseVisualStyleBackColor = true;
         // 
-        // button4
+        // buttonBuy
         // 
-        button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        button4.Enabled = false;
-        button4.Location = new System.Drawing.Point(1242, 630);
-        button4.Name = "button4";
-        button4.Size = new System.Drawing.Size(194, 52);
-        button4.TabIndex = 4;
-        button4.Text = "Удалить";
-        button4.UseVisualStyleBackColor = true;
+        buttonBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonBuy.Location = new System.Drawing.Point(1242, 642);
+        buttonBuy.Name = "buttonBuy";
+        buttonBuy.Size = new System.Drawing.Size(194, 52);
+        buttonBuy.TabIndex = 5;
+        buttonBuy.Text = "Купить";
+        buttonBuy.UseVisualStyleBackColor = true;
+        buttonBuy.Click += buttonBuy_Click;
         // 
-        // button3
+        // buttonDelete
         // 
-        button3.Enabled = false;
-        button3.Location = new System.Drawing.Point(1242, 119);
-        button3.Name = "button3";
-        button3.Size = new System.Drawing.Size(194, 52);
-        button3.TabIndex = 3;
-        button3.Text = "Изменить тип";
-        button3.UseVisualStyleBackColor = true;
+        buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        buttonDelete.Enabled = false;
+        buttonDelete.Location = new System.Drawing.Point(1242, 584);
+        buttonDelete.Name = "buttonDelete";
+        buttonDelete.Size = new System.Drawing.Size(194, 52);
+        buttonDelete.TabIndex = 4;
+        buttonDelete.Text = "Удалить";
+        buttonDelete.UseVisualStyleBackColor = true;
+        buttonDelete.Click += buttonDelete_Click;
         // 
-        // button2
+        // buttonChangeType
         // 
-        button2.Enabled = false;
-        button2.Location = new System.Drawing.Point(1242, 61);
-        button2.Name = "button2";
-        button2.Size = new System.Drawing.Size(194, 52);
-        button2.TabIndex = 2;
-        button2.Text = "Автопродление";
-        button2.UseVisualStyleBackColor = true;
+        buttonChangeType.Enabled = false;
+        buttonChangeType.Location = new System.Drawing.Point(1242, 119);
+        buttonChangeType.Name = "buttonChangeType";
+        buttonChangeType.Size = new System.Drawing.Size(194, 52);
+        buttonChangeType.TabIndex = 3;
+        buttonChangeType.Text = "Изменить тип";
+        buttonChangeType.UseVisualStyleBackColor = true;
+        buttonChangeType.Click += buttonChangeType_Click;
         // 
-        // button1
+        // buttonAutoProlong
         // 
-        button1.Enabled = false;
-        button1.Location = new System.Drawing.Point(1242, 3);
-        button1.Name = "button1";
-        button1.Size = new System.Drawing.Size(194, 52);
-        button1.TabIndex = 1;
-        button1.Text = "Продлить";
-        button1.UseVisualStyleBackColor = true;
+        buttonAutoProlong.Enabled = false;
+        buttonAutoProlong.Location = new System.Drawing.Point(1242, 61);
+        buttonAutoProlong.Name = "buttonAutoProlong";
+        buttonAutoProlong.Size = new System.Drawing.Size(194, 52);
+        buttonAutoProlong.TabIndex = 2;
+        buttonAutoProlong.Text = "Автопродление";
+        buttonAutoProlong.UseVisualStyleBackColor = true;
+        buttonAutoProlong.Click += buttonAutoProlong_Click;
+        // 
+        // buttonProlong
+        // 
+        buttonProlong.Enabled = false;
+        buttonProlong.Location = new System.Drawing.Point(1242, 3);
+        buttonProlong.Name = "buttonProlong";
+        buttonProlong.Size = new System.Drawing.Size(194, 52);
+        buttonProlong.TabIndex = 1;
+        buttonProlong.Text = "Продлить";
+        buttonProlong.UseVisualStyleBackColor = true;
+        buttonProlong.Click += buttonProlong_Click;
         // 
         // proxyListView
         // 
@@ -139,8 +172,9 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 702);
+        proxyListView.Size = new System.Drawing.Size(1236, 718);
         proxyListView.TabIndex = 0;
+        proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
         // TabPageBots
         // 
@@ -310,6 +344,90 @@ partial class FormMain
         button5.UseVisualStyleBackColor = true;
         button5.Click += button5_Click;
         // 
+        // contextMenuStripProlong
+        // 
+        contextMenuStripProlong.Font = new System.Drawing.Font("Arial", 12F);
+        contextMenuStripProlong.ImageScalingSize = new System.Drawing.Size(24, 24);
+        contextMenuStripProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { дняToolStripMenuItem, неделяToolStripMenuItem, неделиToolStripMenuItem, месяцToolStripMenuItem, месяцаToolStripMenuItem, месяцаToolStripMenuItem1 });
+        contextMenuStripProlong.Name = "contextMenuStripProlong";
+        contextMenuStripProlong.Size = new System.Drawing.Size(187, 208);
+        // 
+        // дняToolStripMenuItem
+        // 
+        дняToolStripMenuItem.Name = "дняToolStripMenuItem";
+        дняToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
+        дняToolStripMenuItem.Text = "3 дня";
+        // 
+        // неделяToolStripMenuItem
+        // 
+        неделяToolStripMenuItem.Name = "неделяToolStripMenuItem";
+        неделяToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
+        неделяToolStripMenuItem.Text = "1 неделя";
+        // 
+        // неделиToolStripMenuItem
+        // 
+        неделиToolStripMenuItem.Name = "неделиToolStripMenuItem";
+        неделиToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
+        неделиToolStripMenuItem.Text = "2 недели";
+        // 
+        // месяцToolStripMenuItem
+        // 
+        месяцToolStripMenuItem.Name = "месяцToolStripMenuItem";
+        месяцToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
+        месяцToolStripMenuItem.Text = "1 месяц";
+        // 
+        // месяцаToolStripMenuItem
+        // 
+        месяцаToolStripMenuItem.Name = "месяцаToolStripMenuItem";
+        месяцаToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
+        месяцаToolStripMenuItem.Text = "2 месяца";
+        // 
+        // месяцаToolStripMenuItem1
+        // 
+        месяцаToolStripMenuItem1.Name = "месяцаToolStripMenuItem1";
+        месяцаToolStripMenuItem1.Size = new System.Drawing.Size(240, 34);
+        месяцаToolStripMenuItem1.Text = "3 месяца";
+        // 
+        // contextMenuStripAutoProlong
+        // 
+        contextMenuStripAutoProlong.Font = new System.Drawing.Font("Arial", 12F);
+        contextMenuStripAutoProlong.ImageScalingSize = new System.Drawing.Size(24, 24);
+        contextMenuStripAutoProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { включитьToolStripMenuItem, выключитьToolStripMenuItem });
+        contextMenuStripAutoProlong.Name = "contextMenuStripAutoProlong";
+        contextMenuStripAutoProlong.Size = new System.Drawing.Size(210, 72);
+        // 
+        // включитьToolStripMenuItem
+        // 
+        включитьToolStripMenuItem.Name = "включитьToolStripMenuItem";
+        включитьToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
+        включитьToolStripMenuItem.Text = "Включить";
+        // 
+        // выключитьToolStripMenuItem
+        // 
+        выключитьToolStripMenuItem.Name = "выключитьToolStripMenuItem";
+        выключитьToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
+        выключитьToolStripMenuItem.Text = "Выключить";
+        // 
+        // contextMenuStripChangeType
+        // 
+        contextMenuStripChangeType.Font = new System.Drawing.Font("Arial", 12F);
+        contextMenuStripChangeType.ImageScalingSize = new System.Drawing.Size(24, 24);
+        contextMenuStripChangeType.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { sOCKS5ToolStripMenuItem, hTTPsToolStripMenuItem });
+        contextMenuStripChangeType.Name = "contextMenuStrip1";
+        contextMenuStripChangeType.Size = new System.Drawing.Size(241, 105);
+        // 
+        // sOCKS5ToolStripMenuItem
+        // 
+        sOCKS5ToolStripMenuItem.Name = "sOCKS5ToolStripMenuItem";
+        sOCKS5ToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
+        sOCKS5ToolStripMenuItem.Text = "SOCKS5";
+        // 
+        // hTTPsToolStripMenuItem
+        // 
+        hTTPsToolStripMenuItem.Name = "hTTPsToolStripMenuItem";
+        hTTPsToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
+        hTTPsToolStripMenuItem.Text = "HTTP(s)";
+        // 
         // FormMain
         // 
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -324,6 +442,9 @@ partial class FormMain
         ContextMenuStripBots.ResumeLayout(false);
         tabPage1.ResumeLayout(false);
         tabPage1.PerformLayout();
+        contextMenuStripProlong.ResumeLayout(false);
+        contextMenuStripAutoProlong.ResumeLayout(false);
+        contextMenuStripChangeType.ResumeLayout(false);
         ResumeLayout(false);
     }
 
@@ -339,10 +460,10 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem UpdateListToolStripMenuItem;
     private System.Windows.Forms.TabPage tabPageProxy;
     private UI.ProxyListView proxyListView;
-    private System.Windows.Forms.Button button4;
-    private System.Windows.Forms.Button button3;
-    private System.Windows.Forms.Button button2;
-    private System.Windows.Forms.Button button1;
+    private System.Windows.Forms.Button buttonDelete;
+    private System.Windows.Forms.Button buttonChangeType;
+    private System.Windows.Forms.Button buttonAutoProlong;
+    private System.Windows.Forms.Button buttonProlong;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.Button button5;
     private System.Windows.Forms.ListView listView1;
@@ -353,4 +474,18 @@ partial class FormMain
     private System.Windows.Forms.ListView listView3;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.ListView listView4;
+    private System.Windows.Forms.Button buttonBuy;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStripProlong;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStripAutoProlong;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStripChangeType;
+    private System.Windows.Forms.ToolStripMenuItem sOCKS5ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem hTTPsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem дняToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem неделяToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem неделиToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem месяцToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem месяцаToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem месяцаToolStripMenuItem1;
+    private System.Windows.Forms.ToolStripMenuItem включитьToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem выключитьToolStripMenuItem;
 }

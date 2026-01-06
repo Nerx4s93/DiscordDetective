@@ -44,6 +44,10 @@ public partial class FormMain : Form
 
     #region Страница "Прокси"
 
+    private bool _prolongMenuOpened;
+    private bool _autoProlongMenuOpened;
+    private bool _changeTypeMenuOpened;
+
     private async Task LoadProxyAsync()
     {
         try
@@ -68,6 +72,65 @@ public partial class FormMain : Form
         {
             await _loggerService.LogAsync("Delete", $"Ошибка: {ex}", LogLevel.Error);
         }
+    }
+
+    private void proxyListView_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var selected = proxyListView.SelectedProxies.Count > 0;
+        buttonProlong.Enabled = selected;
+        buttonAutoProlong.Enabled = selected;
+        buttonChangeType.Enabled = selected;
+        buttonDelete.Enabled = selected;
+    }
+
+    private void buttonProlong_Click(object sender, EventArgs e)
+    {
+        if (_prolongMenuOpened)
+        {
+            contextMenuStripProlong.Close();
+            _prolongMenuOpened = false;
+            return;
+        }
+
+        _prolongMenuOpened = true;
+        contextMenuStripProlong.Show(buttonProlong, 0, buttonProlong.Height);
+    }
+
+    private void buttonAutoProlong_Click(object sender, EventArgs e)
+    {
+        if (_autoProlongMenuOpened)
+        {
+            contextMenuStripAutoProlong.Close();
+            _autoProlongMenuOpened = false;
+            return;
+        }
+
+        _autoProlongMenuOpened = true;
+        contextMenuStripAutoProlong.Show(buttonAutoProlong, 0, buttonAutoProlong.Height);
+    }
+
+    private void buttonChangeType_Click(object sender, EventArgs e)
+    {
+        if (_changeTypeMenuOpened)
+        {
+            contextMenuStripChangeType.Close();
+            _changeTypeMenuOpened = false;
+            return;
+        }
+
+        _changeTypeMenuOpened = true;
+        contextMenuStripChangeType.Show(buttonChangeType, 0, buttonChangeType.Height
+        );
+    }
+
+    private void buttonDelete_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void buttonBuy_Click(object sender, EventArgs e)
+    {
+
     }
 
     #endregion

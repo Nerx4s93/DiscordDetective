@@ -10,8 +10,6 @@ using Microsoft.VisualBasic;
 using Px6Api;
 using Px6Api.DTOModels;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace DiscordDetective.UI;
 
 [ToolboxItem(false)]
@@ -25,7 +23,7 @@ public partial class ProxyListViewItem : UserControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Px6Client? Px6Client { get; set; }
 
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public ProxyInfo? Proxy
     {
         get => _proxy;
