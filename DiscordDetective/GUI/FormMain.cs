@@ -31,12 +31,6 @@ public partial class FormMain : Form
     public FormMain()
     {
         InitializeComponent();
-
-        listViewBots.LargeImageList = _botsImageList;
-
-        _ = LoadProxyPageAsync();
-        _ = LoadBotsAsync();
-        _ = LoadTasksAsync();
     }
 
     #region Страница "Прокси"
@@ -579,6 +573,8 @@ public partial class FormMain : Form
     private RedisTaskQueue _redisTaskQueue = null!;
     private RedisEventBus _redisEventBus = null!;
 
+    #region Загрузка
+
     private async Task LoadTasksAsync()
     {
         try
@@ -588,12 +584,44 @@ public partial class FormMain : Form
             _redisTaskQueue = new RedisTaskQueue(_database);
             _redisEventBus = new RedisEventBus(_connection);
             _redisEventBus.Subscribe(RedisEventHandler);
+            await LoadPipeLineTasks();
         }
         catch (Exception ex)
         {
             await _loggerService.LogAsync("Database", $"Ошибка при загрузке ботов: {ex}", LogLevel.Error);
         }
     }
+
+    private async Task LoadPipeLineTasks()
+    {
+        await SetPipelineTasks(PipelineTaskType.DiscoverGuildChannels);
+        await SetPipelineTasks(PipelineTaskType.DownloadChannelMessages);
+        await SetPipelineTasks(PipelineTaskType.ProcessMessagesWithAi);
+        await SetPipelineTasks(PipelineTaskType.PersistStructuredData);
+    }
+
+    private async Task SetPipelineTasks(PipelineTaskType pipelineEventType)
+    {
+        var tasks = await _redisTaskQueue.GetTasks(pipelineEventType);
+
+        var listView = GetListView(pipelineEventType);
+
+        foreach (var task in tasks)
+        {
+            var item = new ListViewItem(task.Id.ToString())
+            {
+                Tag = task.Id
+            };
+
+            _items[task.Id] = item; 
+            listView.BeginInvoke(() =>
+            {
+                listView.Items.Add(item);
+            });
+        }
+    }
+
+    #endregion
 
     private async void buttonAddServerTask_Click(object sender, EventArgs e)
     {
@@ -762,5 +790,13 @@ public partial class FormMain : Form
         }
 
         return $"{token[..6]}...{token[^6..]}";
+    }
+
+    private void FormMain_Shown(object sender, EventArgs e)
+    {
+        listViewBots.LargeImageList = _botsImageList;
+        _ = LoadProxyPageAsync();
+        _ = LoadBotsAsync();
+        _ = LoadTasksAsync();
     }
 }
