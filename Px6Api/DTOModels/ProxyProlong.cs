@@ -5,7 +5,7 @@ namespace Px6Api.DTOModels;
 public class ProxyProlong
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; } = string.Empty;
+    public int Id { get; set; }
 
     [JsonPropertyName("date_end")]
     public string DateEnd { get; set; } = string.Empty;

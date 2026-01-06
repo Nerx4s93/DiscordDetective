@@ -20,6 +20,8 @@ using Microsoft.VisualBasic;
 
 using Px6Api;
 
+using StackExchange.Redis;
+
 namespace DiscordDetective.GUI;
 
 public partial class FormMain : Form
@@ -44,7 +46,6 @@ public partial class FormMain : Form
     #region Страница "Прокси"
 
     private bool _prolongMenuOpened;
-    private bool _autoProlongMenuOpened;
     private bool _changeTypeMenuOpened;
 
     private async Task LoadProxyAsync()
@@ -77,7 +78,6 @@ public partial class FormMain : Form
     {
         var selected = proxyListView.SelectedProxies.Count > 0;
         buttonProlong.Enabled = selected;
-        buttonAutoProlong.Enabled = selected;
         buttonChangeType.Enabled = selected;
         buttonDelete.Enabled = selected;
     }
@@ -93,19 +93,6 @@ public partial class FormMain : Form
 
         _prolongMenuOpened = true;
         contextMenuStripProlong.Show(buttonProlong, 0, buttonProlong.Height);
-    }
-
-    private void buttonAutoProlong_Click(object sender, EventArgs e)
-    {
-        if (_autoProlongMenuOpened)
-        {
-            contextMenuStripAutoProlong.Close();
-            _autoProlongMenuOpened = false;
-            return;
-        }
-
-        _autoProlongMenuOpened = true;
-        contextMenuStripAutoProlong.Show(buttonAutoProlong, 0, buttonAutoProlong.Height);
     }
 
     private void buttonChangeType_Click(object sender, EventArgs e)
@@ -126,32 +113,66 @@ public partial class FormMain : Form
 
     private void buttonProlong3Days_Click(object sender, EventArgs e)
     {
-
+        ProlongProxy(3);
     }
 
     private void buttonProlongWeek_Click(object sender, EventArgs e)
     {
-
+        ProlongProxy(7);
     }
 
     private void buttonProlong2Weeks_Click(object sender, EventArgs e)
     {
-
+        ProlongProxy(14);
     }
 
     private void buttonProlongMonth_Click(object sender, EventArgs e)
     {
-
+        ProlongProxy(30);
     }
 
     private void buttonProlong2Month_Click(object sender, EventArgs e)
     {
-
+        ProlongProxy(60);
     }
 
     private void buttonProlong3Month_Click(object sender, EventArgs e)
     {
+        ProlongProxy(90);
+    }
 
+    private async void ProlongProxy(int days)
+    {
+        try
+        {
+            buttonProlong.Enabled = false;
+
+            var selectedItems = proxyListView.SelectedItems;
+            var selectedProxies = proxyListView.SelectedProxies;
+
+            var ids = selectedProxies.Select(p => p.Id).ToList();
+            await _px6Client.ProlongProxyAsync(days, ids);
+
+            foreach (var proxy in selectedProxies)
+            {
+                var dateTimeEnd = DateTime.Parse(proxy.DateEnd);
+                dateTimeEnd = dateTimeEnd.AddDays(days);
+                proxy.DateEnd = dateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+
+            foreach (var item in selectedItems)
+            {
+                item.UpdateUI();
+            }
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(exception.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        finally
+        {
+            buttonProlong.Enabled = true;
+        }
     }
 
     #endregion
