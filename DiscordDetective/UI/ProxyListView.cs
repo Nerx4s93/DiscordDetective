@@ -170,6 +170,7 @@ public partial class ProxyListView : UserControl
     private void Item_Selected(object? sender, EventArgs e)
     {
         SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
+        checkBoxItemSelected.Checked = SelectedProxies.Count == _items.Count;
     }
 
     private void Item_Deleted(object? sender, EventArgs e)
