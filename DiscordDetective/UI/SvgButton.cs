@@ -12,6 +12,7 @@ public class SvgButton : Button
     private int _iconPadding = 0;
     private Point _iconOffset = Point.Empty;
     private Color _iconColor = Color.Black;
+    private bool _stylesInitialized;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string IconName
@@ -89,19 +90,40 @@ public class SvgButton : Button
 #pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
     }
 
-    public SvgButton()
+    protected override void OnCreateControl()
     {
-        SetStyle(ControlStyles.OptimizedDoubleBuffer |
-                 ControlStyles.AllPaintingInWmPaint |
-                 ControlStyles.ResizeRedraw, true);
+        base.OnCreateControl();
+
+        if (_stylesInitialized)
+        {
+            return;
+        }
+
+        _stylesInitialized = true;
+
+        if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+        {
+            return;
+        }
+
+        SetStyle(
+            ControlStyles.OptimizedDoubleBuffer |
+            ControlStyles.AllPaintingInWmPaint |
+            ControlStyles.ResizeRedraw,
+            true
+        );
     }
 
     protected override void OnPaint(PaintEventArgs e)
     {
+        if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+        {
+            base.OnPaint(e);
+            return;
+        }
+
         base.Text = string.Empty;
-
         base.OnPaint(e);
-
         if (!string.IsNullOrEmpty(IconName))
         {
             DrawSvgImage(e.Graphics);
