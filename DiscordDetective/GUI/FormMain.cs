@@ -20,7 +20,7 @@ using Microsoft.VisualBasic;
 
 using Px6Api;
 
-using StackExchange.Redis;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DiscordDetective.GUI;
 
@@ -39,7 +39,7 @@ public partial class FormMain : Form
 
         listViewBots.LargeImageList = _botsImageList;
 
-        _ = LoadProxyAsync();
+        _ = LoadProxyPageAsync();
         _ = LoadBotsAsync();
     }
 
@@ -48,25 +48,21 @@ public partial class FormMain : Form
     private bool _prolongMenuOpened;
     private bool _changeTypeMenuOpened;
 
-    private async Task LoadProxyAsync()
+    private async Task LoadProxyPageAsync()
     {
         try
         {
             await _loggerService.ClearAsync();
 
-            await _loggerService.LogAsync("Px6Api", $"Создание api клиента...", LogLevel.Info);
             var token = await File.ReadAllTextAsync("px6key.txt");
             _px6Client = new Px6Client(token);
             proxyListView.Px6Client = _px6Client;
 
-            await _loggerService.LogAsync("Px6Api", $"Получение списка прокси...", LogLevel.Info);
             var proxies = (await _px6Client.GetProxiesAsync()).proxies;
             foreach (var proxy in proxies)
             {
                 proxyListView.AddProxy(proxy.Value);
             }
-
-            await _loggerService.LogAsync("Px6Api", $"Загрузка завершена", LogLevel.Info);
         }
         catch (Exception ex)
         {
@@ -241,7 +237,16 @@ public partial class FormMain : Form
 
     private void buttonBuy_Click(object sender, EventArgs e)
     {
+        var form = new FormBuyProxy(_px6Client);
+        var result = form.ShowDialog();
 
+        if (result == DialogResult.OK)
+        {
+            foreach (var proxy in form.BuyResult!)
+            {
+                proxyListView.AddProxy(proxy);
+            }
+        }
     }
 
     #endregion
