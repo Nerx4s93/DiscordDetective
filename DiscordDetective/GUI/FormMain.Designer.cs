@@ -45,6 +45,14 @@ partial class FormMain
         DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabPage1 = new System.Windows.Forms.TabPage();
         button5 = new System.Windows.Forms.Button();
+        listView1 = new System.Windows.Forms.ListView();
+        label1 = new System.Windows.Forms.Label();
+        label2 = new System.Windows.Forms.Label();
+        listView2 = new System.Windows.Forms.ListView();
+        listView3 = new System.Windows.Forms.ListView();
+        label3 = new System.Windows.Forms.Label();
+        listView4 = new System.Windows.Forms.ListView();
+        label4 = new System.Windows.Forms.Label();
         tabControlMain.SuspendLayout();
         tabPageProxy.SuspendLayout();
         TabPageBots.SuspendLayout();
@@ -83,7 +91,7 @@ partial class FormMain
         // 
         button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         button4.Enabled = false;
-        button4.Location = new System.Drawing.Point(1242, 636);
+        button4.Location = new System.Drawing.Point(1242, 638);
         button4.Name = "button4";
         button4.Size = new System.Drawing.Size(194, 52);
         button4.TabIndex = 4;
@@ -131,16 +139,16 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 696);
+        proxyListView.Size = new System.Drawing.Size(1236, 698);
         proxyListView.TabIndex = 0;
         // 
         // TabPageBots
         // 
         TabPageBots.Controls.Add(listViewBots);
-        TabPageBots.Location = new System.Drawing.Point(4, 32);
+        TabPageBots.Location = new System.Drawing.Point(4, 34);
         TabPageBots.Name = "TabPageBots";
         TabPageBots.Padding = new System.Windows.Forms.Padding(3);
-        TabPageBots.Size = new System.Drawing.Size(1448, 690);
+        TabPageBots.Size = new System.Drawing.Size(1448, 688);
         TabPageBots.TabIndex = 0;
         TabPageBots.Text = "Боты";
         TabPageBots.UseVisualStyleBackColor = true;
@@ -151,7 +159,7 @@ partial class FormMain
         listViewBots.Dock = System.Windows.Forms.DockStyle.Fill;
         listViewBots.Location = new System.Drawing.Point(3, 3);
         listViewBots.Name = "listViewBots";
-        listViewBots.Size = new System.Drawing.Size(1442, 684);
+        listViewBots.Size = new System.Drawing.Size(1442, 682);
         listViewBots.TabIndex = 0;
         listViewBots.UseCompatibleStateImageBehavior = false;
         listViewBots.SelectedIndexChanged += listViewBots_SelectedIndexChanged;
@@ -196,6 +204,14 @@ partial class FormMain
         // 
         // tabPage1
         // 
+        tabPage1.Controls.Add(label4);
+        tabPage1.Controls.Add(listView4);
+        tabPage1.Controls.Add(label3);
+        tabPage1.Controls.Add(listView3);
+        tabPage1.Controls.Add(listView2);
+        tabPage1.Controls.Add(label2);
+        tabPage1.Controls.Add(label1);
+        tabPage1.Controls.Add(listView1);
         tabPage1.Controls.Add(button5);
         tabPage1.Location = new System.Drawing.Point(4, 32);
         tabPage1.Name = "tabPage1";
@@ -206,13 +222,93 @@ partial class FormMain
         // 
         // button5
         // 
-        button5.Location = new System.Drawing.Point(395, 142);
+        button5.Location = new System.Drawing.Point(1314, 35);
         button5.Name = "button5";
-        button5.Size = new System.Drawing.Size(112, 34);
+        button5.Size = new System.Drawing.Size(126, 34);
         button5.TabIndex = 0;
         button5.Text = "Start";
         button5.UseVisualStyleBackColor = true;
         button5.Click += button5_Click;
+        // 
+        // listView1
+        // 
+        listView1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        listView1.FullRowSelect = true;
+        listView1.Location = new System.Drawing.Point(8, 35);
+        listView1.Name = "listView1";
+        listView1.Size = new System.Drawing.Size(221, 647);
+        listView1.TabIndex = 1;
+        listView1.UseCompatibleStateImageBehavior = false;
+        listView1.View = System.Windows.Forms.View.List;
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new System.Drawing.Point(8, 9);
+        label1.Name = "label1";
+        label1.Size = new System.Drawing.Size(159, 23);
+        label1.TabIndex = 2;
+        label1.Text = "Этап 1 - Сервер";
+        // 
+        // label2
+        // 
+        label2.AutoSize = true;
+        label2.Location = new System.Drawing.Point(235, 9);
+        label2.Name = "label2";
+        label2.Size = new System.Drawing.Size(137, 23);
+        label2.TabIndex = 3;
+        label2.Text = "Этап 2 - Чаты";
+        // 
+        // listView2
+        // 
+        listView2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        listView2.FullRowSelect = true;
+        listView2.Location = new System.Drawing.Point(235, 35);
+        listView2.Name = "listView2";
+        listView2.Size = new System.Drawing.Size(305, 647);
+        listView2.TabIndex = 4;
+        listView2.UseCompatibleStateImageBehavior = false;
+        listView2.View = System.Windows.Forms.View.List;
+        // 
+        // listView3
+        // 
+        listView3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        listView3.FullRowSelect = true;
+        listView3.Location = new System.Drawing.Point(546, 35);
+        listView3.Name = "listView3";
+        listView3.Size = new System.Drawing.Size(377, 647);
+        listView3.TabIndex = 5;
+        listView3.UseCompatibleStateImageBehavior = false;
+        listView3.View = System.Windows.Forms.View.List;
+        // 
+        // label3
+        // 
+        label3.AutoSize = true;
+        label3.Location = new System.Drawing.Point(546, 9);
+        label3.Name = "label3";
+        label3.Size = new System.Drawing.Size(219, 23);
+        label3.TabIndex = 6;
+        label3.Text = "Этап 3 - ИИ обработка";
+        // 
+        // listView4
+        // 
+        listView4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+        listView4.FullRowSelect = true;
+        listView4.Location = new System.Drawing.Point(931, 35);
+        listView4.Name = "listView4";
+        listView4.Size = new System.Drawing.Size(377, 647);
+        listView4.TabIndex = 7;
+        listView4.UseCompatibleStateImageBehavior = false;
+        listView4.View = System.Windows.Forms.View.List;
+        // 
+        // label4
+        // 
+        label4.AutoSize = true;
+        label4.Location = new System.Drawing.Point(931, 9);
+        label4.Name = "label4";
+        label4.Size = new System.Drawing.Size(198, 23);
+        label4.TabIndex = 8;
+        label4.Text = "Этап 4 - Сохранение";
         // 
         // FormMain
         // 
@@ -227,6 +323,7 @@ partial class FormMain
         TabPageBots.ResumeLayout(false);
         ContextMenuStripBots.ResumeLayout(false);
         tabPage1.ResumeLayout(false);
+        tabPage1.PerformLayout();
         ResumeLayout(false);
     }
 
@@ -248,4 +345,12 @@ partial class FormMain
     private System.Windows.Forms.Button button1;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.Button button5;
+    private System.Windows.Forms.ListView listView1;
+    private System.Windows.Forms.ListView listView2;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.ListView listView3;
+    private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.ListView listView4;
 }
