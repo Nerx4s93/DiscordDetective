@@ -54,6 +54,7 @@ partial class ProxyListViewItem
         svgButtonDelete = new SvgButton();
         svgButtonCheck = new SvgButton();
         svgButtonCopy = new SvgButton();
+        labelAutoProlongEnagle = new System.Windows.Forms.Label();
         panel1.SuspendLayout();
         panel2.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)_flagPictureBox).BeginInit();
@@ -202,6 +203,7 @@ partial class ProxyListViewItem
         // 
         // panel4
         // 
+        panel4.Controls.Add(labelAutoProlongEnagle);
         panel4.Controls.Add(labelDaysEnd);
         panel4.Controls.Add(labelDateEnd);
         panel4.Controls.Add(label7);
@@ -332,6 +334,15 @@ partial class ProxyListViewItem
         svgButtonCopy.UseVisualStyleBackColor = true;
         svgButtonCopy.Click += svgButtonCopy_Click;
         // 
+        // labelAutoProlongEnagle
+        // 
+        labelAutoProlongEnagle.AutoSize = true;
+        labelAutoProlongEnagle.Location = new System.Drawing.Point(6, 72);
+        labelAutoProlongEnagle.Name = "labelAutoProlongEnagle";
+        labelAutoProlongEnagle.Size = new System.Drawing.Size(194, 23);
+        labelAutoProlongEnagle.TabIndex = 8;
+        labelAutoProlongEnagle.Text = "Автопродление: вкл";
+        // 
         // ProxyListViewItem
         // 
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -388,4 +399,5 @@ partial class ProxyListViewItem
     private SvgButton svgButtonDelete;
     private SvgButton svgButtonCheck;
     private SvgButton svgButtonComment;
+    private System.Windows.Forms.Label labelAutoProlongEnagle;
 }

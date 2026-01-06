@@ -34,7 +34,6 @@ partial class FormMain
         buttonBuy = new System.Windows.Forms.Button();
         buttonDelete = new System.Windows.Forms.Button();
         buttonChangeType = new System.Windows.Forms.Button();
-        buttonAutoProlong = new System.Windows.Forms.Button();
         buttonProlong = new System.Windows.Forms.Button();
         proxyListView = new DiscordDetective.UI.ProxyListView();
         TabPageBots = new System.Windows.Forms.TabPage();
@@ -61,9 +60,6 @@ partial class FormMain
         buttonProlongMonth = new System.Windows.Forms.ToolStripMenuItem();
         buttonProlong2Month = new System.Windows.Forms.ToolStripMenuItem();
         buttonProlong3Month = new System.Windows.Forms.ToolStripMenuItem();
-        contextMenuStripAutoProlong = new System.Windows.Forms.ContextMenuStrip(components);
-        buttonAutoProlongEnable = new System.Windows.Forms.ToolStripMenuItem();
-        buttonAutoProlongDisable = new System.Windows.Forms.ToolStripMenuItem();
         contextMenuStripChangeType = new System.Windows.Forms.ContextMenuStrip(components);
         buttonTypeSocks5 = new System.Windows.Forms.ToolStripMenuItem();
         buttonTypeHttp = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +69,6 @@ partial class FormMain
         ContextMenuStripBots.SuspendLayout();
         tabPage1.SuspendLayout();
         contextMenuStripProlong.SuspendLayout();
-        contextMenuStripAutoProlong.SuspendLayout();
         contextMenuStripChangeType.SuspendLayout();
         SuspendLayout();
         // 
@@ -95,7 +90,6 @@ partial class FormMain
         tabPageProxy.Controls.Add(buttonBuy);
         tabPageProxy.Controls.Add(buttonDelete);
         tabPageProxy.Controls.Add(buttonChangeType);
-        tabPageProxy.Controls.Add(buttonAutoProlong);
         tabPageProxy.Controls.Add(buttonProlong);
         tabPageProxy.Controls.Add(proxyListView);
         tabPageProxy.Location = new System.Drawing.Point(4, 32);
@@ -108,7 +102,7 @@ partial class FormMain
         // buttonBuy
         // 
         buttonBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonBuy.Location = new System.Drawing.Point(1242, 630);
+        buttonBuy.Location = new System.Drawing.Point(1242, 632);
         buttonBuy.Name = "buttonBuy";
         buttonBuy.Size = new System.Drawing.Size(194, 52);
         buttonBuy.TabIndex = 5;
@@ -120,7 +114,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 572);
+        buttonDelete.Location = new System.Drawing.Point(1242, 574);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -131,24 +125,13 @@ partial class FormMain
         // buttonChangeType
         // 
         buttonChangeType.Enabled = false;
-        buttonChangeType.Location = new System.Drawing.Point(1242, 119);
+        buttonChangeType.Location = new System.Drawing.Point(1242, 61);
         buttonChangeType.Name = "buttonChangeType";
         buttonChangeType.Size = new System.Drawing.Size(194, 52);
         buttonChangeType.TabIndex = 3;
         buttonChangeType.Text = "Изменить тип";
         buttonChangeType.UseVisualStyleBackColor = true;
         buttonChangeType.Click += buttonChangeType_Click;
-        // 
-        // buttonAutoProlong
-        // 
-        buttonAutoProlong.Enabled = false;
-        buttonAutoProlong.Location = new System.Drawing.Point(1242, 61);
-        buttonAutoProlong.Name = "buttonAutoProlong";
-        buttonAutoProlong.Size = new System.Drawing.Size(194, 52);
-        buttonAutoProlong.TabIndex = 2;
-        buttonAutoProlong.Text = "Автопродление";
-        buttonAutoProlong.UseVisualStyleBackColor = true;
-        buttonAutoProlong.Click += buttonAutoProlong_Click;
         // 
         // buttonProlong
         // 
@@ -172,7 +155,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 724);
+        proxyListView.Size = new System.Drawing.Size(1236, 726);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -394,28 +377,6 @@ partial class FormMain
         buttonProlong3Month.Text = "3 месяца";
         buttonProlong3Month.Click += buttonProlong3Month_Click;
         // 
-        // contextMenuStripAutoProlong
-        // 
-        contextMenuStripAutoProlong.Font = new System.Drawing.Font("Arial", 12F);
-        contextMenuStripAutoProlong.ImageScalingSize = new System.Drawing.Size(24, 24);
-        contextMenuStripAutoProlong.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { buttonAutoProlongEnable, buttonAutoProlongDisable });
-        contextMenuStripAutoProlong.Name = "contextMenuStripAutoProlong";
-        contextMenuStripAutoProlong.Size = new System.Drawing.Size(210, 72);
-        // 
-        // buttonAutoProlongEnable
-        // 
-        buttonAutoProlongEnable.Name = "buttonAutoProlongEnable";
-        buttonAutoProlongEnable.Size = new System.Drawing.Size(209, 34);
-        buttonAutoProlongEnable.Text = "Включить";
-        buttonAutoProlongEnable.Click += buttonAutoProlongEnable_Click;
-        // 
-        // buttonAutoProlongDisable
-        // 
-        buttonAutoProlongDisable.Name = "buttonAutoProlongDisable";
-        buttonAutoProlongDisable.Size = new System.Drawing.Size(209, 34);
-        buttonAutoProlongDisable.Text = "Выключить";
-        buttonAutoProlongDisable.Click += buttonAutoProlongDisable_Click;
-        // 
         // contextMenuStripChangeType
         // 
         contextMenuStripChangeType.Font = new System.Drawing.Font("Arial", 12F);
@@ -453,7 +414,6 @@ partial class FormMain
         tabPage1.ResumeLayout(false);
         tabPage1.PerformLayout();
         contextMenuStripProlong.ResumeLayout(false);
-        contextMenuStripAutoProlong.ResumeLayout(false);
         contextMenuStripChangeType.ResumeLayout(false);
         ResumeLayout(false);
     }
@@ -472,7 +432,6 @@ partial class FormMain
     private UI.ProxyListView proxyListView;
     private System.Windows.Forms.Button buttonDelete;
     private System.Windows.Forms.Button buttonChangeType;
-    private System.Windows.Forms.Button buttonAutoProlong;
     private System.Windows.Forms.Button buttonProlong;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.Button button5;
@@ -486,7 +445,6 @@ partial class FormMain
     private System.Windows.Forms.ListView listView4;
     private System.Windows.Forms.Button buttonBuy;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripProlong;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStripAutoProlong;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripChangeType;
     private System.Windows.Forms.ToolStripMenuItem buttonTypeSocks5;
     private System.Windows.Forms.ToolStripMenuItem buttonTypeHttp;
@@ -496,6 +454,4 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem buttonProlongMonth;
     private System.Windows.Forms.ToolStripMenuItem buttonProlong2Month;
     private System.Windows.Forms.ToolStripMenuItem buttonProlong3Month;
-    private System.Windows.Forms.ToolStripMenuItem buttonAutoProlongEnable;
-    private System.Windows.Forms.ToolStripMenuItem buttonAutoProlongDisable;
 }

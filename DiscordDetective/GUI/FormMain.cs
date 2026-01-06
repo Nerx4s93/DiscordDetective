@@ -156,20 +156,6 @@ public partial class FormMain : Form
 
     #endregion
 
-    #region contextMenuStripAutoProlong
-
-    private void buttonAutoProlongEnable_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    private void buttonAutoProlongDisable_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    #endregion
-
     #region contextMenuStripChangeType
 
     private void buttonTypeSocks5_Click(object sender, EventArgs e) => ChangeProxyType(ProxyProtocol.Socks);
