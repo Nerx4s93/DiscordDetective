@@ -6,15 +6,19 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using DiscordApi;
+using DiscordDetective.Database;
 using DiscordDetective.Database.Models;
-using DiscordDetective.DTOExtensions;
 using DiscordDetective.Logging;
 using DiscordDetective.Pipeline;
 using DiscordDetective.Pipeline.Workers;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+
 using Px6Api;
+
 using StackExchange.Redis;
 
 namespace DiscordDetective.GUI;

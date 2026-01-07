@@ -28,7 +28,7 @@ public sealed class PipelineManager(
                 }
             }
 
-            foreach (var worker in aiWorkers.Where(worker => !worker.IsBusy))
+            /*foreach (var worker in aiWorkers.Where(worker => !worker.IsBusy))
             {
                 var task = await queue.DequeueAsync(PipelineTaskType.ProcessMessagesWithAi);
                 if (task != null)
@@ -44,7 +44,7 @@ public sealed class PipelineManager(
                 {
                     _ = worker.ExecuteTask(task, queue, events);
                 }
-            }
+            }*/
 
             await Task.Delay(200, token);
         }

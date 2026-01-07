@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DiscordDetective.Database.Models;
+namespace DiscordDetective.Database.Models.DiscordAPI;
 
-public class GuildDbDTO
+public sealed class GuildDbDTO
 {
     [Key]
     public string Id { get; set; } = string.Empty;

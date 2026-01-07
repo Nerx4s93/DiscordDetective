@@ -92,9 +92,6 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             await Task.Delay(1500);
         }
 
-        Console.WriteLine($"Fetched {allMessages.Count} messages");
-        allMessages.ForEach(m => Console.WriteLine(m.Content));
-
         return [];
     }
 
