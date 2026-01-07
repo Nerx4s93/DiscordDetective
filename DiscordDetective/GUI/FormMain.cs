@@ -762,7 +762,10 @@ public partial class FormMain : Form
         var listView = GetListView(pipelineEvent.Type);
         if (_items.Remove(pipelineEvent.TaskId, out var item))
         {
-            listView.Items.Remove(item);
+            listView.Invoke(() =>
+            {
+                listView.Items.Remove(item);
+            });
         }
     }
 

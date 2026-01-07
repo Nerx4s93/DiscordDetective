@@ -1,11 +1,22 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace DiscordApi.Models;
 
 public sealed class MessageApiDTO
 {
+    [JsonPropertyName("content")]
     public string Content { get; init; } = null!;
+
+    [JsonPropertyName("timestamp")]
     public DateTime Timestamp { get; init; }
+
+    [JsonPropertyName("id")]
+    public string Id { get; init; } = null!;
+
+    [JsonPropertyName("channel_id")]
+    public string ChannelId { get; init; } = null!;
+
+    [JsonPropertyName("author")]
     public UserApiDTO Author { get; init; } = null!;
-    public MessageReference MessageReference { get; init; } = null!;
 }

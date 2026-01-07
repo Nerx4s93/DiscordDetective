@@ -123,7 +123,7 @@ partial class FormMain
         // buttonUpdateProxyList
         // 
         buttonUpdateProxyList.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 577);
+        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 579);
         buttonUpdateProxyList.Name = "buttonUpdateProxyList";
         buttonUpdateProxyList.Size = new System.Drawing.Size(194, 52);
         buttonUpdateProxyList.TabIndex = 6;
@@ -134,7 +134,7 @@ partial class FormMain
         // buttonBuy
         // 
         buttonBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonBuy.Location = new System.Drawing.Point(1242, 635);
+        buttonBuy.Location = new System.Drawing.Point(1242, 637);
         buttonBuy.Name = "buttonBuy";
         buttonBuy.Size = new System.Drawing.Size(194, 52);
         buttonBuy.TabIndex = 5;
@@ -146,7 +146,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 519);
+        buttonDelete.Location = new System.Drawing.Point(1242, 521);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -187,7 +187,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 806);
+        proxyListView.Size = new System.Drawing.Size(1236, 808);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -258,9 +258,9 @@ partial class FormMain
         tabPage1.Controls.Add(panel4);
         tabPage1.Controls.Add(panel3);
         tabPage1.Controls.Add(panel2);
-        tabPage1.Location = new System.Drawing.Point(4, 34);
+        tabPage1.Location = new System.Drawing.Point(4, 32);
         tabPage1.Name = "tabPage1";
-        tabPage1.Size = new System.Drawing.Size(1448, 688);
+        tabPage1.Size = new System.Drawing.Size(1448, 690);
         tabPage1.TabIndex = 2;
         tabPage1.Text = "Выкачивание";
         tabPage1.UseVisualStyleBackColor = true;
@@ -272,7 +272,7 @@ partial class FormMain
         panel1.Dock = System.Windows.Forms.DockStyle.Left;
         panel1.Location = new System.Drawing.Point(1280, 0);
         panel1.Name = "panel1";
-        panel1.Size = new System.Drawing.Size(168, 688);
+        panel1.Size = new System.Drawing.Size(168, 690);
         panel1.TabIndex = 15;
         // 
         // buttonStartPipeline
@@ -302,7 +302,7 @@ partial class FormMain
         panel5.Dock = System.Windows.Forms.DockStyle.Left;
         panel5.Location = new System.Drawing.Point(960, 0);
         panel5.Name = "panel5";
-        panel5.Size = new System.Drawing.Size(320, 688);
+        panel5.Size = new System.Drawing.Size(320, 690);
         panel5.TabIndex = 14;
         // 
         // listViewPipelinePersistStructuredData
@@ -312,7 +312,7 @@ partial class FormMain
         listViewPipelinePersistStructuredData.FullRowSelect = true;
         listViewPipelinePersistStructuredData.Location = new System.Drawing.Point(0, 27);
         listViewPipelinePersistStructuredData.Name = "listViewPipelinePersistStructuredData";
-        listViewPipelinePersistStructuredData.Size = new System.Drawing.Size(320, 661);
+        listViewPipelinePersistStructuredData.Size = new System.Drawing.Size(320, 663);
         listViewPipelinePersistStructuredData.TabIndex = 2;
         listViewPipelinePersistStructuredData.UseCompatibleStateImageBehavior = false;
         listViewPipelinePersistStructuredData.View = System.Windows.Forms.View.List;
@@ -343,7 +343,7 @@ partial class FormMain
         panel4.Dock = System.Windows.Forms.DockStyle.Left;
         panel4.Location = new System.Drawing.Point(640, 0);
         panel4.Name = "panel4";
-        panel4.Size = new System.Drawing.Size(320, 688);
+        panel4.Size = new System.Drawing.Size(320, 690);
         panel4.TabIndex = 13;
         // 
         // listViewPipelineProcessMessagesWithAi
@@ -353,7 +353,7 @@ partial class FormMain
         listViewPipelineProcessMessagesWithAi.FullRowSelect = true;
         listViewPipelineProcessMessagesWithAi.Location = new System.Drawing.Point(0, 27);
         listViewPipelineProcessMessagesWithAi.Name = "listViewPipelineProcessMessagesWithAi";
-        listViewPipelineProcessMessagesWithAi.Size = new System.Drawing.Size(320, 661);
+        listViewPipelineProcessMessagesWithAi.Size = new System.Drawing.Size(320, 663);
         listViewPipelineProcessMessagesWithAi.TabIndex = 2;
         listViewPipelineProcessMessagesWithAi.UseCompatibleStateImageBehavior = false;
         listViewPipelineProcessMessagesWithAi.View = System.Windows.Forms.View.List;
@@ -384,7 +384,7 @@ partial class FormMain
         panel3.Dock = System.Windows.Forms.DockStyle.Left;
         panel3.Location = new System.Drawing.Point(320, 0);
         panel3.Name = "panel3";
-        panel3.Size = new System.Drawing.Size(320, 688);
+        panel3.Size = new System.Drawing.Size(320, 690);
         panel3.TabIndex = 12;
         // 
         // listViewPipelineDownloadChannelMessages
@@ -394,7 +394,7 @@ partial class FormMain
         listViewPipelineDownloadChannelMessages.FullRowSelect = true;
         listViewPipelineDownloadChannelMessages.Location = new System.Drawing.Point(0, 27);
         listViewPipelineDownloadChannelMessages.Name = "listViewPipelineDownloadChannelMessages";
-        listViewPipelineDownloadChannelMessages.Size = new System.Drawing.Size(320, 661);
+        listViewPipelineDownloadChannelMessages.Size = new System.Drawing.Size(320, 663);
         listViewPipelineDownloadChannelMessages.TabIndex = 2;
         listViewPipelineDownloadChannelMessages.UseCompatibleStateImageBehavior = false;
         listViewPipelineDownloadChannelMessages.View = System.Windows.Forms.View.List;
@@ -425,7 +425,7 @@ partial class FormMain
         panel2.Dock = System.Windows.Forms.DockStyle.Left;
         panel2.Location = new System.Drawing.Point(0, 0);
         panel2.Name = "panel2";
-        panel2.Size = new System.Drawing.Size(320, 688);
+        panel2.Size = new System.Drawing.Size(320, 690);
         panel2.TabIndex = 11;
         // 
         // listViewPipelineDiscoverGuildChannels
@@ -435,7 +435,7 @@ partial class FormMain
         listViewPipelineDiscoverGuildChannels.FullRowSelect = true;
         listViewPipelineDiscoverGuildChannels.Location = new System.Drawing.Point(0, 27);
         listViewPipelineDiscoverGuildChannels.Name = "listViewPipelineDiscoverGuildChannels";
-        listViewPipelineDiscoverGuildChannels.Size = new System.Drawing.Size(320, 661);
+        listViewPipelineDiscoverGuildChannels.Size = new System.Drawing.Size(320, 663);
         listViewPipelineDiscoverGuildChannels.TabIndex = 1;
         listViewPipelineDiscoverGuildChannels.UseCompatibleStateImageBehavior = false;
         listViewPipelineDiscoverGuildChannels.View = System.Windows.Forms.View.List;
