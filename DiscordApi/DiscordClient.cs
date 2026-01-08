@@ -58,6 +58,16 @@ public class DiscordClient(string token, ProxyInfo? proxy) : IDisposable
         return await MakeRequestAsync<IReadOnlyList<GuildApiDTO>>("users/@me/guilds");
     }
 
+    public async Task<GuildApiDTO> GetGuildInfoAsync(string guildId)
+    {
+        if (string.IsNullOrWhiteSpace(guildId))
+        {
+            throw new ArgumentNullException(nameof(guildId));
+        }
+
+        return await MakeRequestAsync<GuildApiDTO>($"guilds/{guildId}");
+    }
+
     public async Task<IReadOnlyList<ChannelApiDTO>> GetGuildChannelsAsync(string guildId)
     {
         if (string.IsNullOrWhiteSpace(guildId))
