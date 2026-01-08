@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DiscordDetective.Logging;
 
-internal class ConsoleLogger : ILoggerService
+public class ConsoleLogger : ILoggerService
 {
     public Task LogAsync(string message, LogLevel level = LogLevel.Info)
     {
@@ -12,7 +12,7 @@ internal class ConsoleLogger : ILoggerService
 
     public Task LogAsync(string category, string message, LogLevel level = LogLevel.Info)
     {
-        var color = GetConsoleColor(level);
+        var color = GetColor(level);
         var originalColor = Console.ForegroundColor;
 
         Console.ForegroundColor = color;
@@ -34,7 +34,7 @@ internal class ConsoleLogger : ILoggerService
         return Task.CompletedTask;
     }
 
-    private ConsoleColor GetConsoleColor(LogLevel level)
+    private static ConsoleColor GetColor(LogLevel level)
     {
         return level switch
         {
