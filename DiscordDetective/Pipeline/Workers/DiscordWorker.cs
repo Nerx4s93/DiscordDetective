@@ -42,6 +42,10 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         {
             Console.WriteLine($"[403] Access denied, skipping task {task.Id}");
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
         finally
         {
             await events.PublishEvent(task, PipelineTaskProgress.End);
@@ -61,8 +65,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var channels = await channelsTask;
 
         await using var context = new DatabaseContext();
-        DbHelper.Upsert([guild.ToDbDTO()], context, context.Guilds, g => g.Id);
-        DbHelper.Upsert(channels.Select(c => c.ToDbDTO()), context, context.Channels, c => c.Id);
+        DbHelper.Upsert(guild.ToDbDTO(), context, context.Guilds);
+        DbHelper.Upsert(channels.Select(c => c.ToDbDTO()), context, context.Channels);
         await context.SaveChangesAsync();
 
         return channels.Select(c => new PipelineTask
@@ -85,8 +89,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var member = userApiDTO.ToDbDTO(guildId);
 
         await using var context = new DatabaseContext();
-        DbHelper.Upsert([user], context, context.Users, u => u.Id);
-        DbHelper.Upsert([member], context, context.GuildMembers, m => m.UserId);
+        DbHelper.Upsert(user, context, context.Users);
+        DbHelper.Upsert(member, context, context.GuildMembers);
         await context.SaveChangesAsync();
 
         return [];
