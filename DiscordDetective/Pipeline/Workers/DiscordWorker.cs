@@ -86,7 +86,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
         await using var context = new DatabaseContext();
         DbHelper.Upsert([user], context, context.Users, u => u.Id);
-        DbHelper.Upsert([member], context, context.GuildMembers, m => m.Id);
+        DbHelper.Upsert([member], context, context.GuildMembers, m => m.UserId);
         await context.SaveChangesAsync();
 
         return [];
