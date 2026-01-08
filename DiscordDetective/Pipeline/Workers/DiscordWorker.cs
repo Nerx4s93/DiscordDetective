@@ -65,8 +65,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var channels = await channelsTask;
 
         await using var context = new DatabaseContext();
-        await DbHelper.UpsertAsync(guild.ToDbDTO(), context.Guilds);
-        await DbHelper.UpsertAsync(channels.Select(c => c.ToDbDTO()), context.Channels);
+        await DbHelper.UpsertAsync(context, context.Guilds, guild.ToDbDTO());
+        await DbHelper.UpsertAsync(context, context.Channels, channels.Select(c => c.ToDbDTO()));
         await context.SaveChangesAsync();
 
         return channels.Select(c => new PipelineTask
@@ -89,8 +89,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var member = userApiDTO.ToDbDTO(guildId);
 
         await using var context = new DatabaseContext();
-        await DbHelper.UpsertAsync(user, context.Users);
-        await DbHelper.UpsertAsync(member, context.GuildMembers);
+        await DbHelper.UpsertAsync(context, context.Users, user);
+        await DbHelper.UpsertAsync(context, context.GuildMembers, member);
         await context.SaveChangesAsync();
 
         return [];

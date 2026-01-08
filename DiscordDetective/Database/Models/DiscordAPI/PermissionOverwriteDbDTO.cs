@@ -1,7 +1,10 @@
-﻿namespace DiscordDetective.Database.Models.DiscordAPI;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DiscordDetective.Database.Models.DiscordAPI;
 
 public sealed class PermissionOverwriteDbDTO
 {
+    [Key]
     public string Id { get; set; } = null!;
     public string ChannelId { get; set; } = null!;
     public int Type { get; set; }

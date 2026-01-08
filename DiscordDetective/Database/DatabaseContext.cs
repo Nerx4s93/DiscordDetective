@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using DiscordApi.Models;
 using DiscordDetective.Database.Models;
 using DiscordDetective.Database.Models.DiscordAPI;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ public class DatabaseContext : DbContext
 {
     public DbSet<ChannelDbDTO> Channels { get; set; }
     public DbSet<GuildDbDTO> Guilds { get; set; }
-    public DbSet<MessageDbDTO> Messages { get; set; }
     public DbSet<PermissionOverwriteDbDTO> PermissionsOverwrite { get; set; }
     public DbSet<UserDbDTO> Users { get; set; }
 
