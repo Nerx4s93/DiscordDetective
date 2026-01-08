@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 
 using DiscordApi;
@@ -53,21 +52,26 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
     private async Task<PipelineTask[]> DownloadGuildChannels(PipelineTask task)
     {
         var guildId = task.Payload;
-        var channels = await client.GetGuildChannelsAsync(guildId);
 
-        var result = new PipelineTask[channels.Count];
-        for (var i = 0; i < channels.Count; i++)
+        var guildTask = client.GetGuildInfoAsync(guildId);
+        var channelsTask = client.GetGuildChannelsAsync(guildId);
+        await Task.WhenAll(guildTask, channelsTask);
+
+        var guild = await guildTask;
+        var channels = await channelsTask;
+
+        await using var context = new DatabaseContext();
+        DbHelper.Upsert([guild.ToDbDTO()], context, context.Guilds, g => g.Id);
+        DbHelper.Upsert(channels.Select(c => c.ToDbDTO()), context, context.Channels, c => c.Id);
+        await context.SaveChangesAsync();
+
+        return channels.Select(c => new PipelineTask
         {
-            result[i] = new PipelineTask
-            {
-                Id = Guid.NewGuid(),
-                GuildId = guildId,
-                Type = PipelineTaskType.DownloadChannels,
-                Payload = channels[i].Id
-            };
-        }
-
-        return result;
+            Id = Guid.NewGuid(),
+            GuildId = guildId,
+            Type = PipelineTaskType.DownloadChannels,
+            Payload = c.Id
+        }).ToArray();
     }
 
     private async Task<IEnumerable<PipelineTask>> DownloadUser(PipelineTask task)
@@ -81,8 +85,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var member = userApiDTO.ToDbDTO(guildId);
 
         await using var context = new DatabaseContext();
-        context.Users.Add(user);
-        context.GuildMembers.Add(member);
+        DbHelper.Upsert([user], context, context.Users, u => u.Id);
+        DbHelper.Upsert([member], context, context.GuildMembers, m => m.Id);
         await context.SaveChangesAsync();
 
         return [];
