@@ -37,5 +37,4 @@ public class ProgressElement : IPageElement
         var bar = new string('▓', filledLength) + new string('░', Width - filledLength);
         return bar;
     }
-
 }
