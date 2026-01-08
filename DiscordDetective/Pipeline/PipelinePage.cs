@@ -9,7 +9,6 @@ public class PipelinePage : Page
     private readonly Dictionary<PipelineTaskType, int> _taskCounts = new();
 
     private readonly TextElement _channelsDownload;
-    private readonly TextElement _channelsSave;
     private readonly TextElement _usersFetch;
     private readonly TextElement _messagesFetch;
     private readonly TextElement _messagesAi;
@@ -18,7 +17,6 @@ public class PipelinePage : Page
     public PipelinePage(string id, string title) : base(id, title)
     {
         _channelsDownload = new TextElement(" ├─ Download: 0 tasks");
-        _channelsSave = new TextElement(" └─ Save: 0 tasks");
         _usersFetch = new TextElement(" └─ Fetch: 0 tasks");
         _messagesFetch = new TextElement(" ├─ Fetch: 0 tasks");
         _messagesAi = new TextElement(" ├─ AI processing: 0 tasks");
@@ -28,7 +26,6 @@ public class PipelinePage : Page
         Elements.Add(new TextElement(""));
         Elements.Add(new TextElement("Channels"));
         Elements.Add(_channelsDownload);
-        Elements.Add(_channelsSave);
         Elements.Add(new TextElement(""));
         Elements.Add(new TextElement("Users"));
         Elements.Add(_usersFetch);
@@ -48,9 +45,6 @@ public class PipelinePage : Page
         {
             case PipelineTaskType.DownloadChannels:
                 _channelsDownload.Text = $" ├─ Download: {_taskCounts[type]} tasks";
-                break;
-            case PipelineTaskType.SaveChannels:
-                _channelsSave.Text = $" └─ Save: {_taskCounts[type]} tasks";
                 break;
             case PipelineTaskType.FetchUsers:
                 _usersFetch.Text = $" └─ Fetch: {_taskCounts[type]} tasks";
