@@ -65,8 +65,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var channels = await channelsTask;
 
         await using var context = new DatabaseContext();
-        DbHelper.Upsert(guild.ToDbDTO(), context, context.Guilds);
-        DbHelper.Upsert(channels.Select(c => c.ToDbDTO()), context, context.Channels);
+        await DbHelper.UpsertAsync(guild.ToDbDTO(), context.Guilds);
+        await DbHelper.UpsertAsync(channels.Select(c => c.ToDbDTO()), context.Channels);
         await context.SaveChangesAsync();
 
         return channels.Select(c => new PipelineTask
@@ -89,8 +89,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var member = userApiDTO.ToDbDTO(guildId);
 
         await using var context = new DatabaseContext();
-        DbHelper.Upsert(user, context, context.Users);
-        DbHelper.Upsert(member, context, context.GuildMembers);
+        await DbHelper.UpsertAsync(user, context.Users);
+        await DbHelper.UpsertAsync(member, context.GuildMembers);
         await context.SaveChangesAsync();
 
         return [];
@@ -148,12 +148,12 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             .Select(g => g.Select(x => x.msg).ToList())
             .ToList();
 
+        Directory.CreateDirectory("Pipeline");
         foreach (var chunk in chunks)
         {
             var fileId = Guid.NewGuid().ToString();
             var filePath = Path.Combine("Pipeline", $"{fileId}.json");
 
-            Directory.CreateDirectory("Pipeline");
             await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(chunk));
 
             result.Add(new PipelineTask
@@ -170,22 +170,16 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         return result.ToArray();
     }
 
-    private static bool IsForbidden(Exception ex)
+    private static bool IsForbidden(Exception? ex)
     {
-        while (true)
+        while (ex != null)
         {
             if (ex is HttpRequestException { StatusCode: System.Net.HttpStatusCode.Forbidden })
             {
                 return true;
             }
-
-            if (ex.InnerException != null)
-            {
-                ex = ex.InnerException;
-                continue;
-            }
-
-            return false;
+            ex = ex.InnerException;
         }
+        return false;
     }
 }

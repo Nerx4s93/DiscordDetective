@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,28 +7,24 @@ namespace DiscordDetective.Database;
 
 public static class DbHelper
 {
-    public static void Upsert<T>(T newItem, DbContext context, DbSet<T> dbSet) where T : class
+    public static async Task UpsertAsync<T>(T value, DbSet<T> table) where T : class
     {
-        var keyProperty = context.Model.FindEntityType(typeof(T))!.FindPrimaryKey()!.Properties.First();
-        var keyValue = keyProperty.PropertyInfo!.GetValue(newItem);
-
-        var existing = dbSet.FirstOrDefault(x => keyProperty.PropertyInfo!.GetValue(x)!.Equals(keyValue));
-
-        if (existing == null)
+        var existing = await table.FindAsync(value);
+        if (existing != null)
         {
-            dbSet.Add(newItem);
+            table.Entry(existing).CurrentValues.SetValues(value);
         }
         else
         {
-            ObjectHelper.CopyFields(existing, newItem);
+            await table.AddAsync(value);
         }
     }
 
-    public static void Upsert<T>(IEnumerable<T> newItems, DbContext context, DbSet<T> dbSet) where T : class
+    public static async Task UpsertAsync<T>(IEnumerable<T> values, DbSet<T> table) where T : class
     {
-        foreach (var item in newItems)
+        foreach (var value in values)
         {
-            Upsert(item, context, dbSet);
+            await UpsertAsync(value, table);
         }
     }
 }
