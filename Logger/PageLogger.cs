@@ -8,7 +8,9 @@ namespace Logger;
 public class PageLogger(ILoggerService logger)
 {
     private readonly Dictionary<string, Page> _pages = new();
-    private Page? _activePage;
+
+    public IReadOnlyDictionary<string, Page> Pages => _pages;
+    public Page? ActivePage { get; private set; }
 
     public void CreatePage(Page page)
     {
@@ -30,19 +32,19 @@ public class PageLogger(ILoggerService logger)
             throw new KeyNotFoundException($"Page with Id '{id}' does not exist.");
         }
 
-        _activePage = page;
+        ActivePage = page;
     }
 
     public async Task PrintPage()
     {
-        if (_activePage == null)
+        if (ActivePage == null)
         {
             throw new InvalidOperationException("No active page selected.");
         }
 
         logger.BeginLog();
         await logger.ClearAsync();
-        foreach (var element in _activePage.Elements)
+        foreach (var element in ActivePage.Elements)
         {
             await element.Print(logger);
         }
