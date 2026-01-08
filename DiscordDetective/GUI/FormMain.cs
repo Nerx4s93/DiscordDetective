@@ -654,8 +654,8 @@ public partial class FormMain : Form
         await _loggerService.LogAsync("Pipeline", $"Создан {_dataWorkers.Count} DataPersistWorker", LogLevel.Info);
 
         labelPipelineDiscordWorkersCount.Text = $"DiscordWorkers: {_discordWorkers.Count}";
-        labelPipelineAiWorkersCount.Text      = $"AiWorkers:         {_discordWorkers.Count}";
-        labelPipelineDataWorkersCont.Text     = $"DataWorkers:     {_discordWorkers.Count}";
+        labelPipelineAiWorkersCount.Text      = $"AiWorkers:         {_aiWorkers.Count}";
+        labelPipelineDataWorkersCont.Text     = $"DataWorkers:     {_dataWorkers.Count}";
     }
 
     private async void buttonAddServerTask_Click(object sender, EventArgs e)
