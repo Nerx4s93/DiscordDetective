@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using DiscordDetective.Logging.Pages;
+
+using Microsoft.Extensions.Logging;
 
 namespace DiscordDetective.Logging;
 
@@ -40,10 +43,12 @@ public class PageLogger(ILoggerService logger)
             throw new InvalidOperationException("No active page selected.");
         }
 
+        logger.BeginLog();
         await logger.ClearAsync();
         foreach (var element in _activePage.Elements)
         {
             await element.Print(logger);
         }
+        logger.EndLog();
     }
 }

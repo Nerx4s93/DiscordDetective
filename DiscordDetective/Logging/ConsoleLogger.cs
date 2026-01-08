@@ -34,6 +34,10 @@ public class ConsoleLogger : ILoggerService
         return Task.CompletedTask;
     }
 
+    public void BeginLog() { }
+
+    public void EndLog() { }
+
     private static ConsoleColor GetColor(LogLevel level)
     {
         return level switch

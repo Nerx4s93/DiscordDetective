@@ -74,6 +74,31 @@ public class RichTextBoxLogger(RichTextBox richTextBox) : ILoggerService
         return Task.CompletedTask;
     }
 
+    public void BeginLog()
+    {
+        if (_richTextBox.InvokeRequired)
+        {
+            _richTextBox.Invoke(() => _richTextBox.SuspendLayout());
+        }
+        else
+        {
+
+            _richTextBox.SuspendLayout();
+        }
+    }
+
+    public void EndLog()
+    {
+        if (_richTextBox.InvokeRequired)
+        {
+            _richTextBox.Invoke(() => _richTextBox.ResumeLayout());
+        }
+        else
+        {
+            _richTextBox.ResumeLayout();
+        }
+    }
+
     private static Color GetColor(LogLevel level)
     {
         return level switch

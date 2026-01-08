@@ -8,4 +8,7 @@ public interface ILoggerService
     Task LogAsync(string category, string message, LogLevel level = LogLevel.Info);
     Task LogEmptyLineAsync();
     Task ClearAsync();
+
+    void BeginLog();
+    void EndLog();
 }
