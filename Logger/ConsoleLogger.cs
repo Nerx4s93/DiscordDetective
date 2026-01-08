@@ -5,18 +5,21 @@ namespace Logger;
 
 public class ConsoleLogger : ILoggerService
 {
-    public Task LogAsync(string message, LogLevel level = LogLevel.Info)
+    public bool ShowCategory { get; set; } = true;
+
+    public Task LogAsync(string message, LogLevel level = LogLevel.Text)
     {
         return LogAsync("General", message, level);
     }
 
-    public Task LogAsync(string category, string message, LogLevel level = LogLevel.Info)
+    public Task LogAsync(string category, string message, LogLevel level = LogLevel.Text)
     {
         var color = GetColor(level);
         var originalColor = Console.ForegroundColor;
 
         Console.ForegroundColor = color;
-        Console.WriteLine($"[{category}] [{level}] {message}");
+        var text = ShowCategory ? $"[{category}] [{level}] {message}" : message;
+        Console.WriteLine(text);
         Console.ForegroundColor = originalColor;
 
         return Task.CompletedTask;

@@ -2,7 +2,7 @@
 
 namespace Logger.Pages.Elements;
 
-public sealed class TextElement(string text, LogLevel level = LogLevel.Info) : IPageElement
+public sealed class TextElement(string text, LogLevel level = LogLevel.Text) : IPageElement
 {
     public string Text { get; set; } = text;
     public LogLevel Level { get; set; } = level;

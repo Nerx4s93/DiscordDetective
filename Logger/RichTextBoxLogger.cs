@@ -9,12 +9,14 @@ public class RichTextBoxLogger(RichTextBox richTextBox) : ILoggerService
 {
     private readonly RichTextBox _richTextBox = richTextBox ?? throw new ArgumentNullException(nameof(richTextBox));
 
-    public Task LogAsync(string message, LogLevel level = LogLevel.Info)
+    public bool ShowCategory { get; set; } = true;
+
+    public Task LogAsync(string message, LogLevel level = LogLevel.Text)
     {
         return LogAsync("General", message, level);
     }
 
-    public Task LogAsync(string category, string message, LogLevel level)
+    public Task LogAsync(string category, string message, LogLevel level = LogLevel.Text)
     {
         if (_richTextBox.InvokeRequired)
         {
@@ -52,7 +54,8 @@ public class RichTextBoxLogger(RichTextBox richTextBox) : ILoggerService
         _richTextBox.SelectionLength = 0;
         _richTextBox.SelectionColor = color;
 
-        _richTextBox.AppendText($"[{category}] [{level}] {message}");
+        var text = ShowCategory ? $"[{category}] [{level}] {message}" : message;
+        _richTextBox.AppendText(text);
         _richTextBox.AppendText(Environment.NewLine);
 
         _richTextBox.SelectionColor = _richTextBox.ForeColor;

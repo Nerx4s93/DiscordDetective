@@ -4,8 +4,10 @@ namespace Logger;
 
 public interface ILoggerService
 {
-    Task LogAsync(string message, LogLevel level = LogLevel.Info);
-    Task LogAsync(string category, string message, LogLevel level = LogLevel.Info);
+    bool ShowCategory { get; set; }
+
+    Task LogAsync(string message, LogLevel level = LogLevel.Text);
+    Task LogAsync(string category, string message, LogLevel level = LogLevel.Text);
     Task LogEmptyLineAsync();
     Task ClearAsync();
 
