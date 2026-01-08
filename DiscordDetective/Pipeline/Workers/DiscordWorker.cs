@@ -69,7 +69,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         {
             Id = Guid.NewGuid(),
             GuildId = guildId,
-            Type = PipelineTaskType.DownloadChannels,
+            Type = PipelineTaskType.FetchMessages,
             Payload = c.Id
         }).ToArray();
     }
