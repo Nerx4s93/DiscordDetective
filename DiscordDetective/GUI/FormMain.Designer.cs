@@ -123,7 +123,7 @@ partial class FormMain
         // buttonUpdateProxyList
         // 
         buttonUpdateProxyList.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 579);
+        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 583);
         buttonUpdateProxyList.Name = "buttonUpdateProxyList";
         buttonUpdateProxyList.Size = new System.Drawing.Size(194, 52);
         buttonUpdateProxyList.TabIndex = 6;
@@ -146,7 +146,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 521);
+        buttonDelete.Location = new System.Drawing.Point(1242, 525);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -187,7 +187,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 808);
+        proxyListView.Size = new System.Drawing.Size(1236, 812);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 

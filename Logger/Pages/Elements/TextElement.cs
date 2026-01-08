@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DiscordDetective.Logging.Pages.Elements;
+namespace Logger.Pages.Elements;
 
 public sealed class TextElement(string text, LogLevel level = LogLevel.Info) : IPageElement
 {

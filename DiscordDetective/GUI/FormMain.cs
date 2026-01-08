@@ -10,10 +10,9 @@ using System.Windows.Forms;
 using DiscordApi;
 using DiscordDetective.Database;
 using DiscordDetective.Database.Models;
-using DiscordDetective.Logging;
 using DiscordDetective.Pipeline;
 using DiscordDetective.Pipeline.Workers;
-
+using Logger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 

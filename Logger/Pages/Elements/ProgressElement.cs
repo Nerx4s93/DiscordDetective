@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DiscordDetective.Logging.Pages.Elements;
+namespace Logger.Pages.Elements;
 
 public class ProgressElement : IPageElement
 {

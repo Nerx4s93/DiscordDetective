@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DiscordDetective.Logging;
+namespace Logger;
 
 public class ConsoleLogger : ILoggerService
 {

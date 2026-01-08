@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DiscordDetective.Logging;
+namespace Logger;
 
 public interface ILoggerService
 {

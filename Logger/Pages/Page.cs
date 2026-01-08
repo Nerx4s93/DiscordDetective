@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DiscordDetective.Logging.Pages;
+namespace Logger.Pages;
 
 public sealed class Page(string id, string title)
 {

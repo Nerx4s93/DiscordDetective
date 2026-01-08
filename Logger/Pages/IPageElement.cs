@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DiscordDetective.Logging.Pages;
+namespace Logger.Pages;
 
 public interface IPageElement
 { 

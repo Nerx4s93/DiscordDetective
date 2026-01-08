@@ -1,4 +1,4 @@
-﻿namespace DiscordDetective.Logging;
+﻿namespace Logger;
 
 public enum LogLevel
 {

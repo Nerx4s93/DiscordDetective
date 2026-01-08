@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace DiscordDetective.Logging;
+namespace Logger;
 
 public class RichTextBoxLogger(RichTextBox richTextBox) : ILoggerService
 {

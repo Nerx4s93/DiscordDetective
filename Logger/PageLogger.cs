@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Logger.Pages;
 
-using DiscordDetective.Logging.Pages;
-
-using Microsoft.Extensions.Logging;
-
-namespace DiscordDetective.Logging;
+namespace Logger;
 
 public class PageLogger(ILoggerService logger)
 {
