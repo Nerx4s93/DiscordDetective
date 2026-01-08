@@ -766,16 +766,21 @@ public partial class FormMain : Form
         if (!_pageLogger.Pages.TryGetValue(guildId, out var basePage))
         {
             basePage = new PipelinePage(guildId, "");
+
             _pageLogger.CreatePage(basePage);
             _pageLogger.SelectPage(basePage);
+            _ = _pageLogger.PrintPage();
         }
-        else if (basePage is PipelinePage page)
+        
+        if (basePage is PipelinePage page)
         {
             page.IncrementTaskCount(pipelineEvent.Type);
-            _pageLogger.SelectPage(page);
-        }
 
-        _ = _pageLogger.PrintPage();
+            if (_pageLogger.ActivePage == page)
+            {
+                _ = _pageLogger.PrintPage();
+            }
+        }
     }
 
     private void MakeInProgressPipelineTask(PipelineEvent pipelineEvent)

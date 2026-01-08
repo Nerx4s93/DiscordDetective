@@ -44,7 +44,7 @@ public class PipelinePage : Page
         switch (type)
         {
             case PipelineTaskType.DownloadChannels:
-                _channelsDownload.Text = $" ├─ Download: {_taskCounts[type]} tasks";
+                _channelsDownload.Text = $" └─ Download: {_taskCounts[type]} tasks";
                 break;
             case PipelineTaskType.FetchUsers:
                 _usersFetch.Text = $" └─ Fetch: {_taskCounts[type]} tasks";
