@@ -10,9 +10,9 @@ namespace DiscordDetective.Pipeline;
 public sealed class PipelineManager(
     RedisTaskQueue queue,
     RedisEventBus events,
-    List<IWorker> discordWorkers,
-    List<IWorker> aiWorkers,
-    List<IWorker> dataWorkers)
+    List<DiscordWorker> discordWorkers,
+    List<AiWorker> aiWorkers,
+    List<DataPersistWorker> dataWorkers)
 {
     public async Task RunAsync(CancellationToken token)
     {
@@ -20,10 +20,11 @@ public sealed class PipelineManager(
         {
             foreach (var worker in discordWorkers.Where(worker => !worker.IsBusy))
             {
-                var task = await queue.DequeueAsync(PipelineTaskType.DiscoverGuildChannels) ??
-                           await queue.DequeueAsync(PipelineTaskType.DownloadChannelMessages);
+                var task = await queue.DequeueAsync(PipelineTaskType.DownloadChannels) ??
+                           await queue.DequeueAsync(PipelineTaskType.FetchUsers) ??
+                           await queue.DequeueAsync(PipelineTaskType.FetchMessages);
                 if (task != null)
-                {
+                {   
                     _ = worker.ExecuteTask(task, queue, events);
                 }
             }
@@ -46,7 +47,7 @@ public sealed class PipelineManager(
                 }
             }*/
 
-            await Task.Delay(200, token);
+            await Task.Delay(100, token);
         }
     }
 }

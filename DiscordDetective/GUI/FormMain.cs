@@ -579,9 +579,9 @@ public partial class FormMain : Form
     private RedisTaskQueue _redisTaskQueue = null!;
     private RedisEventBus _redisEventBus = null!;
 
-    private List<IWorker> _discordWorkers = [];
-    private List<IWorker> _aiWorkers = [];
-    private List<IWorker> _dataWorkers = [];
+    private List<DiscordWorker> _discordWorkers = [];
+    private List<AiWorker> _aiWorkers = [];
+    private List<DataPersistWorker> _dataWorkers = [];
 
     private PageLogger _pageLogger = null!;
 
@@ -700,14 +700,14 @@ public partial class FormMain : Form
         _ = pipelineManager.RunAsync(CancellationToken.None);
     }
 
-    private async Task<List<IWorker>> GetDiscordWorkers()
+    private async Task<List<DiscordWorker>> GetDiscordWorkers()
     {
         var databaseContext = new DatabaseContext();
 
         var bots = await databaseContext.Bots.ToListAsync();
         var proxies = (await _px6Client.GetProxiesAsync()).proxies;
 
-        var result = new List<IWorker>();
+        var result = new List<DiscordWorker>();
         foreach (var bot in bots)
         {
             var proxy = proxies.FirstOrDefault(p => p.Value.Description == bot.UserId).Value;
