@@ -188,4 +188,21 @@ public static class DiscordExtensions
 
         return memberDbDTO;
     }
+
+    public static GuildMemberDTO ToDbDTO(this MemberApiDTO member, string guildId)
+    {
+        var memberDbDTO = new GuildMemberDTO
+        {
+            UserId = member.User.Id,
+            GuildId = guildId,
+            Nick = member.Nick,
+            Avatar = member.Avatar,
+            Banner = member.Banner,
+            Roles = member.Roles,
+            PremiumSince = member.PremiumSince,
+            JoinedAt = member.JoinedAt
+        };
+
+        return memberDbDTO;
+    }
 }
