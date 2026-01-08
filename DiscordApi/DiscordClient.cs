@@ -93,6 +93,24 @@ public class DiscordClient(string token, ProxyInfo? proxy) : IDisposable
         return messages;
     }
 
+    public async Task<MemberApiDTO> GetUser(string guildId, string userId)
+    {
+        if (string.IsNullOrWhiteSpace(guildId))
+        {
+            throw new ArgumentNullException(nameof(guildId));
+        }
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            throw new ArgumentNullException(nameof(userId));
+        }
+
+        var endpoint = $"guilds/{guildId}/members/{userId}";
+        var member = await MakeRequestAsync<MemberApiDTO>(endpoint);
+        return member;
+    }
+
+
     #endregion
 
     #region Формирвание запроса

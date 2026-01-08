@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DiscordApi.Models;
+using DiscordDetective.Database.Models;
 using DiscordDetective.Database.Models.DiscordAPI;
 
 namespace DiscordDetective;
@@ -169,5 +170,22 @@ public static class DiscordExtensions
         };
 
         return userDb;
+    }
+
+    public static GuildMemberDTO ToDbDTO(this MemberApiDTO member, GuildApiDTO guild)
+    {
+        var memberDbDTO = new GuildMemberDTO
+        {
+            UserId = member.User.Id,
+            GuildId = guild.Id,
+            Nick = member.Nick,
+            Avatar = member.Avatar,
+            Banner = member.Banner,
+            Roles = member.Roles,
+            PremiumSince = member.PremiumSince,
+            JoinedAt = member.JoinedAt
+        };
+
+        return memberDbDTO;
     }
 }
