@@ -733,8 +733,7 @@ public partial class FormMain : Form
             }
             catch (Exception exception)
             {
-                await _loggerService.LogAsync("Pipeline", $"Ошибка при загрузке бота: {exception}", LogLevel.Error);
-                throw;
+                await _loggerService.LogAsync("Pipeline", $"Ошибка при загрузке бота: {exception.Message}", LogLevel.Error);
             }
         }
 
