@@ -14,48 +14,26 @@ public sealed class RedisEventBus(IConnectionMultiplexer multiplexer)
         Converters = { new JsonStringEnumConverter() }
     };
 
+    private const string Channel = "pipeline:events";
+
     public async Task PublishEvent(PipelineTask task, PipelineTaskProgress progress)
     {
-        var message = new PipelineEvent(task.Type, task.Id, progress);
+        var message = new PipelineEvent(task.Type, task.Id, progress, task.GuildId);
         var json = JsonSerializer.Serialize(message, _jsonOptions);
-        
-        var channel = $"pipeline:events:{task.Type.ToString()}";
-        await _subscriber.PublishAsync(channel, json);
-        
-        await _subscriber.PublishAsync("pipeline:events:all", json);
-    }
 
-    public void Subscribe(PipelineTaskType type, Action<PipelineEvent> handler)
-    {
-        var channel = $"pipeline:events:{type.ToString()}";
-
-        _subscriber.Subscribe(channel, (redisChannel, value) =>
-        {
-            try
-            {
-                var task = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
-                if (task != null)
-                {
-                    handler(task);
-                }
-            }
-            catch (JsonException ex)
-            {
-                Console.WriteLine($"Error deserializing event: {ex.Message}");
-            }
-        });
+        await _subscriber.PublishAsync(Channel, json);
     }
 
     public void Subscribe(Action<PipelineEvent> handler)
     {
-        _subscriber.Subscribe("pipeline:events:all", (redisChannel, value) =>
+        _subscriber.Subscribe(Channel, (redisChannel, value) =>
         {
             try
             {
-                var task = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
-                if (task != null)
+                var evt = JsonSerializer.Deserialize<PipelineEvent>((string)value, _jsonOptions);
+                if (evt != null)
                 {
-                    handler(task);
+                    handler(evt);
                 }
             }
             catch (JsonException ex)

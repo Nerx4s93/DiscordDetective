@@ -2,8 +2,10 @@
 
 public enum PipelineTaskType
 {
-    DiscoverGuildChannels,
-    DownloadChannelMessages,
+    DownloadChannels,
+    SaveChannels,
+    FetchUsers,
+    FetchMessages,
     ProcessMessagesWithAi,
     PersistStructuredData
 }

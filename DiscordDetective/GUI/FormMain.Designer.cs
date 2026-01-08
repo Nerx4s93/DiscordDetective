@@ -46,24 +46,14 @@ partial class FormMain
         DeleteBotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         tabPage1 = new System.Windows.Forms.TabPage();
         panel1 = new System.Windows.Forms.Panel();
+        labelPipelineDataWorkersCont = new System.Windows.Forms.Label();
+        buttonCreatePipelineWorkers = new System.Windows.Forms.Button();
+        labelPipelineAiWorkersCount = new System.Windows.Forms.Label();
+        labelPipelineDiscordWorkersCount = new System.Windows.Forms.Label();
+        label1 = new System.Windows.Forms.Label();
+        richTextBoxPipelineOutput = new System.Windows.Forms.RichTextBox();
         buttonStartPipeline = new System.Windows.Forms.Button();
         buttonAddServerTask = new System.Windows.Forms.Button();
-        panel5 = new System.Windows.Forms.Panel();
-        listViewPipelinePersistStructuredData = new System.Windows.Forms.ListView();
-        panel9 = new System.Windows.Forms.Panel();
-        label7 = new System.Windows.Forms.Label();
-        panel4 = new System.Windows.Forms.Panel();
-        listViewPipelineProcessMessagesWithAi = new System.Windows.Forms.ListView();
-        panel8 = new System.Windows.Forms.Panel();
-        label6 = new System.Windows.Forms.Label();
-        panel3 = new System.Windows.Forms.Panel();
-        listViewPipelineDownloadChannelMessages = new System.Windows.Forms.ListView();
-        panel7 = new System.Windows.Forms.Panel();
-        label5 = new System.Windows.Forms.Label();
-        panel2 = new System.Windows.Forms.Panel();
-        listViewPipelineDiscoverGuildChannels = new System.Windows.Forms.ListView();
-        panel6 = new System.Windows.Forms.Panel();
-        label1 = new System.Windows.Forms.Label();
         contextMenuStripProlong = new System.Windows.Forms.ContextMenuStrip(components);
         buttonProlong3Days = new System.Windows.Forms.ToolStripMenuItem();
         buttonProlongWeek = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,14 +70,6 @@ partial class FormMain
         ContextMenuStripBots.SuspendLayout();
         tabPage1.SuspendLayout();
         panel1.SuspendLayout();
-        panel5.SuspendLayout();
-        panel9.SuspendLayout();
-        panel4.SuspendLayout();
-        panel8.SuspendLayout();
-        panel3.SuspendLayout();
-        panel7.SuspendLayout();
-        panel2.SuspendLayout();
-        panel6.SuspendLayout();
         contextMenuStripProlong.SuspendLayout();
         contextMenuStripChangeType.SuspendLayout();
         SuspendLayout();
@@ -123,7 +105,7 @@ partial class FormMain
         // buttonUpdateProxyList
         // 
         buttonUpdateProxyList.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 583);
+        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 603);
         buttonUpdateProxyList.Name = "buttonUpdateProxyList";
         buttonUpdateProxyList.Size = new System.Drawing.Size(194, 52);
         buttonUpdateProxyList.TabIndex = 6;
@@ -146,7 +128,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 525);
+        buttonDelete.Location = new System.Drawing.Point(1242, 545);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -187,7 +169,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 812);
+        proxyListView.Size = new System.Drawing.Size(1236, 832);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -254,10 +236,10 @@ partial class FormMain
         // tabPage1
         // 
         tabPage1.Controls.Add(panel1);
-        tabPage1.Controls.Add(panel5);
-        tabPage1.Controls.Add(panel4);
-        tabPage1.Controls.Add(panel3);
-        tabPage1.Controls.Add(panel2);
+        tabPage1.Controls.Add(label1);
+        tabPage1.Controls.Add(richTextBoxPipelineOutput);
+        tabPage1.Controls.Add(buttonStartPipeline);
+        tabPage1.Controls.Add(buttonAddServerTask);
         tabPage1.Location = new System.Drawing.Point(4, 32);
         tabPage1.Name = "tabPage1";
         tabPage1.Size = new System.Drawing.Size(1448, 690);
@@ -267,17 +249,74 @@ partial class FormMain
         // 
         // panel1
         // 
-        panel1.Controls.Add(buttonStartPipeline);
-        panel1.Controls.Add(buttonAddServerTask);
-        panel1.Dock = System.Windows.Forms.DockStyle.Left;
-        panel1.Location = new System.Drawing.Point(1280, 0);
+        panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+        panel1.Controls.Add(labelPipelineDataWorkersCont);
+        panel1.Controls.Add(buttonCreatePipelineWorkers);
+        panel1.Controls.Add(labelPipelineAiWorkersCount);
+        panel1.Controls.Add(labelPipelineDiscordWorkersCount);
+        panel1.Location = new System.Drawing.Point(453, 104);
         panel1.Name = "panel1";
-        panel1.Size = new System.Drawing.Size(168, 690);
-        panel1.TabIndex = 15;
+        panel1.Size = new System.Drawing.Size(285, 138);
+        panel1.TabIndex = 14;
+        // 
+        // labelPipelineDataWorkersCont
+        // 
+        labelPipelineDataWorkersCont.AutoSize = true;
+        labelPipelineDataWorkersCont.Location = new System.Drawing.Point(0, 46);
+        labelPipelineDataWorkersCont.Name = "labelPipelineDataWorkersCont";
+        labelPipelineDataWorkersCont.Size = new System.Drawing.Size(133, 23);
+        labelPipelineDataWorkersCont.TabIndex = 15;
+        labelPipelineDataWorkersCont.Text = "DataWorkers:";
+        // 
+        // buttonCreatePipelineWorkers
+        // 
+        buttonCreatePipelineWorkers.Location = new System.Drawing.Point(3, 72);
+        buttonCreatePipelineWorkers.Name = "buttonCreatePipelineWorkers";
+        buttonCreatePipelineWorkers.Size = new System.Drawing.Size(277, 58);
+        buttonCreatePipelineWorkers.TabIndex = 12;
+        buttonCreatePipelineWorkers.Text = "Создать воркеров";
+        buttonCreatePipelineWorkers.UseVisualStyleBackColor = true;
+        buttonCreatePipelineWorkers.Click += buttonCreatePipelineWorkers_Click;
+        // 
+        // labelPipelineAiWorkersCount
+        // 
+        labelPipelineAiWorkersCount.AutoSize = true;
+        labelPipelineAiWorkersCount.Location = new System.Drawing.Point(0, 23);
+        labelPipelineAiWorkersCount.Name = "labelPipelineAiWorkersCount";
+        labelPipelineAiWorkersCount.Size = new System.Drawing.Size(108, 23);
+        labelPipelineAiWorkersCount.TabIndex = 14;
+        labelPipelineAiWorkersCount.Text = "AiWorkers:";
+        // 
+        // labelPipelineDiscordWorkersCount
+        // 
+        labelPipelineDiscordWorkersCount.AutoSize = true;
+        labelPipelineDiscordWorkersCount.Location = new System.Drawing.Point(0, 0);
+        labelPipelineDiscordWorkersCount.Name = "labelPipelineDiscordWorkersCount";
+        labelPipelineDiscordWorkersCount.Size = new System.Drawing.Size(158, 23);
+        labelPipelineDiscordWorkersCount.TabIndex = 13;
+        labelPipelineDiscordWorkersCount.Text = "DiscordWorkers:";
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new System.Drawing.Point(802, 68);
+        label1.Name = "label1";
+        label1.Size = new System.Drawing.Size(77, 23);
+        label1.TabIndex = 11;
+        label1.Text = "Вывод:";
+        // 
+        // richTextBoxPipelineOutput
+        // 
+        richTextBoxPipelineOutput.Location = new System.Drawing.Point(883, 177);
+        richTextBoxPipelineOutput.Name = "richTextBoxPipelineOutput";
+        richTextBoxPipelineOutput.ReadOnly = true;
+        richTextBoxPipelineOutput.Size = new System.Drawing.Size(311, 361);
+        richTextBoxPipelineOutput.TabIndex = 10;
+        richTextBoxPipelineOutput.Text = "";
         // 
         // buttonStartPipeline
         // 
-        buttonStartPipeline.Location = new System.Drawing.Point(5, 3);
+        buttonStartPipeline.Location = new System.Drawing.Point(1049, 114);
         buttonStartPipeline.Name = "buttonStartPipeline";
         buttonStartPipeline.Size = new System.Drawing.Size(160, 40);
         buttonStartPipeline.TabIndex = 0;
@@ -287,177 +326,13 @@ partial class FormMain
         // 
         // buttonAddServerTask
         // 
-        buttonAddServerTask.Location = new System.Drawing.Point(5, 49);
+        buttonAddServerTask.Location = new System.Drawing.Point(1049, 68);
         buttonAddServerTask.Name = "buttonAddServerTask";
         buttonAddServerTask.Size = new System.Drawing.Size(160, 40);
         buttonAddServerTask.TabIndex = 9;
         buttonAddServerTask.Text = "Добавить";
         buttonAddServerTask.UseVisualStyleBackColor = true;
         buttonAddServerTask.Click += buttonAddServerTask_Click;
-        // 
-        // panel5
-        // 
-        panel5.Controls.Add(listViewPipelinePersistStructuredData);
-        panel5.Controls.Add(panel9);
-        panel5.Dock = System.Windows.Forms.DockStyle.Left;
-        panel5.Location = new System.Drawing.Point(960, 0);
-        panel5.Name = "panel5";
-        panel5.Size = new System.Drawing.Size(320, 690);
-        panel5.TabIndex = 14;
-        // 
-        // listViewPipelinePersistStructuredData
-        // 
-        listViewPipelinePersistStructuredData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        listViewPipelinePersistStructuredData.Dock = System.Windows.Forms.DockStyle.Fill;
-        listViewPipelinePersistStructuredData.FullRowSelect = true;
-        listViewPipelinePersistStructuredData.Location = new System.Drawing.Point(0, 27);
-        listViewPipelinePersistStructuredData.Name = "listViewPipelinePersistStructuredData";
-        listViewPipelinePersistStructuredData.Size = new System.Drawing.Size(320, 663);
-        listViewPipelinePersistStructuredData.TabIndex = 2;
-        listViewPipelinePersistStructuredData.UseCompatibleStateImageBehavior = false;
-        listViewPipelinePersistStructuredData.View = System.Windows.Forms.View.List;
-        // 
-        // panel9
-        // 
-        panel9.Controls.Add(label7);
-        panel9.Dock = System.Windows.Forms.DockStyle.Top;
-        panel9.Location = new System.Drawing.Point(0, 0);
-        panel9.Name = "panel9";
-        panel9.Size = new System.Drawing.Size(320, 27);
-        panel9.TabIndex = 1;
-        // 
-        // label7
-        // 
-        label7.AutoSize = true;
-        label7.Dock = System.Windows.Forms.DockStyle.Left;
-        label7.Location = new System.Drawing.Point(0, 0);
-        label7.Name = "label7";
-        label7.Size = new System.Drawing.Size(198, 23);
-        label7.TabIndex = 0;
-        label7.Text = "Этап 4 - Сохранение";
-        // 
-        // panel4
-        // 
-        panel4.Controls.Add(listViewPipelineProcessMessagesWithAi);
-        panel4.Controls.Add(panel8);
-        panel4.Dock = System.Windows.Forms.DockStyle.Left;
-        panel4.Location = new System.Drawing.Point(640, 0);
-        panel4.Name = "panel4";
-        panel4.Size = new System.Drawing.Size(320, 690);
-        panel4.TabIndex = 13;
-        // 
-        // listViewPipelineProcessMessagesWithAi
-        // 
-        listViewPipelineProcessMessagesWithAi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        listViewPipelineProcessMessagesWithAi.Dock = System.Windows.Forms.DockStyle.Fill;
-        listViewPipelineProcessMessagesWithAi.FullRowSelect = true;
-        listViewPipelineProcessMessagesWithAi.Location = new System.Drawing.Point(0, 27);
-        listViewPipelineProcessMessagesWithAi.Name = "listViewPipelineProcessMessagesWithAi";
-        listViewPipelineProcessMessagesWithAi.Size = new System.Drawing.Size(320, 663);
-        listViewPipelineProcessMessagesWithAi.TabIndex = 2;
-        listViewPipelineProcessMessagesWithAi.UseCompatibleStateImageBehavior = false;
-        listViewPipelineProcessMessagesWithAi.View = System.Windows.Forms.View.List;
-        // 
-        // panel8
-        // 
-        panel8.Controls.Add(label6);
-        panel8.Dock = System.Windows.Forms.DockStyle.Top;
-        panel8.Location = new System.Drawing.Point(0, 0);
-        panel8.Name = "panel8";
-        panel8.Size = new System.Drawing.Size(320, 27);
-        panel8.TabIndex = 1;
-        // 
-        // label6
-        // 
-        label6.AutoSize = true;
-        label6.Dock = System.Windows.Forms.DockStyle.Left;
-        label6.Location = new System.Drawing.Point(0, 0);
-        label6.Name = "label6";
-        label6.Size = new System.Drawing.Size(241, 23);
-        label6.TabIndex = 0;
-        label6.Text = "Этап 3 - Обработка в ИИ";
-        // 
-        // panel3
-        // 
-        panel3.Controls.Add(listViewPipelineDownloadChannelMessages);
-        panel3.Controls.Add(panel7);
-        panel3.Dock = System.Windows.Forms.DockStyle.Left;
-        panel3.Location = new System.Drawing.Point(320, 0);
-        panel3.Name = "panel3";
-        panel3.Size = new System.Drawing.Size(320, 690);
-        panel3.TabIndex = 12;
-        // 
-        // listViewPipelineDownloadChannelMessages
-        // 
-        listViewPipelineDownloadChannelMessages.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        listViewPipelineDownloadChannelMessages.Dock = System.Windows.Forms.DockStyle.Fill;
-        listViewPipelineDownloadChannelMessages.FullRowSelect = true;
-        listViewPipelineDownloadChannelMessages.Location = new System.Drawing.Point(0, 27);
-        listViewPipelineDownloadChannelMessages.Name = "listViewPipelineDownloadChannelMessages";
-        listViewPipelineDownloadChannelMessages.Size = new System.Drawing.Size(320, 663);
-        listViewPipelineDownloadChannelMessages.TabIndex = 2;
-        listViewPipelineDownloadChannelMessages.UseCompatibleStateImageBehavior = false;
-        listViewPipelineDownloadChannelMessages.View = System.Windows.Forms.View.List;
-        // 
-        // panel7
-        // 
-        panel7.Controls.Add(label5);
-        panel7.Dock = System.Windows.Forms.DockStyle.Top;
-        panel7.Location = new System.Drawing.Point(0, 0);
-        panel7.Name = "panel7";
-        panel7.Size = new System.Drawing.Size(320, 27);
-        panel7.TabIndex = 1;
-        // 
-        // label5
-        // 
-        label5.AutoSize = true;
-        label5.Dock = System.Windows.Forms.DockStyle.Left;
-        label5.Location = new System.Drawing.Point(0, 0);
-        label5.Name = "label5";
-        label5.Size = new System.Drawing.Size(137, 23);
-        label5.TabIndex = 0;
-        label5.Text = "Этап 2 - Чаты";
-        // 
-        // panel2
-        // 
-        panel2.Controls.Add(listViewPipelineDiscoverGuildChannels);
-        panel2.Controls.Add(panel6);
-        panel2.Dock = System.Windows.Forms.DockStyle.Left;
-        panel2.Location = new System.Drawing.Point(0, 0);
-        panel2.Name = "panel2";
-        panel2.Size = new System.Drawing.Size(320, 690);
-        panel2.TabIndex = 11;
-        // 
-        // listViewPipelineDiscoverGuildChannels
-        // 
-        listViewPipelineDiscoverGuildChannels.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        listViewPipelineDiscoverGuildChannels.Dock = System.Windows.Forms.DockStyle.Fill;
-        listViewPipelineDiscoverGuildChannels.FullRowSelect = true;
-        listViewPipelineDiscoverGuildChannels.Location = new System.Drawing.Point(0, 27);
-        listViewPipelineDiscoverGuildChannels.Name = "listViewPipelineDiscoverGuildChannels";
-        listViewPipelineDiscoverGuildChannels.Size = new System.Drawing.Size(320, 663);
-        listViewPipelineDiscoverGuildChannels.TabIndex = 1;
-        listViewPipelineDiscoverGuildChannels.UseCompatibleStateImageBehavior = false;
-        listViewPipelineDiscoverGuildChannels.View = System.Windows.Forms.View.List;
-        // 
-        // panel6
-        // 
-        panel6.Controls.Add(label1);
-        panel6.Dock = System.Windows.Forms.DockStyle.Top;
-        panel6.Location = new System.Drawing.Point(0, 0);
-        panel6.Name = "panel6";
-        panel6.Size = new System.Drawing.Size(320, 27);
-        panel6.TabIndex = 0;
-        // 
-        // label1
-        // 
-        label1.AutoSize = true;
-        label1.Dock = System.Windows.Forms.DockStyle.Left;
-        label1.Location = new System.Drawing.Point(0, 0);
-        label1.Name = "label1";
-        label1.Size = new System.Drawing.Size(159, 23);
-        label1.TabIndex = 0;
-        label1.Text = "Этап 1 - Сервер";
         // 
         // contextMenuStripProlong
         // 
@@ -545,19 +420,9 @@ partial class FormMain
         TabPageBots.ResumeLayout(false);
         ContextMenuStripBots.ResumeLayout(false);
         tabPage1.ResumeLayout(false);
+        tabPage1.PerformLayout();
         panel1.ResumeLayout(false);
-        panel5.ResumeLayout(false);
-        panel9.ResumeLayout(false);
-        panel9.PerformLayout();
-        panel4.ResumeLayout(false);
-        panel8.ResumeLayout(false);
-        panel8.PerformLayout();
-        panel3.ResumeLayout(false);
-        panel7.ResumeLayout(false);
-        panel7.PerformLayout();
-        panel2.ResumeLayout(false);
-        panel6.ResumeLayout(false);
-        panel6.PerformLayout();
+        panel1.PerformLayout();
         contextMenuStripProlong.ResumeLayout(false);
         contextMenuStripChangeType.ResumeLayout(false);
         ResumeLayout(false);
@@ -581,7 +446,6 @@ partial class FormMain
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.Button buttonStartPipeline;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Button buttonBuy;
@@ -597,20 +461,11 @@ partial class FormMain
     private System.Windows.Forms.ToolStripMenuItem buttonProlong3Month;
     private System.Windows.Forms.Button buttonUpdateProxyList;
     private System.Windows.Forms.Button buttonAddServerTask;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.RichTextBox richTextBoxPipelineOutput;
+    private System.Windows.Forms.Button buttonCreatePipelineWorkers;
     private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Panel panel5;
-    private System.Windows.Forms.Panel panel4;
-    private System.Windows.Forms.Panel panel3;
-    private System.Windows.Forms.Panel panel2;
-    private System.Windows.Forms.Panel panel6;
-    private System.Windows.Forms.Panel panel9;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.Panel panel8;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.Panel panel7;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.ListView listViewPipelinePersistStructuredData;
-    private System.Windows.Forms.ListView listViewPipelineProcessMessagesWithAi;
-    private System.Windows.Forms.ListView listViewPipelineDownloadChannelMessages;
-    private System.Windows.Forms.ListView listViewPipelineDiscoverGuildChannels;
+    private System.Windows.Forms.Label labelPipelineDataWorkersCont;
+    private System.Windows.Forms.Label labelPipelineAiWorkersCount;
+    private System.Windows.Forms.Label labelPipelineDiscordWorkersCount;
 }

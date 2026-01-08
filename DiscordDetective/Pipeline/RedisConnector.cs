@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+
 using StackExchange.Redis;
 
 namespace DiscordDetective.Pipeline;

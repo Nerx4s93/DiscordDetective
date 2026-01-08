@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DiscordApi;
+
 using DiscordDetective.Database;
 using DiscordDetective.Database.Models;
 using DiscordDetective.Pipeline;
 using DiscordDetective.Pipeline.Workers;
+
 using Logger;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
@@ -576,6 +579,12 @@ public partial class FormMain : Form
     private RedisTaskQueue _redisTaskQueue = null!;
     private RedisEventBus _redisEventBus = null!;
 
+    private List<IWorker> _discordWorkers = [];
+    private List<IWorker> _aiWorkers = [];
+    private List<IWorker> _dataWorkers = [];
+
+    private PageLogger _pageLogger = null!;
+
     #region Загрузка
 
     private async Task LoadTasksAsync()
@@ -587,44 +596,67 @@ public partial class FormMain : Form
             _redisTaskQueue = new RedisTaskQueue(_database);
             _redisEventBus = new RedisEventBus(_connection);
             _redisEventBus.Subscribe(RedisEventHandler);
-            await LoadPipeLineTasks();
+
+            var logger = new RichTextBoxLogger(richTextBoxPipelineOutput) { ShowCategory = false };
+            _pageLogger = new PageLogger(logger);
+
+            await LoadPipelineTasks();
         }
         catch (Exception ex)
         {
-            await _loggerService.LogAsync("Database", $"Ошибка при загрузке ботов: {ex}", LogLevel.Error);
+            await _loggerService.LogAsync("Pipeline", $"Ошибка при загрузке задач: {ex}", LogLevel.Error);
         }
     }
 
-    private async Task LoadPipeLineTasks()
+    private async Task LoadPipelineTasks()
     {
-        await SetPipelineTasks(PipelineTaskType.DiscoverGuildChannels);
-        await SetPipelineTasks(PipelineTaskType.DownloadChannelMessages);
-        await SetPipelineTasks(PipelineTaskType.ProcessMessagesWithAi);
-        await SetPipelineTasks(PipelineTaskType.PersistStructuredData);
-    }
+        var serverPages = new Dictionary<string, PipelinePage>();
+        var allTaskTypes = Enum.GetValues<PipelineTaskType>();
 
-    private async Task SetPipelineTasks(PipelineTaskType pipelineEventType)
-    {
-        var tasks = await _redisTaskQueue.GetTasks(pipelineEventType);
-
-        var listView = GetListView(pipelineEventType);
-
-        foreach (var task in tasks)
+        foreach (var type in allTaskTypes)
         {
-            var item = new ListViewItem(task.Id.ToString())
-            {
-                Tag = task.Id
-            };
+            var tasks = await _redisTaskQueue.GetTasks(type);
 
-            _items[task.Id] = item; 
-            listView.BeginInvoke(() =>
+            foreach (var task in tasks)
             {
-                listView.Items.Add(item);
-            });
+                var guildId = task.GuildId;
+                if (!serverPages.TryGetValue(guildId, out var page))
+                {
+                    page = new PipelinePage(guildId, $"Server: {guildId}");
+                    serverPages[guildId] = page;
+                    _pageLogger.CreatePage(page);
+                }
+
+                page.IncrementTaskCount(type);
+            }
+        }
+
+        if (serverPages.Count > 0)
+        {
+            _pageLogger.SelectPage(serverPages.Values.First());
+            await _pageLogger.PrintPage();
         }
     }
+
 
     #endregion
+
+    private async void buttonCreatePipelineWorkers_Click(object sender, EventArgs e)
+    {
+        await _loggerService.ClearAsync();
+        await _loggerService.LogAsync("Pipeline", "Подготовка", LogLevel.Info);
+
+        _discordWorkers = await GetDiscordWorkers();
+        await _loggerService.LogAsync("Pipeline", $"Создан {_discordWorkers.Count} DiscordWorker", LogLevel.Info);
+        _aiWorkers = [new AiWorker()];
+        await _loggerService.LogAsync("Pipeline", $"Создан {_aiWorkers.Count} AiWorker", LogLevel.Info);
+        _dataWorkers = [new DataPersistWorker()];
+        await _loggerService.LogAsync("Pipeline", $"Создан {_dataWorkers.Count} DataPersistWorker", LogLevel.Info);
+
+        labelPipelineDiscordWorkersCount.Text = $"DiscordWorkers: {_discordWorkers.Count}";
+        labelPipelineAiWorkersCount.Text      = $"AiWorkers:         {_discordWorkers.Count}";
+        labelPipelineDataWorkersCont.Text     = $"DataWorkers:     {_discordWorkers.Count}";
+    }
 
     private async void buttonAddServerTask_Click(object sender, EventArgs e)
     {
@@ -635,7 +667,7 @@ public partial class FormMain : Form
 
         var text = Interaction.InputBox(
             "Введите id сервера",
-            "Новый задача",
+            "Новая задача",
             ""
         );
 
@@ -647,7 +679,8 @@ public partial class FormMain : Form
         var task = new PipelineTask
         {
             Id = Guid.NewGuid(),
-            Type = PipelineTaskType.DiscoverGuildChannels,
+            GuildId = text,
+            Type = PipelineTaskType.DownloadChannels,
             Payload = text
         };
 
@@ -655,24 +688,15 @@ public partial class FormMain : Form
         await _redisEventBus.PublishEvent(task, PipelineTaskProgress.New);
     }
 
-    private async void buttonStartPipeline_Click(object sender, EventArgs e)
+    private void buttonStartPipeline_Click(object sender, EventArgs e)
     {
-        await _loggerService.LogAsync("Pipeline", "Подготовка");
-
-        var discordWorkers = await GetDiscordWorkers();
-
-        if (discordWorkers.Count == 0)
+        if (_discordWorkers.Count == 0 || _aiWorkers.Count == 0 || _dataWorkers.Count == 0)
         {
+            _loggerService.LogAsync("Pipeline", "Выполнение задач невозможно, недостаточно воркеров", LogLevel.Warning);
             return;
         }
 
-        await _loggerService.LogAsync("Pipeline", $"Создан {discordWorkers.Count} DiscordWorker");
-        var aiWorkers = new List<IWorker> { new AiWorker() };
-        await _loggerService.LogAsync("Pipeline", $"Создан {aiWorkers.Count} AiWorker");
-        var dataWorkers = new List<IWorker> { new DataPersistWorker() };
-        await _loggerService.LogAsync("Pipeline", $"Создан {dataWorkers.Count} DataPersistWorker");
-
-        var pipelineManager = new PipelineManager(_redisTaskQueue, _redisEventBus, discordWorkers, aiWorkers, dataWorkers);
+        var pipelineManager = new PipelineManager(_redisTaskQueue, _redisEventBus, _discordWorkers, _aiWorkers, _dataWorkers);
         _ = pipelineManager.RunAsync(CancellationToken.None);
     }
 
@@ -719,8 +743,6 @@ public partial class FormMain : Form
 
     #region События Pipeline
 
-    private readonly Dictionary<Guid, ListViewItem> _items = new();
-
     private void RedisEventHandler(PipelineEvent pipelineEvent)
     {
         switch (pipelineEvent.Progress)
@@ -739,50 +761,50 @@ public partial class FormMain : Form
 
     private void AddPipelineTask(PipelineEvent pipelineEvent)
     {
-        var listView = GetListView(pipelineEvent.Type);
-        var item = new ListViewItem(pipelineEvent.TaskId.ToString())
-        {
-            Tag = pipelineEvent.TaskId
-        };
+        var guildId = pipelineEvent.GuildId;
 
-        _items[pipelineEvent.TaskId] = item;
-        listView.Invoke(() =>
+        if (!_pageLogger.Pages.TryGetValue(guildId, out var basePage))
         {
-            listView.Items.Add(item);
-        });
+            basePage = new PipelinePage(guildId, "");
+            _pageLogger.CreatePage(basePage);
+            _pageLogger.SelectPage(basePage);
+        }
+        else if (basePage is PipelinePage page)
+        {
+            page.IncrementTaskCount(pipelineEvent.Type);
+            _pageLogger.SelectPage(page);
+        }
+
+        _ = _pageLogger.PrintPage();
     }
 
     private void MakeInProgressPipelineTask(PipelineEvent pipelineEvent)
     {
-        if (_items.TryGetValue(pipelineEvent.TaskId, out var item))
-        {
-            item.ForeColor = Color.DodgerBlue;
-        }
+
     }
 
     private void DeletePipelineTask(PipelineEvent pipelineEvent)
     {
-        var listView = GetListView(pipelineEvent.Type);
-        if (_items.Remove(pipelineEvent.TaskId, out var item))
+        var guildId = pipelineEvent.GuildId;
+
+        if (!_pageLogger.Pages.TryGetValue(guildId, out var basePage))
         {
-            listView.Invoke(() =>
-            {
-                listView.Items.Remove(item);
-            });
+            return;
+        }
+
+        if (basePage is not PipelinePage page)
+        {
+            return;
+        }
+
+        page.IncrementTaskCount(pipelineEvent.Type, -1);
+
+        if (_pageLogger.ActivePage == page)
+        {
+            _ = _pageLogger.PrintPage();
         }
     }
 
-    private ListView GetListView(PipelineTaskType pipelineTaskType)
-    {
-        return pipelineTaskType switch
-        {
-            PipelineTaskType.DiscoverGuildChannels => listViewPipelineDiscoverGuildChannels,
-            PipelineTaskType.DownloadChannelMessages => listViewPipelineDownloadChannelMessages,
-            PipelineTaskType.ProcessMessagesWithAi => listViewPipelineProcessMessagesWithAi,
-            PipelineTaskType.PersistStructuredData => listViewPipelinePersistStructuredData,
-            _ => throw new ArgumentOutOfRangeException(nameof(pipelineTaskType), pipelineTaskType, null)
-        };
-    }
 
     #endregion
 
