@@ -17,6 +17,8 @@ public class GuildMemberDTO
 
     public string? Banner { get; set; }
 
+    public string[] Roles { get; set; }
+
     public DateTimeOffset? PremiumSince { get; set; }
 
     public DateTimeOffset? JoinedAt { get; set; }

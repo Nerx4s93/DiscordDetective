@@ -83,6 +83,8 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         var permissions = channels.SelectMany(c =>
                 c.PermissionOverwrites.Select(p => p.ToDbDTO(c.Id))).ToList();
         await DbHelper.UpsertAsync(context, context.PermissionOverwrites, permissions);
+        await DbHelper.UpsertAsync(context, context.Roles, guild.Roles.Select(r => r.ToDbDTO(guild)));
+
         await context.SaveChangesAsync();
 
         return channels.Select(c => new PipelineTask

@@ -5,16 +5,19 @@ namespace DiscordApi.Models;
 public sealed class GuildApiDTO
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; } = string.Empty;
+    public string Id { get; set; } = null!;
 
     [JsonPropertyName("name")]
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = null!;
 
     [JsonPropertyName("icon")]
     public string? Icon { get; set; }
 
     [JsonPropertyName("banner")]
     public string? Banner { get; set; }
+
+    [JsonPropertyName("roles")]
+    public RoleApiDTO[] Roles = null!;
 
     [JsonIgnore]
     public string? IconUrl =>

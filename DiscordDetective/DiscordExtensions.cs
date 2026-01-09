@@ -7,6 +7,34 @@ namespace DiscordDetective;
 
 public static class DiscordExtensions
 {
+    public static RoleDbDTO ToDbDTO(this RoleApiDTO role, GuildApiDTO guild)
+    {
+        var result = new RoleDbDTO
+        {
+            Id = role.Id,
+            GuildId = guild.Id,
+            Name = role.Name,
+            Description = role.Description,
+            Permissions = role.Permissions
+        };
+
+        return result;
+    }
+
+    public static RoleDbDTO ToDbDTO(this RoleApiDTO role, string guildId)
+    {
+        var result = new RoleDbDTO
+        {
+            Id = role.Id,
+            GuildId = guildId,
+            Name = role.Name,
+            Description = role.Description,
+            Permissions = role.Permissions
+        };
+
+        return result;
+    }
+
     public static ChannelDbDTO ToDbDTO(this ChannelApiDTO channel)
     {
         var channelDbDTO = new ChannelDbDTO
@@ -129,6 +157,7 @@ public static class DiscordExtensions
             Nick = member.Nick,
             Avatar = member.Avatar,
             Banner = member.Banner,
+            Roles = member.Roles,
             PremiumSince = member.PremiumSince,
             JoinedAt = member.JoinedAt
         };
@@ -145,6 +174,7 @@ public static class DiscordExtensions
             Nick = member.Nick,
             Avatar = member.Avatar,
             Banner = member.Banner,
+            Roles = member.Roles,
             PremiumSince = member.PremiumSince,
             JoinedAt = member.JoinedAt
         };
