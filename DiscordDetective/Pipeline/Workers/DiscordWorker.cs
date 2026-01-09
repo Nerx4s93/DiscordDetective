@@ -42,6 +42,10 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         {
             Console.WriteLine($"[403] Access denied, skipping task {task.Id}");
         }
+        catch (Exception ex) when (IsNotFound(ex))
+        {
+            Console.WriteLine($"[404] Not found, skipping task {task.Id}");
+        }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
@@ -66,7 +70,19 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
         await using var context = new DatabaseContext();
         await DbHelper.UpsertAsync(context, context.Guilds, guild.ToDbDTO());
-        await DbHelper.UpsertAsync(context, context.Channels, channels.Select(c => c.ToDbDTO()));
+        await context.SaveChangesAsync();
+
+        var channelDTOs = channels.Select(c =>
+        {
+            var dto = c.ToDbDTO();
+            dto.GuildId = guildId;
+            return dto;
+        }).ToList();
+        await DbHelper.UpsertAsync(context, context.Channels, channelDTOs);
+
+        var permissions = channels.SelectMany(c =>
+                c.PermissionOverwrites.Select(p => p.ToDbDTO(c.Id))).ToList();
+        await DbHelper.UpsertAsync(context, context.PermissionOverwrites, permissions);
         await context.SaveChangesAsync();
 
         return channels.Select(c => new PipelineTask
@@ -90,6 +106,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
         await using var context = new DatabaseContext();
         await DbHelper.UpsertAsync(context, context.Users, user);
+        await context.SaveChangesAsync();
         await DbHelper.UpsertAsync(context, context.GuildMembers, member);
         await context.SaveChangesAsync();
 
@@ -175,6 +192,19 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         while (ex != null)
         {
             if (ex is HttpRequestException { StatusCode: System.Net.HttpStatusCode.Forbidden })
+            {
+                return true;
+            }
+            ex = ex.InnerException;
+        }
+        return false;
+    }
+
+    private static bool IsNotFound(Exception? ex)
+    {
+        while (ex != null)
+        {
+            if (ex is HttpRequestException { StatusCode: System.Net.HttpStatusCode.NotFound })
             {
                 return true;
             }

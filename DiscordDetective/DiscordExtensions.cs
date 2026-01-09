@@ -129,7 +129,6 @@ public static class DiscordExtensions
             Nick = member.Nick,
             Avatar = member.Avatar,
             Banner = member.Banner,
-            Roles = member.Roles,
             PremiumSince = member.PremiumSince,
             JoinedAt = member.JoinedAt
         };
@@ -146,7 +145,6 @@ public static class DiscordExtensions
             Nick = member.Nick,
             Avatar = member.Avatar,
             Banner = member.Banner,
-            Roles = member.Roles,
             PremiumSince = member.PremiumSince,
             JoinedAt = member.JoinedAt
         };
