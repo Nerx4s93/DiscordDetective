@@ -24,30 +24,6 @@ public static class DiscordExtensions
             Bitrate = channel.Bitrate,
             UserLimit = channel.UserLimit,
             RtcRegion = channel.RtcRegion,
-            PermissionOverwrites = channel.PermissionOverwrites.Select(p => p.ToDbDTO(channel.Id)).ToList()
-        };
-
-        return channelDbDTO;
-    }
-
-    public static ChannelApiDTO ToApiDTO(this ChannelDbDTO channel)
-    {
-        var channelDbDTO = new ChannelApiDTO
-        {
-            Id = channel.Id,
-            GuildId = channel.GuildId,
-            Type = channel.Type,
-            Name = channel.Name,
-            ParentId = channel.ParentId,
-            Position = channel.Position,
-            LastMessageId = channel.LastMessageId,
-            Flags = channel.Flags,
-            Nsfw = channel.Nsfw,
-            RateLimitPerUser = channel.RateLimitPerUser,
-            Bitrate = channel.Bitrate,
-            UserLimit = channel.UserLimit,
-            RtcRegion = channel.RtcRegion,
-            PermissionOverwrites = channel.PermissionOverwrites.Select(p => p.ToApiDTO()).ToList()
         };
 
         return channelDbDTO;
@@ -104,34 +80,6 @@ public static class DiscordExtensions
         };
 
         return permissionDbDTO;
-    }
-
-    public static MessageDbDTO ToDbDTO(this MessageApiDTO message)
-    {
-        var messageDbDTO = new MessageDbDTO()
-        {
-            Id = message.Id,
-            Content = message.Content,
-            ChannelId = message.ChannelId,
-            Timestamp = message.Timestamp,
-            Author = message.Author.ToDbDTO()
-        };
-
-        return messageDbDTO;
-    }
-
-    public static MessageApiDTO ToApiDTO(this MessageDbDTO message)
-    {
-        var messageApiDTO = new MessageApiDTO()
-        {
-            Id = message.Id,
-            Content = message.Content,
-            ChannelId = message.ChannelId,
-            Timestamp = message.Timestamp,
-            Author = message.Author.ToApiDTO()
-        };
-
-        return messageApiDTO;
     }
 
     public static UserDbDTO ToDbDTO(this UserApiDTO user)

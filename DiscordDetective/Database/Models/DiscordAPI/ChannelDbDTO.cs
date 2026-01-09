@@ -19,5 +19,4 @@ public sealed class ChannelDbDTO
     public int? Bitrate { get; set; }
     public int? UserLimit { get; set; }
     public string? RtcRegion { get; set; }
-    public List<PermissionOverwriteDbDTO> PermissionOverwrites { get; set; } = [];
 }
