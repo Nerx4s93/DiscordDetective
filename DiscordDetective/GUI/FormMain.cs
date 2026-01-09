@@ -581,7 +581,7 @@ public partial class FormMain : Form
 
     private List<DiscordWorker> _discordWorkers = [];
     private List<AiWorker> _aiWorkers = [];
-    private List<DataPersistWorker> _dataWorkers = [];
+    private List<DataWorker> _dataWorkers = [];
 
     private PageLogger _pageLogger = null!;
 
@@ -650,7 +650,7 @@ public partial class FormMain : Form
         await _loggerService.LogAsync("Pipeline", $"Создан {_discordWorkers.Count} DiscordWorker", LogLevel.Info);
         _aiWorkers = [new AiWorker()];
         await _loggerService.LogAsync("Pipeline", $"Создан {_aiWorkers.Count} AiWorker", LogLevel.Info);
-        _dataWorkers = [new DataPersistWorker()];
+        _dataWorkers = [new DataWorker()];
         await _loggerService.LogAsync("Pipeline", $"Создан {_dataWorkers.Count} DataPersistWorker", LogLevel.Info);
 
         labelPipelineDiscordWorkersCount.Text = $"DiscordWorkers: {_discordWorkers.Count}";

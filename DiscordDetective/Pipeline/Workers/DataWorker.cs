@@ -2,7 +2,7 @@
 
 namespace DiscordDetective.Pipeline.Workers;
 
-public sealed class DataPersistWorker : IWorker
+public sealed class DataWorker : IWorker
 {
     public bool IsBusy { get; private set; }
 

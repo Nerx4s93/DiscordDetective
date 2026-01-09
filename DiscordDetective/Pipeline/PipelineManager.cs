@@ -12,7 +12,7 @@ public sealed class PipelineManager(
     RedisEventBus events,
     List<DiscordWorker> discordWorkers,
     List<AiWorker> aiWorkers,
-    List<DataPersistWorker> dataWorkers)
+    List<DataWorker> dataWorkers)
 {
     public async Task RunAsync(CancellationToken token)
     {
@@ -36,7 +36,7 @@ public sealed class PipelineManager(
                 {
                     _ = worker.ExecuteTask(task, queue, events);
                 }
-            }
+            }*/
 
             foreach (var worker in dataWorkers.Where(worker => !worker.IsBusy))
             {
@@ -45,7 +45,7 @@ public sealed class PipelineManager(
                 {
                     _ = worker.ExecuteTask(task, queue, events);
                 }
-            }*/
+            }
 
             await Task.Delay(100, token);
         }
