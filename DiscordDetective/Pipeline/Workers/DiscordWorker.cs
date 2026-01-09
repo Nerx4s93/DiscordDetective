@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -38,10 +37,6 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
                 await events.PublishEvent(newTask, PipelineTaskProgress.New);
             }
         }
-        catch (Exception ex) when (IsForbidden(ex))
-        {
-            Console.WriteLine($"[403] Access denied, skipping task {task.Id}");
-        }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
@@ -55,41 +50,45 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
     private async Task<PipelineTask[]> DownloadGuildChannels(PipelineTask task)
     {
-        var guildId = task.Payload;
-
-        var guildTask = client.GetGuildInfoAsync(guildId);
-        var channelsTask = client.GetGuildChannelsAsync(guildId);
-        await Task.WhenAll(guildTask, channelsTask);
-
-        var guild = await guildTask;
-        var channels = await channelsTask;
-
-        await using var context = new DatabaseContext();
-        await DbHelper.UpsertAsync(context, context.Guilds, guild.ToDbDTO());
-        await context.SaveChangesAsync();
-
-        var channelDTOs = channels.Where(c => c.Type != 15).Select(c =>
+        try
         {
-            var dto = c.ToDbDTO();
-            dto.GuildId = guildId;
-            return dto;
-        }).ToList();
-        await DbHelper.UpsertAsync(context, context.Channels, channelDTOs);
+            var guildId = task.Payload;
 
-        var permissions = channels.SelectMany(c =>
-                c.PermissionOverwrites.Select(p => p.ToDbDTO(c.Id))).ToList();
-        await DbHelper.UpsertAsync(context, context.PermissionOverwrites, permissions);
-        await DbHelper.UpsertAsync(context, context.Roles, guild.Roles.Select(r => r.ToDbDTO(guild)));
+            var guildTask = client.GetGuildInfoAsync(guildId);
+            var channelsTask = client.GetGuildChannelsAsync(guildId);
+            await Task.WhenAll(guildTask, channelsTask);
 
-        await context.SaveChangesAsync();
+            var guild = await guildTask;
+            var channels = await channelsTask;
 
-        return channels.Select(c => new PipelineTask
-        {
-            Id = Guid.NewGuid(),
-            GuildId = guildId,
-            Type = PipelineTaskType.FetchMessages,
-            Payload = c.Id
-        }).ToArray();
+            await using var context = new DatabaseContext();
+            await DbHelper.UpsertAsync(context, context.Guilds, guild.ToDbDTO());
+            await context.SaveChangesAsync();
+
+            var channelDTOs = channels.Where(c => c.Type != 15).Select(c =>
+            {
+                var dto = c.ToDbDTO();
+                dto.GuildId = guildId;
+                return dto;
+            }).ToList();
+            await DbHelper.UpsertAsync(context, context.Channels, channelDTOs);
+
+            var permissions = channels.SelectMany(c =>
+                    c.PermissionOverwrites.Select(p => p.ToDbDTO(c.Id))).ToList();
+            await DbHelper.UpsertAsync(context, context.PermissionOverwrites, permissions);
+            await DbHelper.UpsertAsync(context, context.Roles, guild.Roles.Select(r => r.ToDbDTO(guild)));
+
+            await context.SaveChangesAsync();
+
+            return channels.Select(c => new PipelineTask
+            {
+                Id = Guid.NewGuid(),
+                GuildId = guildId,
+                Type = PipelineTaskType.FetchMessages,
+                Payload = c.Id
+            }).ToArray();
+        }
+        catch (Exception ex) when (IsForbidden(ex)) { return []; }
     }
 
     private async Task<PipelineTask[]> DownloadUser(PipelineTask task)
