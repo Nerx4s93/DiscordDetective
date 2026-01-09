@@ -10,6 +10,7 @@ using DiscordApi;
 using DiscordApi.Models;
 
 using DiscordDetective.Database;
+using PipeScript.CommandResults;
 
 namespace DiscordDetective.Pipeline.Workers;
 
@@ -72,7 +73,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         await DbHelper.UpsertAsync(context, context.Guilds, guild.ToDbDTO());
         await context.SaveChangesAsync();
 
-        var channelDTOs = channels.Select(c =>
+        var channelDTOs = channels.Where(c => c.Type != 15).Select(c =>
         {
             var dto = c.ToDbDTO();
             dto.GuildId = guildId;
