@@ -22,8 +22,8 @@ public sealed class MemberApiDTO
     public UserApiDTO User { get; set; } = null!;
 
     [JsonPropertyName("premium_since")]
-    public DateTimeOffset? PremiumSince { get; set; }
+    public DateTime? PremiumSince { get; set; }
 
     [JsonPropertyName("joined_at")]
-    public DateTimeOffset? JoinedAt { get; set; }
+    public DateTime? JoinedAt { get; set; }
 }

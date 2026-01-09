@@ -19,7 +19,7 @@ public class GuildMemberDTO
 
     public string[] Roles { get; set; }
 
-    public DateTimeOffset? PremiumSince { get; set; }
+    public string? PremiumSince { get; set; }
 
-    public DateTimeOffset? JoinedAt { get; set; }
+    public string? JoinedAt { get; set; }
 }

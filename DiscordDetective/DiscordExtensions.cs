@@ -158,8 +158,8 @@ public static class DiscordExtensions
             Avatar = member.Avatar,
             Banner = member.Banner,
             Roles = member.Roles,
-            PremiumSince = member.PremiumSince,
-            JoinedAt = member.JoinedAt
+            PremiumSince = member.PremiumSince.ToString(),
+            JoinedAt = member.JoinedAt.ToString()
         };
 
         return memberDbDTO;
@@ -175,8 +175,8 @@ public static class DiscordExtensions
             Avatar = member.Avatar,
             Banner = member.Banner,
             Roles = member.Roles,
-            PremiumSince = member.PremiumSince,
-            JoinedAt = member.JoinedAt
+            PremiumSince = member.PremiumSince.ToString(),
+            JoinedAt = member.JoinedAt.ToString()
         };
 
         return memberDbDTO;

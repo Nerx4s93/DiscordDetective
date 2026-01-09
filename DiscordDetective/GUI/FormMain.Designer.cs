@@ -105,7 +105,7 @@ partial class FormMain
         // buttonUpdateProxyList
         // 
         buttonUpdateProxyList.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 603);
+        buttonUpdateProxyList.Location = new System.Drawing.Point(1242, 579);
         buttonUpdateProxyList.Name = "buttonUpdateProxyList";
         buttonUpdateProxyList.Size = new System.Drawing.Size(194, 52);
         buttonUpdateProxyList.TabIndex = 6;
@@ -128,7 +128,7 @@ partial class FormMain
         // 
         buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         buttonDelete.Enabled = false;
-        buttonDelete.Location = new System.Drawing.Point(1242, 545);
+        buttonDelete.Location = new System.Drawing.Point(1242, 521);
         buttonDelete.Name = "buttonDelete";
         buttonDelete.Size = new System.Drawing.Size(194, 52);
         buttonDelete.TabIndex = 4;
@@ -169,7 +169,7 @@ partial class FormMain
         proxyListView.MinimumSize = new System.Drawing.Size(1236, 500);
         proxyListView.Name = "proxyListView";
         proxyListView.Padding = new System.Windows.Forms.Padding(1);
-        proxyListView.Size = new System.Drawing.Size(1236, 832);
+        proxyListView.Size = new System.Drawing.Size(1236, 834);
         proxyListView.TabIndex = 0;
         proxyListView.SelectedIndexChanged += proxyListView_SelectedIndexChanged;
         // 
@@ -240,9 +240,9 @@ partial class FormMain
         tabPage1.Controls.Add(richTextBoxPipelineOutput);
         tabPage1.Controls.Add(buttonStartPipeline);
         tabPage1.Controls.Add(buttonAddServerTask);
-        tabPage1.Location = new System.Drawing.Point(4, 32);
+        tabPage1.Location = new System.Drawing.Point(4, 34);
         tabPage1.Name = "tabPage1";
-        tabPage1.Size = new System.Drawing.Size(1448, 690);
+        tabPage1.Size = new System.Drawing.Size(1448, 688);
         tabPage1.TabIndex = 2;
         tabPage1.Text = "Выкачивание";
         tabPage1.UseVisualStyleBackColor = true;
