@@ -2,9 +2,10 @@
 
 public enum PipelineTaskType
 {
-    DownloadChannels,
-    FetchUsers,
-    FetchMessages,
-    ProcessMessagesWithAi,
-    PersistStructuredData
+    DownloadChannels,         // скачивание списка чатов сервера
+    FetchUsers,               // скачивание юзеров
+    FetchMessages,            // скачивание сообщений чатов
+    ProcessChatMessages,      // обработка сообщений чатов
+    ProcessMessagesWithAi,    // обработка кусков чатов в ИИ
+    PersistStructuredData     // сохранение ответа ИИ
 }

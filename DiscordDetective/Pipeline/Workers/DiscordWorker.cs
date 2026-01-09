@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -10,7 +10,6 @@ using DiscordApi;
 using DiscordApi.Models;
 
 using DiscordDetective.Database;
-using PipeScript.CommandResults;
 
 namespace DiscordDetective.Pipeline.Workers;
 
@@ -29,7 +28,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             {
                 PipelineTaskType.DownloadChannels => await DownloadGuildChannels(task),
                 PipelineTaskType.FetchUsers => await DownloadUser(task),
-                PipelineTaskType.FetchMessages => await DownloadChannelMessages(task),
+                PipelineTaskType.FetchMessages => await DownloadChannelMessages(task, queue, events),
                 _ => null!
             };
 
@@ -93,7 +92,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         }).ToArray();
     }
 
-    private async Task<IEnumerable<PipelineTask>> DownloadUser(PipelineTask task)
+    private async Task<PipelineTask[]> DownloadUser(PipelineTask task)
     {
         var message = JsonSerializer.Deserialize<MessageApiDTO>(task.Payload);
 
@@ -125,10 +124,10 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         return [];
     }
 
-    private async Task<PipelineTask[]> DownloadChannelMessages(PipelineTask task)
+    private async Task<PipelineTask[]> DownloadChannelMessages(
+        PipelineTask task, RedisTaskQueue queue, RedisEventBus events)
     {
         var channelId = task.Payload;
-        var allMessages = new List<MessageApiDTO>();
         string? beforeMessageId = null;
 
         while (true)
@@ -140,64 +139,33 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
                 break;
             }
 
-            allMessages.AddRange(messages);
+            var guid = Guid.NewGuid();
+            var path = Path.Combine("Pipeline", $"{guid}.json");
 
-            if (messages.Count < 100)
+            await using (var writeStream = new FileStream(path,
+                             FileMode.CreateNew, FileAccess.Write, FileShare.None,
+                             bufferSize: 64 * 1024, useAsync: true))
             {
-                break;
+                await JsonSerializer.SerializeAsync(writeStream, messages);
             }
+
+            var processingTask = new PipelineTask
+            {
+                Id = Guid.NewGuid(),
+                GuildId = task.GuildId,
+                Payload = guid.ToString(),
+                Type = PipelineTaskType.ProcessChatMessages
+            };
+
+            await queue.EnqueueAsync(processingTask);
+            await events.PublishEvent(processingTask, PipelineTaskProgress.New);
 
             beforeMessageId = messages[^1].Id;
 
             await Task.Delay(1000);
         }
 
-        #region FetchUsers
-
-        var userMessages = allMessages
-            .GroupBy(m => m.Author.Id)
-            .ToDictionary(g => g.Key, g => g.First());
-
-        var result = userMessages.Select(kvp => 
-            new PipelineTask
-            {
-                Id = Guid.NewGuid(),
-                GuildId = task.GuildId,
-                Payload = JsonSerializer.Serialize(kvp.Value),
-                Type = PipelineTaskType.FetchUsers
-            }).ToList();
-
-        #endregion
-
-        #region ProcessMessagesWithAi
-
-        const int chunkSize = 50;
-        var chunks = allMessages
-            .Select((msg, index) => new { msg, index })
-            .GroupBy(x => x.index / chunkSize)
-            .Select(g => g.Select(x => x.msg).ToList())
-            .ToList();
-
-        Directory.CreateDirectory("Pipeline");
-        foreach (var chunk in chunks)
-        {
-            var fileId = Guid.NewGuid().ToString();
-            var filePath = Path.Combine("Pipeline", $"{fileId}.json");
-
-            await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(chunk));
-
-            result.Add(new PipelineTask
-            {
-                Id = Guid.NewGuid(),
-                GuildId = task.GuildId,
-                Payload = filePath,
-                Type = PipelineTaskType.ProcessMessagesWithAi
-            });
-        }
-
-        #endregion
-
-        return result.ToArray();
+        return [];
     }
 
     private static bool IsForbidden(Exception? ex)

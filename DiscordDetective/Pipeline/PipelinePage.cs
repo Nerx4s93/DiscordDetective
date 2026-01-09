@@ -11,6 +11,7 @@ public class PipelinePage : Page
     private readonly TextElement _channelsDownload;
     private readonly TextElement _usersFetch;
     private readonly TextElement _messagesFetch;
+    private readonly TextElement _messagesProcess;
     private readonly TextElement _messagesAi;
     private readonly TextElement _messagesSave;
 
@@ -19,6 +20,7 @@ public class PipelinePage : Page
         _channelsDownload = new TextElement(" ├─ Download: 0 tasks");
         _usersFetch = new TextElement(" └─ Fetch: 0 tasks");
         _messagesFetch = new TextElement(" ├─ Fetch: 0 tasks");
+        _messagesProcess = new TextElement(" ├─ Process: 0 tasks");
         _messagesAi = new TextElement(" ├─ AI processing: 0 tasks");
         _messagesSave = new TextElement(" └─ Save results: 0 tasks");
 
@@ -32,6 +34,7 @@ public class PipelinePage : Page
         Elements.Add(new TextElement(""));
         Elements.Add(new TextElement("Messages"));
         Elements.Add(_messagesFetch);
+        Elements.Add(_messagesProcess);
         Elements.Add(_messagesAi);
         Elements.Add(_messagesSave);
     }
@@ -51,6 +54,9 @@ public class PipelinePage : Page
                 break;
             case PipelineTaskType.FetchMessages:
                 _messagesFetch.Text = $" ├─ Fetch: {_taskCounts[type]} tasks";
+                break;
+            case PipelineTaskType.ProcessChatMessages:
+                _messagesProcess.Text = $" ├─ Process: {_taskCounts[type]} tasks";
                 break;
             case PipelineTaskType.ProcessMessagesWithAi:
                 _messagesAi.Text = $" ├─ AI processing: {_taskCounts[type]} tasks";

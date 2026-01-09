@@ -29,18 +29,20 @@ public sealed class PipelineManager(
                 }
             }
 
-            /*foreach (var worker in aiWorkers.Where(worker => !worker.IsBusy))
-            {
+            /* TODO
+             foreach (var worker in aiWorkers.Where(worker => !worker.IsBusy))
+             {
                 var task = await queue.DequeueAsync(PipelineTaskType.ProcessMessagesWithAi);
                 if (task != null)
                 {
                     _ = worker.ExecuteTask(task, queue, events);
                 }
-            }*/
+             }*/
 
             foreach (var worker in dataWorkers.Where(worker => !worker.IsBusy))
             {
-                var task = await queue.DequeueAsync(PipelineTaskType.PersistStructuredData);
+                var task = await queue.DequeueAsync(PipelineTaskType.ProcessChatMessages) ??
+                           await queue.DequeueAsync(PipelineTaskType.PersistStructuredData);
                 if (task != null)
                 {
                     _ = worker.ExecuteTask(task, queue, events);

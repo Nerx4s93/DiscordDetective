@@ -10,6 +10,7 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
+        Directory.CreateDirectory("Pipeline");
         CheckFile("dbpassword.txt", "¬ведите пароль от базы данных в файл \"dbpassword.txt\"");
         CheckFile("px6key.txt", "¬ведите api ключ от от сайта px6.me в файл \"px6key.txt\"");
 
