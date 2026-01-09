@@ -147,13 +147,13 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
         #region FetchUsers
 
-        var users = allMessages.Select(m => m.Author).ToHashSet();
-        result.AddRange(users.Select(user =>
+        var userIds = allMessages.Select(m => m.Author.Id).ToHashSet();
+        result.AddRange(userIds.Select(user =>
                 new PipelineTask
                 {
                     Id = Guid.NewGuid(),
                     GuildId = task.GuildId,
-                    Payload = user.Id,
+                    Payload = user,
                     Type = PipelineTaskType.FetchUsers
                 }).ToList());
 
