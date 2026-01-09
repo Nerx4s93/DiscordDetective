@@ -17,7 +17,7 @@ public sealed class GuildApiDTO
     public string? Banner { get; set; }
 
     [JsonPropertyName("roles")]
-    public RoleApiDTO[] Roles = null!;
+    public RoleApiDTO[] Roles { get; set; } = null!;
 
     [JsonIgnore]
     public string? IconUrl =>
