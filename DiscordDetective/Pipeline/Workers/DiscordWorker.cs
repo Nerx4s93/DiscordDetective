@@ -43,10 +43,6 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
         {
             Console.WriteLine($"[403] Access denied, skipping task {task.Id}");
         }
-        catch (Exception ex) when (IsNotFound(ex))
-        {
-            Console.WriteLine($"[404] Not found, skipping task {task.Id}");
-        }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
@@ -99,19 +95,32 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
     private async Task<IEnumerable<PipelineTask>> DownloadUser(PipelineTask task)
     {
+        var message = JsonSerializer.Deserialize<MessageApiDTO>(task.Payload);
+
         var guildId = task.GuildId;
-        var userId = task.Payload;
+        var userId = message!.Author.Id;
 
-        var userApiDTO = await client.GetUser(guildId, userId);
+        try
+        {
+            var userApiDTO = await client.GetUser(guildId, userId);
 
-        var user = userApiDTO.User.ToDbDTO();
-        var member = userApiDTO.ToDbDTO(guildId);
+            var user = userApiDTO.User.ToDbDTO();
+            var member = userApiDTO.ToDbDTO(guildId);
 
-        await using var context = new DatabaseContext();
-        await DbHelper.UpsertAsync(context, context.Users, user);
-        await context.SaveChangesAsync();
-        await DbHelper.UpsertAsync(context, context.GuildMembers, member);
-        await context.SaveChangesAsync();
+            await using var context = new DatabaseContext();
+            await DbHelper.UpsertAsync(context, context.Users, user);
+            await context.SaveChangesAsync();
+            await DbHelper.UpsertAsync(context, context.GuildMembers, member);
+            await context.SaveChangesAsync();
+        }
+        catch (Exception ex) when (IsNotFound(ex))
+        {
+            var user = message.Author.ToDbDTO();
+
+            await using var context = new DatabaseContext();
+            await DbHelper.UpsertAsync(context, context.Users, user);
+            await context.SaveChangesAsync();
+        }
 
         return [];
     }
@@ -143,19 +152,20 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
             await Task.Delay(1000);
         }
 
-        var result = new List<PipelineTask>();
-
         #region FetchUsers
 
-        var userIds = allMessages.Select(m => m.Author.Id).ToHashSet();
-        result.AddRange(userIds.Select(user =>
-                new PipelineTask
-                {
-                    Id = Guid.NewGuid(),
-                    GuildId = task.GuildId,
-                    Payload = user,
-                    Type = PipelineTaskType.FetchUsers
-                }).ToList());
+        var userMessages = allMessages
+            .GroupBy(m => m.Author.Id)
+            .ToDictionary(g => g.Key, g => g.First());
+
+        var result = userMessages.Select(kvp => 
+            new PipelineTask
+            {
+                Id = Guid.NewGuid(),
+                GuildId = task.GuildId,
+                Payload = JsonSerializer.Serialize(kvp.Value),
+                Type = PipelineTaskType.FetchUsers
+            }).ToList();
 
         #endregion
 
