@@ -24,7 +24,7 @@ public sealed class PipelineManager(
                            await queue.DequeueAsync(PipelineTaskType.FetchUsers) ??
                            await queue.DequeueAsync(PipelineTaskType.FetchMessages);
                 if (task != null)
-                {   
+                {
                     _ = worker.ExecuteTask(task, queue, events);
                 }
             }
@@ -41,8 +41,8 @@ public sealed class PipelineManager(
 
             foreach (var worker in dataWorkers.Where(worker => !worker.IsBusy))
             {
-                var task = await queue.DequeueAsync(PipelineTaskType.ProcessChatMessages) ??
-                           await queue.DequeueAsync(PipelineTaskType.PersistStructuredData);
+                var task = await queue.DequeueAsync(PipelineTaskType.ProcessChatMessages);
+                // TODO ?? await queue.DequeueAsync(PipelineTaskType.PersistStructuredData);
                 if (task != null)
                 {
                     _ = worker.ExecuteTask(task, queue, events);
