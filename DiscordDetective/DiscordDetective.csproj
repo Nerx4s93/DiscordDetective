@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\DiscordApi\DiscordApi.csproj" />
+	  <ProjectReference Include="..\..\DiscordApi\DiscordAPI.csproj" />
 	  <ProjectReference Include="..\DiscordApi\DiscordApi.csproj" />
 	  <ProjectReference Include="..\Logger\Logger.csproj" />
 	  <ProjectReference Include="..\PipeScript\PipeScript.csproj" />

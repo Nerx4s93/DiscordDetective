@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DiscordApi.Models;
+﻿using DiscordAPI.Models;
 using DiscordDetective.Database.Models;
 using DiscordDetective.Database.Models.DiscordAPI;
 

@@ -5,8 +5,8 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using DiscordApi;
-using DiscordApi.Models;
+using DiscordAPI;
+using DiscordAPI.Models;
 
 using DiscordDetective.Database;
 

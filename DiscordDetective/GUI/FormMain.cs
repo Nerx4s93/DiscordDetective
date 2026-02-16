@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using DiscordApi;
+using DiscordAPI;
 
 using DiscordDetective.Database;
 using DiscordDetective.Database.Models;

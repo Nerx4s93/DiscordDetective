@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeScript", "..\PipeScript
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "..\Logger\Logger.csproj", "{0B1C0E5D-EE49-4D0D-82BE-0321F1F4050E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordApi", "..\..\DiscordApi\DiscordApi.csproj", "{2371B99C-642A-4663-0F98-258D217A6FEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordAPI", "..\..\DiscordApi\DiscordAPI.csproj", "{2371B99C-642A-4663-0F98-258D217A6FEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
