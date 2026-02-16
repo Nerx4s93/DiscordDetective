@@ -7,7 +7,7 @@ namespace DiscordDetective;
 
 public static class DiscordExtensions
 {
-    public static RoleDbDTO ToDbDTO(this RoleApiDTO role, GuildApiDTO guild)
+    public static RoleDbDTO ToDbDTO(this DiscordRole role, DiscordGuild guild)
     {
         var result = new RoleDbDTO
         {
@@ -21,7 +21,7 @@ public static class DiscordExtensions
         return result;
     }
 
-    public static RoleDbDTO ToDbDTO(this RoleApiDTO role, string guildId)
+    public static RoleDbDTO ToDbDTO(this DiscordRole role, string guildId)
     {
         var result = new RoleDbDTO
         {
@@ -35,7 +35,7 @@ public static class DiscordExtensions
         return result;
     }
 
-    public static ChannelDbDTO ToDbDTO(this ChannelApiDTO channel)
+    public static ChannelDbDTO ToDbDTO(this DiscordChannel channel)
     {
         var channelDbDTO = new ChannelDbDTO
         {
@@ -57,7 +57,7 @@ public static class DiscordExtensions
         return channelDbDTO;
     }
 
-    public static GuildDbDTO ToDbDTO(this GuildApiDTO guild)
+    public static GuildDbDTO ToDbDTO(this DiscordGuild guild)
     {
         var guildDb = new GuildDbDTO
         {
@@ -70,9 +70,9 @@ public static class DiscordExtensions
         return guildDb;
     }
 
-    public static GuildApiDTO ToApiDTO(this GuildDbDTO guild)
+    public static DiscordGuild ToApiDTO(this GuildDbDTO guild)
     {
-        var guildApi = new GuildApiDTO
+        var guildApi = new DiscordGuild
         {
             Id = guild.Id,
             Name = guild.Name,
@@ -83,7 +83,7 @@ public static class DiscordExtensions
         return guildApi;
     }
 
-    public static PermissionOverwriteDbDTO ToDbDTO(this PermissionOverwriteApiDTO permission, string channelId)
+    public static PermissionOverwriteDbDTO ToDbDTO(this DiscordPermissionOverwrite permission, string channelId)
     {
         var permissionDbDTO = new PermissionOverwriteDbDTO
         {
@@ -97,9 +97,9 @@ public static class DiscordExtensions
         return permissionDbDTO;
     }
 
-    public static PermissionOverwriteApiDTO ToApiDTO(this PermissionOverwriteDbDTO permission)
+    public static DiscordPermissionOverwrite ToApiDTO(this PermissionOverwriteDbDTO permission)
     {
-        var permissionDbDTO = new PermissionOverwriteApiDTO
+        var permissionDbDTO = new DiscordPermissionOverwrite
         {
             Id = permission.Id,
             Type = permission.Type,
@@ -110,7 +110,7 @@ public static class DiscordExtensions
         return permissionDbDTO;
     }
 
-    public static UserDbDTO ToDbDTO(this UserApiDTO user)
+    public static UserDbDTO ToDbDTO(this DiscordUser user)
     {
         var userDb = new UserDbDTO
         {
@@ -129,9 +129,9 @@ public static class DiscordExtensions
         return userDb;
     }
 
-    public static UserApiDTO ToApiDTO(this UserDbDTO user)
+    public static DiscordUser ToApiDTO(this UserDbDTO user)
     {
-        var userDb = new UserApiDTO
+        var userDb = new DiscordUser
         {
             Id = user.Id,
             Username = user.Username,
@@ -148,7 +148,7 @@ public static class DiscordExtensions
         return userDb;
     }
 
-    public static GuildMemberDTO ToDbDTO(this MemberApiDTO member, GuildApiDTO guild)
+    public static GuildMemberDTO ToDbDTO(this DiscordMember member, DiscordGuild guild)
     {
         var memberDbDTO = new GuildMemberDTO
         {
@@ -165,7 +165,7 @@ public static class DiscordExtensions
         return memberDbDTO;
     }
 
-    public static GuildMemberDTO ToDbDTO(this MemberApiDTO member, string guildId)
+    public static GuildMemberDTO ToDbDTO(this DiscordMember member, string guildId)
     {
         var memberDbDTO = new GuildMemberDTO
         {

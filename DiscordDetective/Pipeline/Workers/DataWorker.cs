@@ -49,12 +49,12 @@ public sealed class DataWorker : IWorker
         var guid = task.Payload;
         var inputPath = Path.Combine("Pipeline", $"{guid}.json");
 
-        List<MessageApiDTO>? messages;
+        List<DiscrodMessage>? messages;
         await using (var readStream = new FileStream(inputPath,
                          FileMode.Open, FileAccess.Read, FileShare.Read,
                          bufferSize: 64 * 1024, useAsync: true))
         {
-            messages = await JsonSerializer.DeserializeAsync<List<MessageApiDTO>>(readStream);
+            messages = await JsonSerializer.DeserializeAsync<List<DiscrodMessage>>(readStream);
         }
 
         var result = new List<PipelineTask>();

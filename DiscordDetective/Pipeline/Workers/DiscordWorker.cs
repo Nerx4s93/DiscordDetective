@@ -93,7 +93,7 @@ public sealed class DiscordWorker(DiscordClient client) : IWorker
 
     private async Task<PipelineTask[]> DownloadUser(PipelineTask task)
     {
-        var message = JsonSerializer.Deserialize<MessageApiDTO>(task.Payload);
+        var message = JsonSerializer.Deserialize<DiscrodMessage>(task.Payload);
 
         var guildId = task.GuildId;
         var userId = message!.Author.Id;
